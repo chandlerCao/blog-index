@@ -1,0 +1,460 @@
+@import './config.less';
+.mask:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: #000;
+    opacity: .1;
+    pointer-events: none;
+}
+#canvas-box {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    color: lighten(@blue, 20%);
+}
+
+/* 侧边栏 */
+#intrude-box {
+    position: fixed;
+    display: table;
+    width: @sideW;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-image: url(../img/bg1.png);
+    color: #fff;
+    background-size: cover;
+}
+#intrude-cnt {
+    display: table-cell;
+    position: relative;
+    z-index: 2;
+    vertical-align: middle;
+    text-align: center;
+    padding: 1rem 0;
+}
+/* 头像 */
+#head-portrait img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+}
+#author {
+    font-size: 3rem;
+    margin: 2rem 0;
+}
+#intrude-text {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+/* 导航 */
+#nav-menu {
+    font-size: 1.3rem;
+    margin-top: 2rem;
+}
+#nav-menu li {
+    position: relative;
+    height: 3.5rem;
+    line-height: 3.5rem;
+    overflow: hidden;
+}
+.nav-outer {
+    display: inline-block;
+    position: relative;
+    width: 100px;
+    height: 100%;
+    overflow: hidden;
+}
+.nav-inner {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.nav-outer:before, 
+.nav-outer:after,
+.nav-inner:before, 
+.nav-inner:after {
+    content: '';
+    position: absolute;
+    background-color: #f7f7f7;
+    transition: .25s linear;
+}
+.nav-outer:after,
+.nav-inner:after {
+    transition-delay: .25s;
+}
+/* 上 */
+.nav-outer:before {
+    width: 100%;
+    height: 1px;
+    left: -100%;
+    top: 0;
+}
+/* 左 */
+.nav-outer:after {
+    width: 1px;
+    height: 100%;
+    left: 0;
+    top: 100%;
+}
+/* 下 */
+.nav-inner:before {
+    width: 100%;
+    height: 1px;
+    right: -100%;
+    bottom: 0;
+}
+/* 右 */
+.nav-inner:after {
+    width: 1px;
+    height: 100%;
+    right: 0;
+    top: -100%;
+}
+.nav-outer:hover:before {
+    left: 0;
+}
+.nav-outer:hover .nav-inner:before {
+    right: 0;
+}
+.nav-outer:hover:after {
+    top: 0;
+}
+.nav-outer:hover .nav-inner:after {
+    top: 0;
+}
+.nav-item.act {
+    color: darken(@bg, 20%);
+}
+#nav-menu li i {
+    position: relative;
+    width: 16px;
+    text-align: center;
+}
+.nav-text {
+    padding-left: 1.5rem;
+    letter-spacing: 2px;
+}
+/* 联系方式 */
+#contact-box {
+    width: 120px;
+    display: flex;
+    justify-content: space-around;
+    margin: 1.8rem auto 0;
+    font-size: 14px;
+}
+#contact-box i {
+    width: 16px;
+    height: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+}
+#contact-box i:hover {
+    transform: scale(1.2);
+}
+/* 主板块 */
+#blog-main {
+    position: absolute;
+    left: @sideW;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    padding: 3rem 2.6667rem 0;
+}
+#blog-box {
+    position: relative;
+}
+
+#blog-box > div {
+    position: relative;
+    width: 100%;
+    left: 0;
+    top: 0;
+    box-sizing: border-box;
+    z-index: 50;
+    transition: .5s;
+    opacity: 1;
+    transform: translateX(0);
+}
+#blog-box > div.leaving {
+    position: absolute;
+    opacity: 0;
+    transform: translateX(100px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+
+#article-list {
+    padding-top: 2.2rem;
+    border-left: 2px solid lighten(@blue, 10%);
+}
+#article-cnt {
+    background-color: #fff;
+    padding: 0 20px;
+}
+
+.article-item {
+    position: relative;
+    padding: 1.5rem 2rem;
+    background-color: #fff;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 6rem;
+    transition: .15s linear;
+    box-shadow: 2px 2px 0 #d3e6fc;
+}
+.art-time {
+    position: absolute;
+    display: inline-block;
+    height: 2rem;
+    line-height: 2rem;
+    padding-left: 1rem;
+    padding-right: 1.2rem;
+    background-color: @blue;
+    color: #fff;
+    font-size: 1.3rem;
+    left: 2.5rem;
+    top: -3.44rem;
+}
+.art-time:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 1rem;
+    border-style: solid;
+    border-color: transparent;
+    border-right-color: @blue;
+    left: -2rem;
+    top: 0;
+}
+.art-dotts {
+    position: absolute;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    background: @blue;
+    border: 1px solid @blue;
+    left: -.78rem;
+    top: -2.9rem;
+}
+.art-main {
+    display: block;
+}
+.art-wrap {
+    display: block;
+    text-align: right;
+    position: relative;
+    cursor: pointer;
+}
+.article-item .art-info {
+    position: absolute;
+    width: 80%;
+    height: 100%;
+    text-align: left;
+}
+/* 附图 */
+.article-item .art-img {
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+    border-radius: 2px;
+    overflow: hidden;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: @bg;
+}
+/* 标题 */
+.article-item .art-title {
+    position: absolute;
+    width: 100%;
+    font-size: 1.8rem;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 前言 */
+.article-item .art-note {
+    position: relative;
+    font-size: 1.3rem;
+    line-height: 2rem;
+    box-sizing: border-box;
+    padding-top: 3.8rem;
+    height: 100%;
+    color: @color;
+    overflow: hidden;
+    text-align: justify;
+}
+/* 附属信息 */
+.article-item .art-meta {
+    display: flex;
+    font-size: 1.2rem;
+    line-height: 1.4rem;
+    white-space: nowrap;
+    color: @color;
+    margin-top: 1.4rem;
+}
+.article-item .art-meta > a {
+    margin-right: 3rem;
+    letter-spacing: .005rem;
+}
+/* 点赞 */
+.art-heart {
+    position: relative;
+}
+.art-heart span {
+    padding-left: 1.3rem;
+}
+/* 文章标签 */
+.art-tag {
+    position: relative;
+    top: -1px;
+}
+.art-tag i {
+    position: relative;
+    font-size: 14px;
+    top: 2px;
+}
+.heart {
+    position: absolute;
+    width: 30px;
+    height: 35px;
+    left: -10px;
+    top: -1.25rem;
+    background-image: url(../img/heart.png);
+    background-repeat: no-repeat;
+    cursor: pointer;
+    z-index: 1000;
+    background-size: 3900%;
+    background-position-x: -6px;
+    background-position-y: -1px;
+}
+@keyframes heartBlast {
+    0% {
+        background-position-x: -6px;
+    } 100% {
+        background-position-x: -1136px;
+    }
+}
+.heart.heartBlast {
+    display: inline-block;
+    animation-name: heartBlast;
+    animation-duration: .8s;
+    animation-iteration-count: 1;
+    animation-timing-function: steps(28);
+    background-position-x: -1136px;
+}
+/* 评论图标 */
+.comment-icon {
+    font-size: 1.2rem;
+}
+@media screen and (max-width: 600px) {
+    .article-item .art-title {
+        font-size: 1.5rem;
+    }
+    .article-item .art-note {
+        line-height: 1.6rem;
+        padding-top: 2.8rem;
+    }
+    .article-item .art-img {
+        width: 70px;
+        height: 70px;
+    }
+    #head-portrait img {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        top: 10px;
+    }
+}
+@media screen and (max-width: 570px) {
+    .article-item .art-info {
+        width: 70%;
+    }
+    .article-item .art-meta > a {
+        margin-right: 2rem;
+    }
+    .article-item .art-img {
+        width: 60px;
+        height: 60px;
+    }
+    .article-item .art-meta {
+        margin-top: 1.5rem;
+    }
+}
+@media screen and (max-width: 450px) {
+    #blog-main {
+        padding: 3rem 1.3333rem 0;
+    }
+    .article-item {
+        padding: 1.2rem 1.5rem;
+    }
+    .article-item .art-title {
+        font-size: 1.4rem;
+    }
+    .article-item .art-note {
+        font-size: 1.2rem;
+        line-height: 1.5rem;
+        padding-top: 2.4rem;
+    }
+    .article-item .art-img {
+        width: 50px;
+        height: 50px;
+    }
+    .article-item .art-meta {
+        margin-top: 1.2rem;
+    }
+}
+@media screen and (max-width: 400px) {
+    .article-item .art-note {
+        padding-top: 3rem;
+    }
+    .article-item .art-meta {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    html, body {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    /* 侧边栏 */
+    #intrude-box {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    #blog-main {
+        position: static;
+    }
+    /* 导航 */
+    #nav-menu ul {
+        display: flex;
+        width: 320px;
+        margin: 0 auto;
+        justify-content: space-around;
+    }
+    #nav-menu li {
+        width: 25%;
+    }
+    .nav-outer {
+        width: 100%;
+    }
+    .nav-text {
+        padding-left: .3rem;
+    }
+}

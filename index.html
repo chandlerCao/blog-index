@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>web前端工程师个人博客</title>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/dot/1.1.2/doT.min.js"></script>
+</head>
+<body>
+    <!-- 文章模板 -->
+    <script id="article-tpl" type="text/x-dot-template">
+        {{~it:art}}
+        <article class="article-item">
+            <time class="art-time">
+                {{=art.date}}
+            </time>
+            <b class="art-dotts"></b>
+            <div class="art-main">
+                <div data-aid="{{=art.aid}}" class="art-wrap">
+                    <div class="art-info">
+                        <h2 class="art-title">{{=art.title}}</h2>
+                        <h3 class="art-note" title="{{=art.preface}}">
+                            <span>{{=art.preface}}</span>
+                        </h3>
+                    </div>
+                    <div class="art-img" style="background-image: url({{=art.imgSrc}})"></div>
+                </div>
+                <div class="art-meta">
+                    <a href="javascript:;" class="art-heart" title="i lile it">
+                        <i class="heart"></i>
+                        <span>喜欢(500)</span>
+                    </a>
+                    <a href="javascript:;" class="art-comment" title="评论">
+                        <i class="comment-icon fa fa-comment"></i>
+                        <span>评论(20)</span>
+                    </a>
+                    <a href="javascript:;" class="art-tag" title="博客标签">
+                        <i class="fa fa-tag"></i>
+                        <span>NodeJs</span>
+                    </a>    
+                </div>
+            </div>
+        </article>
+        {{~}}
+    </script>
+    <!-- 侧边栏 -->
+    <aside id="intrude-box" class="mask">
+        <div id="intrude-cnt">
+            <!-- 头像 -->
+            <div id="head-portrait" class="mask">
+                <img src="./assets/img/portrait.png" alt="chandler">
+            </div>
+            <!-- 昵称 -->
+            <h1 id="author" title="web前端工程师博客">chandler</h1>
+            <!-- 介绍 -->
+            <h2 id="intrude-text" title="web前端工程师博客">hello，欢迎光临我的博客~</h2>
+            <!-- 导航 -->
+            <nav id="nav-menu">
+                <script id="nav-tpl" type="text/x-dot-template">
+                    {{ for(var key in it) { }} 
+                    <li class="nav-item" data-hash="{{=key}}">
+                        <a href="javascript:;" class="nav-outer">
+                            <span class="nav-inner">
+                                <i class="{{=it[key].icon}}"></i>
+                                <span class="nav-text">{{=it[key].text}}</span>
+                            </span>
+                        </a>
+                    </li>
+                    {{ } }}
+                </script>
+                <ul id="nav-list"></ul>
+            </nav>
+            <!-- 联系方式 -->
+            <div id="contact-box">
+                <i class="fa fa-wechat"></i>
+                <i class="fa fa-qq"></i>
+                <i class="fa fa-phone"></i>
+            </div>
+        </div>
+    </aside>
+    <!-- 文章主页 -->
+    <main id="blog-main">
+        <section id="blog-box"></section>
+    </main>
+    <!-- 雪花 -->
+    <div id="canvas-box">
+        <canvas id="canvasBg"></canvas>
+    </div>
+</body>
+</html>
