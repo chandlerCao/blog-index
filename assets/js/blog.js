@@ -1,18 +1,128 @@
-import {navData, addEllipsis, ajax} from './public';
+import {picture3DSwitch, navData, addEllipsis, ajax} from './public';
 const blogBox = $('#blog-box');
 const hashReg = /(^#)([^\/]+)/i;
 let hash = '';
-(function() {
+// 存储回调函数
+;(function() {
+    // 请求函数
+    const element_callBack = [
+        // 文章
+        () => {
+            ajax(navData.blog.reqUrl, {
+                page: 1
+            })
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.map(function(articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template($("#article-tpl").text());
+                const articleList = $('<div id="article-list"></div>');
+                articleList.html(arrText(articleData))
+                navData.blog.element.append(articleList);
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 50);
+            })
+        },
+        // 相册
+        () => {
+            ajax(navData.photo.reqUrl, {
+                page: 1
+            })
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.map(function(articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template($("#article-tpl").text());
+                const articleList = $('<div id="article-list"></div>');
+                articleList.html(arrText(articleData))
+                navData.photo.element.append(articleList);
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 50);
+            })
+        },
+        // 心情
+        () => {
+            ajax(navData.blog.reqUrl, {
+                page: 1
+            })
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.map(function(articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template($("#article-tpl").text());
+                const articleList = $('<div id="article-list"></div>');
+                articleList.html(arrText(articleData))
+                navData.mood.element.append(articleList);
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 50);
+            })
+        }
+    ];
+    var index = 0;
+    for (const hash in navData) {
+        navData[hash].cbFn = element_callBack[index] || function() {alert('当前模块没有回调函数！');};
+        index ++;
+    }
+})();
+// 元素切换函数
+let timer = null;
+const elementSwitch = function(newEl, oldEl) {
+    // 添加即将出现的元素
+    blogBox.append(newEl);
+    // 旧元素离开
+    oldEl.addClass('leaving');
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+        oldEl.detach();
+    }, 500);
+    setTimeout(() => {
+        newEl.removeClass('leaving');
+    }, 20);
+};
+// 通过hash值切换元素
+const switchByHash = function(newHash, oldHash) {
+    if( oldHash !== newHash ) {
+        // 如果没有请求过
+        if( navData[newHash] ) {
+            if( !navData[newHash].isReq ) {
+                navData[newHash].isReq = true;
+                navData[newHash].cbFn();
+            }
+            elementSwitch(navData[newHash].element,  navData[oldHash] ? navData[oldHash].element : $());
+        }
+    }
+};
+// 首次加载
+;(function() {
     const hashArr = window.location.hash.match(hashReg);
     // 如果配置文件里面有hash
-    if( navData[ hashArr[2] ] ) hash = hashArr[2];
+    if( hashArr && hashArr[2] && navData[ hashArr[2] ] ) hash = hashArr[2];
     else {
         hash = 'blog';
         window.location.hash = 'blog';
     }
+    switchByHash(hash);
 })();
 // hash和文章的交互
-(function() {
+;(function() {
     // const blogBox = $('#blog-box');
     // const articleBox = $('#article-box');
     // let [
@@ -130,118 +240,6 @@ let hash = '';
     //     })
     // })();
 })();
-// 存储回调函数
-var element_req_cb = {};
-// 请求函数
-;(function() {
-    // 请求函数
-    const element_callBack = [
-        // 文章请求
-        () => {
-            ajax(navData.blog.reqUrl, {
-                page: 1
-            })
-            .then(data => {
-                const articleData = data.articleList;
-                articleData.map(function(articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
-                });
-                const arrText = doT.template($("#article-tpl").text());
-                const articleList = $('<div id="article-list"></div>');
-                articleList.html(arrText(articleData))
-                navData.blog.element.append(articleList);
-                // 添加省略号
-                setTimeout(function() {
-                    $('.art-note').each(function (index, el) {
-                        addEllipsis($(el));
-                    });
-                }, 50);
-            })
-        },
-        () => {
-            ajax(navData.blog.reqUrl, {
-                page: 1
-            })
-            .then(data => {
-                const articleData = data.articleList;
-                articleData.map(function(articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
-                });
-                const arrText = doT.template($("#article-tpl").text());
-                const articleList = $('<div id="article-list"></div>');
-                articleList.html(arrText(articleData))
-                navData.photo.element.append(articleList);
-                // 添加省略号
-                setTimeout(function() {
-                    $('.art-note').each(function (index, el) {
-                        addEllipsis($(el));
-                    });
-                }, 50);
-            })
-        },
-        () => {
-            ajax(navData.blog.reqUrl, {
-                page: 1
-            })
-            .then(data => {
-                const articleData = data.articleList;
-                articleData.map(function(articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
-                });
-                const arrText = doT.template($("#article-tpl").text());
-                const articleList = $('<div id="article-list"></div>');
-                articleList.html(arrText(articleData))
-                navData.mood.element.append(articleList);
-                // 添加省略号
-                setTimeout(function() {
-                    $('.art-note').each(function (index, el) {
-                        addEllipsis($(el));
-                    });
-                }, 50);
-            })
-        }
-    ];
-    var index = 0;
-    for (const hash in navData) {
-        element_req_cb[hash] = element_callBack[index] || function() {};
-        index ++;
-    }
-})();
-// 元素切换函数
-let timer = null;
-const elementSwitch = function(newEl, oldEl) {
-    // 添加即将出现的元素
-    blogBox.append(newEl);
-    // 旧元素离开
-    oldEl.addClass('leaving');
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-        oldEl.detach();
-    }, 500);
-    setTimeout(function() {
-        newEl.removeClass('leaving');
-    }, 20);
-};
-// 通过hash值切换元素
-const switchByHash = function(newHash, oldHash) {
-    if( oldHash !== newHash ) {
-        // 如果没有请求过
-        if( navData[newHash] ) {
-            if( !navData[newHash].isReq ) {
-                navData[newHash].isReq = true;
-                element_req_cb[newHash]();
-            }
-            elementSwitch(navData[newHash].element,  navData[oldHash] ? navData[oldHash].element : $());
-        }
-    }
-};
-// 首次加载
-;(function() {
-    switchByHash(hash);
-})();
 // 创建导航菜单
 ;(function() {
     // 获取导航ul
@@ -260,3 +258,8 @@ const switchByHash = function(newHash, oldHash) {
         switchByHash(newHash, oldHash);
     });
 })();
+// box 父级
+// imgArr 图片数组
+// rowLen 横排个数
+// colLen 竖排个数
+picture3DSwitch($('#intrude-bg'), ['./assets/img/bg1.png', './assets/img/bg2.png', './assets/img/bg3.png', './assets/img/bg4.png'], 3, 6);

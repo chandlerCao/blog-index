@@ -19,6 +19,13 @@ const config = {
     module: {
         rules: [
             {
+                test: /\.js$/,
+                use: {
+                    loader: 'babel-loader'
+                },
+                exclude: '/node_modules/'
+            },
+            {
                 test: /\.less$/,
                 use: extractTextWebpackPlugin.extract({
                     fallback: 'style-loader',
@@ -26,7 +33,7 @@ const config = {
                         {
                             loader: 'css-loader',
                             options: {
-                                minimize: 0
+                                minimize: true
                             }
                         },
                         'postcss-loader',
@@ -51,16 +58,10 @@ const config = {
         ]
     },
     plugins: [
-        new extractTextWebpackPlugin('css/[name]-[hash:8].css'),
+        new extractTextWebpackPlugin('css/[hash:8].css'),
         new htmlWebpackPlugin({
             template: 'index.html',
             publicPath: '../'
-        }),
-        // 全局配置
-        new webpack.DefinePlugin({
-            'process.env': {
-                m: isDev ? '"development"' : '"production"'
-            }
         })
     ],
     resolve: {
@@ -73,14 +74,11 @@ const config = {
 // 如果当前模式为开发模式
 if (isDev) {
     config.mode = 'development';
-    // 如果页面报错，会提示给你开发模式下的报错信息，不会把压缩后的报错信息给你
-    config.devtool = '#cheap-module-eval-source-map';
     config.devServer = {
         port: 3333,
         host: '0.0.0.0',
-        overlay: {
-            error: true, // 打包过程的错误，会直接显示在网页上面！
-        },
+        overlay: true,
+        compress: true,
         hot: true // 局部刷新
     };
     config.plugins.push(
