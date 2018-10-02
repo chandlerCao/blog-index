@@ -1,6 +1,5 @@
-require('@/js/blog');
+require('@/js/index');
 
 require('@/less/reset');
-require('@/less/markdown');
 require('@/less/config');
 require('@/less/blog');

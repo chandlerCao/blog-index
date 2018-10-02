@@ -13,8 +13,8 @@ const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const config = {
     entry: path.join(__dirname, 'app.js'),
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: '[hash].js'
+        path: path.join(__dirname, 'src'),
+        filename: 'js/[hash].js'
     },
     module: {
         rules: [
@@ -23,7 +23,7 @@ const config = {
                 use: {
                     loader: 'babel-loader'
                 },
-                exclude: '/node_modules/'
+                exclude: path.join(__dirname, 'node_modules')
             },
             {
                 test: /\.less$/,
@@ -43,6 +43,19 @@ const config = {
                 })
             },
             {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: 'html-withimg-loader',
+                        options: {
+                            publicPath: './',
+                            name: 'img/[hash].[ext]', // 将要打包的哪个文件夹下
+                            limit: 1024
+                        }
+                    }
+                ]
+            },
+            {
                 test: /\.(jpg|png)$/,
                 use: [
                     {
@@ -60,8 +73,12 @@ const config = {
     plugins: [
         new extractTextWebpackPlugin('css/[hash:8].css'),
         new htmlWebpackPlugin({
-            template: 'index.html',
-            publicPath: '../'
+            template: './views/index.html',
+            favicon: './assets/img/logo.ico',
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true
+            }
         })
     ],
     resolve: {
@@ -79,15 +96,16 @@ if (isDev) {
         host: '0.0.0.0',
         overlay: true,
         compress: true,
-        hot: true // 局部刷新
+        hot: true
     };
     config.plugins.push(
         // 热模块替换功能，可以实现局部刷新，节省等待时间
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
     );
+    console.log('http://localhost:3333');
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin(['dist']));
+    config.plugins.push(new cleanWebpackPlugin(['src']));
 }
 module.exports = config;

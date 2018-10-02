@@ -1,21 +1,21 @@
 // 后台端口
-const host = 'http://192.168.200.148:1111';
+export const host = 'http://192.168.0.105:1111';
 // 对应的模块id
 export const navData = {
     'blog': {
-        'text': '博客',
+        'text': '技术',
         'icon': 'fa fa-home',
         'element': $('<div id="article-box" class="leaving"></div>'),
         'reqUrl': 'index/getArticleList'
     },
     'photo': {
-        'text': '相册',
+        'text': '杂谈',
         'icon': 'fa fa-photo',
         'element': $('<div id="photo-box" class="leaving"></div>'),
         'reqUrl': 'index/getArticleList'
     },
     'mood': {
-        'text': '心情',
+        'text': '哈哈',
         'icon': 'fa fa-smile-o',
         'element': $('<div id="mood-box" class="leaving"></div>'),
         'reqUrl': 'index/getArticleList'
@@ -61,81 +61,6 @@ export const ajax = function (url, data) {
         });
     })
 };
-// 雪花
-;(function () {
-    const c = $('#canvasBg');
-    const g = c[0].getContext('2d');
-    const color = $('#canvasBg').css('color');
-    let snowArr = [];
-    let timer = null;
-    let initTimer = null;
-    const win = $(window);
-    let starLen = Math.floor(win.width() / 80);
-    starLen = starLen < 10 ? 10 : starLen;
-    function random() {
-        return Math.random();
-    };
-    c.attr({
-        width: win.width(),
-        height: win.height()
-    });
-    win.resize(function () {
-        clearTimeout(initTimer);
-        initTimer = setTimeout(function () {
-            clearTimeout(timer);
-            starLen = Math.floor(win.width() / 100);
-            g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-            c.attr({
-                width: win.width(),
-                height: win.height()
-            });
-            snowArr = [];
-            initStar();
-            starFlash();
-        }, 100);
-    });
-    initStar();
-    function initStar() {
-        g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-        // 初始化每一个雪花
-        for (let i = 0; i < starLen; i++) {
-            const x = random() * c.attr('width');
-            snowArr.push({
-                x: x,
-                startX: x,
-                y: random() * c.attr('height'),
-                speedY: 1,
-                r: random() * 2 + 1,
-                xNum: 0,
-                range: random() * 40,
-            });
-        }
-    };
-    // 重绘
-    starFlash();
-    function starFlash() {
-        g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-        for (let i = 0; i < starLen; i++) {
-            g.fillStyle = color;
-            // y轴加
-            snowArr[i].y += snowArr[i].speedY;
-            if (snowArr[i].y >= win.height() + snowArr[i].r) snowArr[i].y = -snowArr[i].r;
-
-            snowArr[i].xNum--;
-            if (snowArr[i].xNum === -360) snowArr[i].xNum = 0;
-
-            snowArr[i].x = snowArr[i].startX - snowArr[i].range * Math.sin(Math.PI / 180 * snowArr[i].xNum);
-
-            g.beginPath();
-            g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
-            g.fill();
-            g.closePath();
-        };
-        timer = setTimeout(function () {
-            requestAnimationFrame(starFlash);
-        }, 50);
-    };
-})();
 // 侧边栏背景切换
 export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
     /**
@@ -152,7 +77,7 @@ export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
     const cell_w = Math.floor(box_width / rowLen);
     const cell_h = box_height / colLen;
 
-    // 单元个数
+    // 单元格总数
     const cell_num = rowLen * colLen;
     // 循环生成
     let html = ``;
@@ -160,15 +85,61 @@ export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
         let str = ``;
         imgArr.forEach((url, j) => {
             let transform = '';
-            if (j === 0) transform = `transform: rotateY(0);`;
-            if (j === 1) transform = `transform: rotateY(90deg);`;
-            if (j === 2) transform = `transform: rotateY(180deg);`;
-            if (j === 3) transform = `transform: rotateY(270deg);`;
-            const bpx = i % rowLen * cell_w;
+            if (j === 0) transform = `transform: rotateY(0)`;
+            if (j === 1) transform = `transform: rotateY(90deg)`;
+            if (j === 2) transform = `transform: rotateY(180deg)`;
+            if (j === 3) transform = `transform: rotateY(270deg)`;
+            const bpx = i % rowLen * cell_w + 50;
             const bpy = Math.floor(i / rowLen) * cell_h;
-            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${box_width}px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 20s ${0.03 * i}s infinite"></div>`;
+            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: 500px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i}s infinite"></div>`;
         });
         html += `<div class="three-d" style="float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
     });
     box.html(html);
+};
+// 模板
+export const tmp = {
+    navTmp: `{{ for(var key in it) { }} 
+    <li class="nav-item" data-hash="{{=key}}">
+        <a href="javascript:;" class="nav-outer">
+            <span class="nav-inner">
+                <i class="{{=it[key].icon}}"></i>
+                <span class="nav-text">{{=it[key].text}}</span>
+            </span>
+        </a>
+    </li>
+    {{ } }}`,
+    articleTmp: `{{~it:atc}}
+    <article class="article-item">
+        <time class="art-time">
+            {{=atc.date}}
+        </time>
+        <b class="art-dotts"></b>
+        <div class="art-main">
+            <a href="/article/{{=atc.aid}}" data-aid="{{=atc.aid}}" class="art-wrap">
+                <div class="art-info">
+                    <h2 class="art-title">{{=atc.title}}</h2>
+                    <h3 class="art-note" title="{{=atc.preface}}">
+                        <span>{{=atc.preface}}</span>
+                    </h3>
+                </div>
+                <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+            </a>
+            <div class="art-meta">
+                <a href="javascript:;" class="art-heart" title="i lile it">
+                    <i class="heart-icon"></i>
+                    <span>喜欢(500)</span>
+                </a>
+                <a href="javascript:;" class="art-comment" title="评论">
+                    <i class="comment-icon fa fa-comment"></i>
+                    <span>评论(20)</span>
+                </a>
+                <a href="javascript:;" class="art-tag" title="博客标签">
+                    <i class="fa fa-tag"></i>
+                    <span>{{=atc.tag_name}}</span>
+                </a>    
+            </div>
+        </div>
+    </article>
+    {{~}}`
 };
