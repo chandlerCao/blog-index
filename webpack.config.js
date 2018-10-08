@@ -11,19 +11,22 @@ const isDev = process.env.mode === 'development';
 // css单独打包
 const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const config = {
-    entry: path.join(__dirname, 'app.js'),
+    entry: {
+        blog: path.join(__dirname, 'app.js'),
+        article: path.join(__dirname, 'article.js')
+    },
     output: {
         path: path.join(__dirname, 'src'),
-        filename: 'js/[hash].js'
+        filename: 'js/[name]-[hash].js'
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
+                exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader'
-                },
-                exclude: path.join(__dirname, 'node_modules')
+                }
             },
             {
                 test: /\.less$/,
@@ -71,14 +74,17 @@ const config = {
         ]
     },
     plugins: [
-        new extractTextWebpackPlugin('css/[hash:8].css'),
+        new extractTextWebpackPlugin('css/[name]-[hash].css'),
         new htmlWebpackPlugin({
-            template: './views/index.html',
+            template: 'index.html',
+            filename: 'index.html',
             favicon: './assets/img/logo.ico',
             minify: {
                 removeComments: true,
                 collapseWhitespace: true
-            }
+            },
+            chunks: ['blog'],
+            inlineSource: '.(js|css)$'
         })
     ],
     resolve: {
@@ -101,7 +107,7 @@ if (isDev) {
     config.plugins.push(
         // 热模块替换功能，可以实现局部刷新，节省等待时间
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
     );
     console.log('http://localhost:3333');
 } else {

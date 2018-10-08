@@ -31,18 +31,23 @@
 }
 // 侧边栏背景
 #intrude-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
 }
-#intrude-cnt {
-    position: absolute;
+#intrude-outer {
+    display: table;
     width: 100%;
-    // height: 100%;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    height: 100%;
+}
+#intrude-inner {
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
     text-align: center;
-    z-index: 999;
+    z-index: 3;
 }
 @keyframes picture3DSwitch1 {
     3%, 25% {
@@ -106,6 +111,7 @@
     height: 128px;
     border-radius: 50%;
 }
+// 导航栏出场动画
 #author {
     font-size: 3rem;
     margin: 2rem 0;
@@ -144,7 +150,7 @@
 .nav-inner:after {
     content: '';
     position: absolute;
-    background-color: #f7f7f7;
+    background-color: lighten(@blue, 30%);
     transition: .25s linear;
 }
 .nav-outer:after,
@@ -222,62 +228,178 @@
     transform: scale(1.2);
 }
 /* 主板块 */
-#blog-main {
-    position: absolute;
-    left: @sideW;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    box-sizing: border-box;
-    padding: 3rem 2.6667rem 0;
-}
 #blog-box {
     position: relative;
+    width: calc(100% - @sideW);
+    height: 100%;
+    overflow: hidden;
+    margin-left: @sideW;
 }
 
-#blog-box > div {
+#blog-box .blog-element {
     position: relative;
     width: 100%;
+    height: inherit;
     left: 0;
     top: 0;
     box-sizing: border-box;
-    z-index: 50;
-    transition: .5s;
-    opacity: 1;
-    transform: translateX(0);
+    padding: 3rem 2.666667rem;
+    overflow: auto;
 }
-#blog-box > div.leaving {
+#blog-box .blog-element.enter {
+    animation: enter .2s forwards;
+}
+#blog-box .blog-element.leave {
     position: absolute;
-    opacity: 0;
-    transform: translateX(100px);
-    z-index: -1;
-    pointer-events: none;
-}
-
-
-#article-list {
-    padding-top: 2.2rem;
-    border-left: 2px solid lighten(@blue, 10%);
+    width: 100%;
+    left: 0;
+    top: 0;
+    animation: leave .2s forwards;
 }
 #article-cnt {
+    padding-bottom: 0;
+    color: @color;
+}
+@catalogW: 300px;
+// 文章主题内容
+.markdown-cnt {
+    float: left;
+    width: calc(100% - @catalogW);
+    height: inherit;
     background-color: #fff;
-    padding: 0 20px;
+    box-sizing: border-box;
+    padding: 1.5rem 2rem;
+    box-shadow: 2px 2px 0 #d3e6fc;
+    overflow: auto;
+}
+// 目录
+.markdown-catalog {
+    float: right;
+    width: @catalogW - 30px;
+    min-height: 100%;
+    background-color: #fff;
+}
+@media all and (max-width: 1200px) {
+    .markdown-cnt {
+        width: 100%;
+    }
+    .markdown-catalog {
+        display: none;
+    }
+}
+// 标题
+.markdown-title {
+    font-size: 1.8rem;
+    text-align: center;
+}
+// 附属信息
+.markdown-meta {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: lighten(@color, 30%);
+    margin-top: 1rem;
+}
+.meta-like, .meta-comment {
+    margin-left: 1rem;
+}
+// 前言
+.markdown-preface {
+    padding-top: 1.5rem;
+    font-size: 1.5rem;
+    line-height: 2.5rem;
+    text-indent: 2em;
+}
+// 封面
+.markdown-cover {
+    position: relative;
+    background-size: 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+// 封面填充
+.markdown-cover:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.markdown-cover:after {
+    content: '';
+    display: block;
+    padding-top: 40%;
+    width: 100%;
+}
+// 覆盖markdown
+.markdown-body h1 {
+    font-size: 2.5rem;
+}
+.markdown-body h2 {
+    font-size: 2.3rem;
+}
+.markdown-body h3 {
+    font-size: 2.1rem;
+}
+.markdown-body h4 {
+    font-size: 1.9rem;
+}
+.markdown-body h5 {
+    font-size: 1.7rem;
+}
+.markdown-body h6 {
+    font-size: 1.5rem;
+}
+// 修改代码块背景
+.markdown-body .highlight pre, .markdown-body pre {
+    padding: 0;
+    background-color: #fff;
+}
+// 代码块皮肤
+.hljs {
+    background-color: @bg;
+}
+@keyframes enter {
+    0% {
+        transform: translateX(30px);
+        opacity: 0;
+    } 100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes leave {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    } 100% {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+}
+
+#article-cnt {
 }
 
 .article-item {
     position: relative;
-    left: 0px;
-    padding: 1.5rem 2rem;
-    background-color: #fff;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin-bottom: 6rem;
-    transition: .15s linear;
-    box-shadow: 2px 2px 0 #d3e6fc;
+    padding-top: 4rem;
+    border-left: 1.5px solid @blue;
+}
+.article-item:nth-of-type(1) {
+    padding-top: 0;
+}
+.art-pretty {
+    position: relative;
+    left: -.7rem;
+    top: -.8rem;
 }
 .art-time {
-    position: absolute;
+    position: relative;
     display: inline-block;
+    vertical-align: middle;
     height: 2rem;
     line-height: 2rem;
     padding-left: 1rem;
@@ -285,8 +407,7 @@
     background-color: @blue;
     color: #fff;
     font-size: 1.3rem;
-    left: 2.5rem;
-    top: -3.44rem;
+    left: 2rem;
 }
 .art-time:after {
     content: '';
@@ -301,17 +422,20 @@
     top: 0;
 }
 .art-dotts {
-    position: absolute;
+    display: inline-block;
+    vertical-align: middle;
     width: 1.2rem;
     height: 1.2rem;
     border-radius: 50%;
     background: @blue;
     border: 1px solid @blue;
-    left: -.78rem;
-    top: -2.9rem;
 }
 .art-main {
     display: block;
+    background-color: #fff;
+    margin-top: 1rem;
+    padding:  1.5rem 2rem;
+    box-shadow: 2px 2px 0 #d3e6fc;
 }
 .art-wrap {
     display: block;
@@ -335,7 +459,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-    background-color: @bg;
+    // background-color: @bg;
 }
 /* 标题 */
 .article-item .art-title {
@@ -437,8 +561,6 @@
     #head-portrait img {
         width: 100px;
         height: 100px;
-        position: relative;
-        top: 10px;
     }
 }
 @media screen and (max-width: 570px) {
@@ -460,23 +582,25 @@
     #blog-main {
         padding: 3rem 1.3333rem 0;
     }
-    .article-item {
-        padding: 1.2rem 1.5rem;
+    #blog-box .blog-element {
+        padding: 3rem 1.5rem;
+    }
+    .art-main {
+        padding: 1.5rem;
     }
     .article-item .art-title {
         font-size: 1.4rem;
     }
     .article-item .art-note {
         font-size: 1.2rem;
-        line-height: 1.5rem;
+        line-height: 1.6rem;
         padding-top: 3rem;
-    }
-    .article-item .art-img {
-        width: 50px;
-        height: 50px;
     }
     .article-item .art-meta {
         margin-top: 1.2rem;
+    }
+    .markdown-catalog {
+        font-size: 1rem;
     }
 }
 @media screen and (max-width: 400px) {
@@ -486,9 +610,12 @@
     .article-item .art-meta {
         font-size: 1rem;
     }
+    .markdown-meta {
+        font-size: 1rem;
+    }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
     html, body {
         overflow-x: hidden;
         overflow-y: auto;
@@ -497,7 +624,8 @@
     #intrude-box {
         position: relative;
         width: 100%;
-        height: 50%;
+        height: auto;
+        padding: 10px 0;
     }
     // 侧边栏背景
     #intrude-bg {
@@ -519,7 +647,13 @@
     .nav-text {
         padding-left: .3rem;
     }
-    #blog-main {
+    #blog-box {
+        position: relative;
+        width: 100%;
+        margin-left: 0;
+        height: auto;
+    }
+    #blog-box .blog-element {
         position: static;
     }
 }

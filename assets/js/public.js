@@ -1,26 +1,136 @@
 // 后台端口
-export const host = 'http://192.168.0.105:1111';
-// 对应的模块id
-export const navData = {
-    'blog': {
+export const host = 'http://192.168.1.35:1111';
+// 路由
+export const navData = [
+    {
+        'reg': /^article\?page=(\d+)$/,
+        'hash': 'article?page=1',
         'text': '技术',
         'icon': 'fa fa-home',
-        'element': $('<div id="article-box" class="leaving"></div>'),
-        'reqUrl': 'index/getArticleList'
+        'element': $('<div id="article-box" class="blog-element"></div>'),
+        'reqUrl': 'index/getArticleList',
+        'reqOnece': true,
+        'cb'(data = {}) {
+            ajax(this.reqUrl, data)
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.map(function(articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.append(arrText(articleData));
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 20);
+            });
+        }
     },
-    'photo': {
+    {
+        'reg': /^photo$/,
+        'hash': 'photo',
         'text': '杂谈',
         'icon': 'fa fa-photo',
-        'element': $('<div id="photo-box" class="leaving"></div>'),
-        'reqUrl': 'index/getArticleList'
+        'element': $('<div id="photo-box" class="blog-element"></div>'),
+        'reqUrl': 'index/getArticleList',
+        'reqOnece': true,
+        'cb'(page = 1) {
+            ajax(this.reqUrl, {
+                page
+            })
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.splice(0, 1);
+                // 格式化日期
+                // articleData.map(function(articleItem) {
+                //     articleItem.date = articleItem.date.split('T')[0];
+                // });
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.append(arrText(articleData));
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 20);
+            });
+        }
     },
-    'mood': {
-        'text': '哈哈',
+    {
+        'reg': /^mood$/,
+        'hash': 'mood',
+        'text': '心情',
         'icon': 'fa fa-smile-o',
-        'element': $('<div id="mood-box" class="leaving"></div>'),
-        'reqUrl': 'index/getArticleList'
+        'element': $('<div id="mood-box" class="blog-element"></div>'),
+        'reqUrl': 'index/getArticleList',
+        'reqOnece': true,
+        'cb'(page = 1) {
+            ajax(this.reqUrl, {
+                page
+            })
+            .then(data => {
+                const articleData = data.articleList;
+                articleData.splice(0, 2);
+                articleData.map(function(articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.append(arrText(articleData));
+                // 添加省略号
+                setTimeout(function() {
+                    $('.art-note').each(function (index, el) {
+                        addEllipsis($(el));
+                    });
+                }, 20);
+            });
+        }
+    },
+    {
+        'reg': /^article\?aid=(.+)$/,
+        'element': $('<div id="article-cnt" class="blog-element"></div>'),
+        'reqUrl': 'index/getArticleCnt',
+        'cb'(data = {}) {
+            ajax(this.reqUrl, data).then(data => {
+                if(data.code === 0) {
+                    let {title, preface, content, cover, date} = data.articleInfo[0];
+                    date = formateDate(date);
+                    this.element.html(`
+                        <div class="markdown-cnt">
+                            <div class="markdown-title">
+                                <h1>${title}</h1>
+                                <div class="markdown-meta">
+                                    <time class="meta-time"><i class="fa fa-calendar"></i> ${date}</time>
+                                    <span class="meta-like"><i class="fa fa-heart"></i> 喜欢 399</span>
+                                    <span class="meta-comment"><i class="fa fa-comment"></i> 评论 22</span>    
+                                </div>
+                            </div>
+                            <div class="markdown-preface">${preface}</div>
+                            <div class="markdown-cover" style="background-image: url(${cover})"></div>
+                            <div class="v-note-wrapper markdown-body">
+                                <div class="v-note-read-model scroll-style">
+                                    <div class="v-note-read-content">
+                                        ${content}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="markdown-catalog">
+                            <h1><a href="标题1">标题1</a></h1>
+                        </div>
+                    `);
+                } else alert(data.msg)
+            })
+        }
     }
-};
+];
 // 文字溢出隐藏
 export const addEllipsis = function (box) {
     var bgColor = '#fff';
@@ -61,8 +171,21 @@ export const ajax = function (url, data) {
         });
     })
 };
+// 获取hash动态路径参数
+export const getParmasByHash = function() {
+    const hash = window.location.hash;
+    const regArr = hash.match(/(\w+)=[^&]+/g);
+    const data = {};
+    if( regArr && regArr.length ) {
+        regArr.forEach(params => {
+            const paramsArr = params.split('=');
+            data[paramsArr[0]] = paramsArr[1];
+        });
+        return data;
+    } else return {};
+};
 // 侧边栏背景切换
-export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
+export const picture3DSwitch = function (box, imgArr) {
     /**
      * box: 父级
      * imgArr 图片数组
@@ -73,6 +196,14 @@ export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
     const box_width = box.width();
     const box_height = box.height();
 
+    let rowLen = 3, colLen = 5;
+    while (box_width % rowLen === 0) {
+        rowLen ++;
+    }
+    while (box_height % colLen === 0) {
+        colLen ++;
+    }
+    
     // 单元宽高
     const cell_w = Math.floor(box_width / rowLen);
     const cell_h = box_height / colLen;
@@ -91,7 +222,7 @@ export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
             if (j === 3) transform = `transform: rotateY(270deg)`;
             const bpx = i % rowLen * cell_w + 50;
             const bpy = Math.floor(i / rowLen) * cell_h;
-            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: 500px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i}s infinite"></div>`;
+            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: 500px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
         });
         html += `<div class="three-d" style="float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
     });
@@ -99,24 +230,26 @@ export const picture3DSwitch = function (box, imgArr, rowLen, colLen) {
 };
 // 模板
 export const tmp = {
-    navTmp: `{{ for(var key in it) { }} 
-    <li class="nav-item" data-hash="{{=key}}">
-        <a href="javascript:;" class="nav-outer">
+    navTmp: `{{~it:nav}} 
+    <li class="nav-item" data-reg="{{=nav.reg}}">
+        <a href="#{{=nav.hash}}" class="nav-outer">
             <span class="nav-inner">
-                <i class="{{=it[key].icon}}"></i>
-                <span class="nav-text">{{=it[key].text}}</span>
+                <i class="{{=nav.icon}}"></i>
+                <span class="nav-text">{{=nav.text}}</span>
             </span>
         </a>
     </li>
-    {{ } }}`,
+    {{~}}`,
     articleTmp: `{{~it:atc}}
     <article class="article-item">
-        <time class="art-time">
-            {{=atc.date}}
-        </time>
-        <b class="art-dotts"></b>
+        <div class="art-pretty">
+            <b class="art-dotts"></b>
+            <time class="art-time">
+                {{=atc.date}}
+            </time>
+        </div>
         <div class="art-main">
-            <a href="/article/{{=atc.aid}}" data-aid="{{=atc.aid}}" class="art-wrap">
+            <a href="#article?aid={{=atc.aid}}" data-aid="{{=atc.aid}}" class="art-wrap">
                 <div class="art-info">
                     <h2 class="art-title">{{=atc.title}}</h2>
                     <h3 class="art-note" title="{{=atc.preface}}">
@@ -142,4 +275,8 @@ export const tmp = {
         </div>
     </article>
     {{~}}`
+};
+// 日期格式化
+export const formateDate = function(date) {
+    return date.slice(0, date.length - 5).replace('T', ' ');
 };
