@@ -1,65 +1,46 @@
-// 引入webpack
 const webpack = require('webpack');
-// 引入路径
 const path = require('path');
 // 清除打包文件
 const cleanWebpackPlugin = require('clean-webpack-plugin');
-// html打包
+// html
 const htmlWebpackPlugin = require('html-webpack-plugin');
-// 判断当前的模式
+// 当前的模式
 const isDev = process.env.mode === 'development';
-// css单独打包
+// 抽离css
 const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const lessExtract = new extractTextWebpackPlugin({
+    filename: 'css/[hash].css',
+});
 const config = {
     entry: {
-        blog: path.join(__dirname, 'app.js'),
-        article: path.join(__dirname, 'article.js')
+        blog: path.join(__dirname, 'app.js')
     },
     output: {
-        path: path.join(__dirname, 'src'),
-        filename: 'js/[name]-[hash].js'
+        path: path.join(__dirname, 'build'),
+        filename: 'js/[hash].js'
     },
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.js$/i,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader'
                 }
             },
             {
-                test: /\.less$/,
-                use: extractTextWebpackPlugin.extract({
+                test: /\.less$/i,
+                use: lessExtract.extract({
                     fallback: 'style-loader',
                     use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                minimize: true
-                            }
-                        },
-                        'postcss-loader',
-                        'less-loader'
-                    ],
-                    publicPath: '../'
+                        {loader: 'css-loader'},
+                        {loader: 'postcss-loader'},
+                        {loader: 'less-loader'},
+                    ]
                 })
             },
             {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: 'html-withimg-loader',
-                        options: {
-                            publicPath: './',
-                            name: 'img/[hash].[ext]', // 将要打包的哪个文件夹下
-                            limit: 1024
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.(jpg|png)$/,
+                test: /\.(jpg|png)$/i,
                 use: [
                     {
                         loader: 'url-loader',
@@ -74,7 +55,7 @@ const config = {
         ]
     },
     plugins: [
-        new extractTextWebpackPlugin('css/[name]-[hash].css'),
+        lessExtract,
         new htmlWebpackPlugin({
             template: 'index.html',
             filename: 'index.html',
@@ -83,8 +64,8 @@ const config = {
                 removeComments: true,
                 collapseWhitespace: true
             },
-            chunks: ['blog'],
-            inlineSource: '.(js|css)$'
+            // chunks: ['blog'],
+            hash: true
         })
     ],
     resolve: {
@@ -109,9 +90,8 @@ if (isDev) {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
     );
-    console.log('http://localhost:3333');
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin(['src']));
+    config.plugins.push(new cleanWebpackPlugin(['build']));
 }
 module.exports = config;
