@@ -1,11 +1,10 @@
 require('@/js/blog-main');
 
-require('@/less/config');
 require('@/less/reset');
-require('@/less/blog');
+require('@/less/app');
 
 if( module.hot ) {
-    module.hot.accept('@/less/blog.less', function() {
+    module.hot.accept('@/less/app.less', function() {
         window.location.reload();
     });
 }

@@ -1,15 +1,28 @@
-import {host, picture3DSwitch, navData, getParmasByHash, tmp, ajax} from './blog-public';
-const blogBox = $('#blog-box');
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax } from './blog-public';
+require('./side-bar');
+const mainBox = $('#main-box');
 const body = $('body:first');
-window.onhashchange = function(e) {
-    const {newURL, oldURL} = e;
+window.onhashchange = function (e) {
+    const { newURL, oldURL } = e;
     const newHash = newURL.split('#')[1];
     const oldHash = oldURL.split('#')[1];
     get_component_by_hash(newHash, oldHash);
-    body.scrollTop(0);
+    // $(window).scrollTop(0);
 };
 // canvas雪花
-;(function () {
+; (function () {
+    function drawStar(cxt, x, y, r, color) {
+        let r2 = r / 2.5;
+        cxt.beginPath();
+        for (var i = 0; i < 5; i++) {
+            cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
+            cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
+        }
+        cxt.closePath();
+        //设置边框样式以及填充颜色
+        cxt.fillStyle = color;
+        cxt.fill();
+    }
     const c = $('#canvasBg');
     const g = c[0].getContext('2d');
     const color = '#6eaaff';
@@ -17,7 +30,7 @@ window.onhashchange = function(e) {
     let timer = null;
     let initTimer = null;
     const win = $(window);
-    let starLen = Math.floor(win.width() / 80);
+    let starLen = Math.floor(win.width() / 180);
     starLen = starLen < 10 ? 10 : starLen;
     function random() {
         return Math.random();
@@ -52,7 +65,7 @@ window.onhashchange = function(e) {
                 startX: x,
                 y: random() * c.attr('height'),
                 speedY: 1,
-                r: random() * 2 + 1,
+                r: random() * 8,
                 xNum: 0,
                 range: random() * 40,
             });
@@ -63,7 +76,6 @@ window.onhashchange = function(e) {
     function starFlash() {
         g.clearRect(0, 0, c.attr('width'), c.attr('height'));
         for (let i = 0; i < starLen; i++) {
-            g.fillStyle = color;
             // y轴加
             snowArr[i].y += snowArr[i].speedY;
             if (snowArr[i].y >= win.height() + snowArr[i].r) snowArr[i].y = -snowArr[i].r;
@@ -73,10 +85,8 @@ window.onhashchange = function(e) {
 
             snowArr[i].x = snowArr[i].startX - snowArr[i].range * Math.sin(Math.PI / 180 * snowArr[i].xNum);
 
-            g.beginPath();
-            g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
-            g.fill();
-            g.closePath();
+            // g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
+            drawStar(g, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
         };
         timer = setTimeout(function () {
             requestAnimationFrame(starFlash);
@@ -86,32 +96,32 @@ window.onhashchange = function(e) {
 // 元素切换函数
 let timer = null;
 // 切换动画效果
-const element_switch = function(newEl, oldEl) {
-    if( newEl.attr('id') !== oldEl.attr('id') ) {
+const element_switch = function (newEl, oldEl) {
+    if (newEl.attr('id') !== oldEl.attr('id')) {
         // 添加即将出现的元素
-        blogBox.append(newEl);
+        mainBox.append(newEl);
         // 新元素出现
         newEl.removeClass('leave').addClass('enter');
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
         // 移除旧元素
         clearTimeout(timer);
-        timer = setTimeout(function() {
+        timer = setTimeout(function () {
             oldEl.detach();
         }, 500);
     }
 };
 // 通过hash匹配相应的组件
-const get_component_by_hash = function(newHash, oldHash) {
+const get_component_by_hash = function (newHash, oldHash) {
     // 即将出现组件索引
     let [new_index, old_index] = [-1, -1];
     // 如果能找到对应的hash
     navData.forEach((navdata, i) => {
-        if( navdata.reg.test(newHash) ) new_index = i;
-        if( navdata.reg.test(oldHash) ) old_index = i;
+        if (navdata.reg.test(newHash)) new_index = i;
+        if (navdata.reg.test(oldHash)) old_index = i;
     });
     // 如果找到对应的索引
-    if( new_index > -1 ) {
+    if (new_index > -1) {
         // 请求回调函数
         navData[new_index].cb(getParmasByHash());
         // 元素切换
@@ -122,16 +132,15 @@ const get_component_by_hash = function(newHash, oldHash) {
     } else window.location.hash = navData[0].href;
 };
 // 首次加载
-;(function() {
+; (function () {
     get_component_by_hash(window.location.hash.substr(1));
     $('#head-portrait').addClass('zoomInDown animated');
     $('#intrude-info').addClass('bounceInLeft animated');
-    document.addEventListener('touchstart', function() {
-        $('#bgm')[0].play();
+    document.addEventListener('touchstart', function () {
     })
 })();
 // 创建导航菜单
-;(function() {
+; (function () {
     // 获取导航ul
     const navList = $('#nav-list');
     const navText = doT.template(tmp.navTmp);
@@ -145,22 +154,22 @@ const get_component_by_hash = function(newHash, oldHash) {
     const hash = window.location.hash.substr(1);
     navItem.each(function (i, nav) {
         const reg = $(nav).data('reg').replace(/\//g, '');
-        if( new RegExp(reg).test(hash) ) $(nav).addClass('act');
+        if (new RegExp(reg).test(hash)) $(nav).addClass('act');
     });
-    navItem.on('click', function() {
+    navItem.on('click', function () {
         // 导航加上高亮
         $(this).addClass('act').siblings().removeClass('act');
     });
 })();
 // 侧边栏3d图片切换
-;(function() {
+; (function () {
     // 引入服务器上的地址
-    if( $(window).width() > 1000 ) picture3DSwitch($('#intrude-bg'), [`${host}/bg/bg1.png`, `${host}/bg/bg2.png`, `${host}/bg/bg3.png`, `${host}/bg/bg4.png`]);
-    else $('#intrude-bg').css('background-image', `url(${host}/bg/s-bg${Math.ceil(Math.random()*4)}.png)`);
+    if ($(window).width() > 1000) picture3DSwitch($('#intrude-bg'), [`${host}/bg/bg1.png`, `${host}/bg/bg2.png`, `${host}/bg/bg3.png`, `${host}/bg/bg4.png`]);
+    else $('#intrude-bg').css('background-image', `url(${host}/bg/s-bg${Math.ceil(Math.random() * 4)}.png)`);
 })();
 // 点赞
-;(function() {
-    $('#blog-box').delegate('.art-heart', 'click', function() {
+; (function () {
+    $('#blog-box').delegate('.art-heart', 'click', function () {
         ajax('index/article-like').then(data => {
             console.log(data);
         })
