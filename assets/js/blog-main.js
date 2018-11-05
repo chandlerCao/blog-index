@@ -30,7 +30,7 @@ window.onhashchange = function (e) {
     let timer = null;
     let initTimer = null;
     const win = $(window);
-    let starLen = Math.floor(win.width() / 180);
+    let starLen = Math.floor(win.width() / 60);
     starLen = starLen < 10 ? 10 : starLen;
     function random() {
         return Math.random();

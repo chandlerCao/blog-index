@@ -33,9 +33,9 @@ const config = {
                 use: lessExtract.extract({
                     fallback: 'style-loader',
                     use: [
-                        {loader: 'css-loader'},
-                        {loader: 'postcss-loader'},
-                        {loader: 'less-loader'},
+                        { loader: 'css-loader' },
+                        { loader: 'postcss-loader' },
+                        { loader: 'less-loader' }
                     ]
                 })
             },
@@ -90,8 +90,21 @@ if (isDev) {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
     );
+    // config.module.rules.push({
+    //     test: /\.less$/i,
+    //     use: [{
+    //         loader: "style-loader" // creates style nodes from JS strings
+    //     }, {
+    //         loader: "css-loader" // translates CSS into CommonJS
+    //     }, {
+    //         loader: "less-loader" // compiles Less to CSS
+    //     }]
+    // });
 } else {
     config.mode = 'production';
     config.plugins.push(new cleanWebpackPlugin(['build']));
+    // config.module.rules.push({
+
+    // });
 }
 module.exports = config;

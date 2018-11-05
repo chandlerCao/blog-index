@@ -77,6 +77,7 @@ export const navData = [
                     // 格式化日期
                     date = formateDate(date);
                     const hour = date.match(/\s(\d+)/);
+                    // 增加八个小时
                     date = date.replace(/\s(\d+)/, ' ' + add_hour8(hour));
                     // 封面拼接
                     cover = `${domain}${cover}`;
@@ -84,6 +85,7 @@ export const navData = [
                     const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
                     // 每一个标题
                     let catalogCache, catalogStr = '';
+                    // 正则匹配文章标题
                     while ((catalogCache = re.exec(content)) !== null) {
                         const tag = catalogCache[1];
                         const id = catalogCache[2];
@@ -91,34 +93,31 @@ export const navData = [
                         catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
                         <a href="javascript:;" class="catalog-link">${html}</a></div>`;
                     }
-                    this.element.html(`
-                    <div id="markdown-main">
-                        <div id="markdown-cnt" class="markdown-cnt com-scroll">
-                            <div class="markdown-title">
-                                <h1>${title}</h1>
-                            </div>
-                            <div class="markdown-meta">
-                                <time class="com-icon meta-time"><i class="com-icon__pic calendar-icon"></i> <span class="com-icon__text">${date}</span></time>
-                                <span class="com-icon meta-like"><i class="com-icon__pic eye-icon"></i> <span class="com-icon__text">喜欢(10)</span></span>
-                                <span class="com-icon meta-comment"><i class="com-icon__pic heart-icon"></i> <span class="com-icon__text">阅读(38)</span></span>
-                            </div>
-                            <div class="markdown-preface">${preface}</div>
-                            <div class="markdown-cover" style="background-image: url(${cover})"></div>
-                            <div class="v-note-wrapper markdown-body">
-                                <div class="v-note-read-model scroll-style">
-                                    <div class="v-note-read-content">
-                                        ${content}
-                                    </div>
+                    // 获取文章内容div
+                    const markdown_cnt = $(`<div id="markdown-cnt" class="markdown-cnt com-scroll">
+                        <div class="markdown-title">
+                            <h1>${title}</h1>
+                        </div>
+                        <div class="markdown-meta">
+                            <time class="com-icon meta-time"><i class="com-icon__pic calendar-icon"></i> <span class="com-icon__text">${date}</span></time>
+                            <span class="com-icon meta-like"><i class="com-icon__pic eye-icon"></i> <span class="com-icon__text">喜欢(10)</span></span>
+                            <span class="com-icon meta-comment"><i class="com-icon__pic heart-icon"></i> <span class="com-icon__text">阅读(38)</span></span>
+                        </div>
+                        <div class="markdown-preface">${preface}</div>
+                        <div class="markdown-cover" style="background-image: url(${cover})"></div>
+                        <div class="v-note-wrapper markdown-body">
+                            <div class="v-note-read-model scroll-style">
+                                <div class="v-note-read-content">
+                                    ${content}
                                 </div>
                             </div>
                         </div>
-                        <div class="markdown-catalog">
-                            <div class="markdown-catalog-title">目录</div>
-                            ${catalogStr}
-                        </div>
                     </div>
-                    `);
-                    // 文章目录条目
+                    <div class="markdown-catalog">
+                        <div class="markdown-catalog-title">目录</div>
+                        ${catalogStr}
+                    </div>`).appendTo($(`<div id="markdown-main"></div>`).appendTo(this.element))
+                    // 目录点击事件
                     const catalogItem = $('.catalog-item');
                     catalogItem.each(function (i, catalog) {
                         const id = $(this).data('id');
@@ -126,10 +125,10 @@ export const navData = [
                         $(catalog).click(function () {
                             catalogItem.removeClass('act');
                             $(this).addClass('act');
-                            $('#markdown-cnt').scrollTop($(this).data('top'));
+                            markdown_cnt.scrollTop($(this).data('top'));
                         });
                     });
-                } else alert(data.msg);
+                }
             })
         }
     }

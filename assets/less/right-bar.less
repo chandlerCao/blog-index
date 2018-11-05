@@ -33,14 +33,14 @@
     }
 }
 
-@media all and (max-width: 1100px) {
+@media all and (max-width: 1200px) {
     #side-bar {
         display: none;
     }
 }
 #clock {
-    @w: 220px; // 时钟宽度
-    @sec_color: #fa9f22; // 秒针时间
+    @w: @sideW * 0.75; // 时钟宽度
+    @sec_color: @red; // 秒针颜色
     position: relative;
     width: @w;
     height: @w;

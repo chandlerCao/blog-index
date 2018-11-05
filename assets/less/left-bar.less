@@ -18,7 +18,7 @@
     left: 0;
     top: 0;
     background-color: #000;
-    opacity: .5;
+    opacity: .4;
     z-index: 2;
     pointer-events: none;
 }
@@ -145,6 +145,10 @@
 #intrude-text {
     font-size: 18px;
     letter-spacing: 1px;
+    background-color: rgba(255, 255, 255, .2);
+    padding: 10px;
+    border-radius: 4px;
+    color: #fff;
 }
 
 /* 导航 */
@@ -244,7 +248,7 @@
 }
 
 .nav-item.act {
-    color: @blue;
+    color: lighten(@blue, 20%);
 }
 
 .nav-icon,
@@ -254,8 +258,10 @@
 }
 
 .nav-icon {
+    position: relative;
     width: 16px;
     height: 16px;
+    top: 1px;
     background-position: center;
     text-align: center;
 }
@@ -268,17 +274,18 @@
 /* 联系方式 */
 
 #contact-box {
-    width: 120px;
+    width: 200px;
     display: flex;
     justify-content: space-around;
-    margin: 18px auto 0;
+    margin: 30px auto 0;
     font-size: 14px;
 }
 
 #contact-box i {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
+    background-size: cover;
     cursor: pointer;
     transition: .2s;
 }
@@ -291,12 +298,22 @@
     background-image: url(../img/wechat.png);
 }
 
-#qq__icon {
+#contact-box #qq__icon {
     background-image: url(../img/qq.png);
 }
 
 #email__icon {
     background-image: url(../img/email.png);
+}
+#github__icon {
+    background-image: url(../img/github.png);
+}
+
+@media screen and (max-width: 500px) {
+    #head-portrait {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 @media screen and (max-width: 1000px) {

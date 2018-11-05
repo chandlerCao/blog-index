@@ -23,7 +23,6 @@ import { toZero } from './blog-public';
     const min_hand = $('#min-hand');
     const sec_hand = $('#sec-hand');
     clock_go();
-    setInterval(clock_go, 1000);
     function clock_go() {
         const date = new Date();
         const sec = date.getSeconds() * 6;
@@ -33,5 +32,8 @@ import { toZero } from './blog-public';
         hour_hand.css('transform', `rotate(${hour}deg)`);
         min_hand.css('transform', `rotate(${min}deg)`);
         sec_hand.css('transform', `rotate(${sec}deg)`);
+        setTimeout(() => {
+            requestAnimationFrame(clock_go);
+        }, 1000);
     }
 })();
