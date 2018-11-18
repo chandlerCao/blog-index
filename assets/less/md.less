@@ -1,34 +1,33 @@
 #markdown-box {
     height: 100vh;
-    padding: 20px;
-    padding-right: 30px;
     overflow: hidden;
 }
 
-#markdown-main {
+#markdown-wrap {
     height: 100%;
-    border-radius: 4px;
+    overflow: hidden;
 }
 
 @catalogW: 200px;
 // 文章主要内容
-.markdown-cnt {
+#markdown-main {
     float: left;
     width: calc(100% - @catalogW);
     height: 100%;
     overflow: auto;
     box-sizing: border-box;
     .box-shadow();
-    padding: 15px 20px;
+    padding: 18px 20px;
+    border-radius: 6px;
     background-color: #fff;
     text-align: justify;
     /* 标题*/
     .markdown-title {
         margin-bottom: 16px;
+        font-size: 22px;
+        text-align: center;
         h1 {
             font-weight: bold;
-            font-size: 20px;
-            text-align: center;
         }
     }
     /* 附属信息*/
@@ -45,11 +44,11 @@
     /* 前言*/
     .markdown-preface {
         font-size: 14px;
-        line-height: 1.8;
+        line-height: 2.2;
         text-indent: 2em;
         background-color: #f8f8f8;
         color: #666;
-        padding: 10px;
+        padding: 12px 20px;
         border-radius: 10px;
         font-weight: bold;
     }
@@ -79,7 +78,7 @@
         width: 100%;
     }
     /* 覆盖markdown*/
-    .markdown-body {
+    .markdown-content {
         font-size: 14px;
         ul {
             list-style: disc;
@@ -106,6 +105,12 @@
                 margin: 8px 0;
             }
         }
+        h1,
+        h2,
+        h3 {
+            font-weight: bold;
+            margin: 20px 0;
+        }
         h1 {
             font-size: 24px;
         }
@@ -118,12 +123,19 @@
         h4 {
             font-size: 18px;
         }
-    }
-    /* 修改代码块背景*/
-    .markdown-body .highlight pre,
-    .markdown-body pre {
-        padding: 0;
-        background-color: #fff;
+        img {
+            width: 100%;
+        }
+        mark {
+            background-color: @blue;
+            color: #fff;
+            padding: 3px 5px;
+            border-radius: 2px;
+            margin: 0 2px;
+        }
+        .hljs {
+            line-height: 1.5;
+        }
     }
 }
 
@@ -134,6 +146,7 @@
     height: 100%;
     background-color: #fff;
     .box-shadow();
+    border-radius: 6px;
     .markdown-catalog-title {
         font-size: 16px;
         color: @color;
@@ -181,12 +194,18 @@
 @media screen and (max-width: 1000px) {
     #markdown-box {
         height: auto;
-        padding: 0;
+        padding: 0 !important;
     }
-    .markdown-cnt {
+    #markdown-main {
         width: 100%;
     }
     .markdown-catalog {
         display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #markdown-main .markdown-title {
+        font-size: 18px;
     }
 }

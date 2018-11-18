@@ -4,6 +4,7 @@ export const host = 'http://192.168.1.35:1111';
 export const navData = [
     {
         'reg': /^article\?page=(\d+)$/,
+        'name': 'articleList',
         'href': '#article?page=1',
         'text': '前端',
         'icon': 'html.png',
@@ -24,6 +25,7 @@ export const navData = [
     },
     {
         'reg': /^live$/,
+        'name': 'liveList',
         'href': '#live',
         'text': '生活',
         'icon': 'live.png',
@@ -67,26 +69,44 @@ export const navData = [
         }
     },
     {
+        "reg": /^article\?tid=(\d+)&page=(\d+)$/,
+        'name': 'articleTagList',
+        'element': $('<section id="article-tag-box" class="blog-element"></section>'),
+        'reqUrl': 'index/getArticleListByTag',
+        'cb'(data = {}) {
+            ajax(this.reqUrl, data).then(data => {
+                console.log(data);
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.html(arrText(articleData));
+            });
+        }
+    },
+    {
         'reg': /^article\?aid=(\w+)$/,
+        'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
         'reqUrl': 'index/getArticleCnt',
         'cb'(data = {}) {
             ajax(this.reqUrl, data).then(data => {
                 if (data.code === 0) {
-                    let { title, preface, content, domain, cover, date } = data.articleInfo;
+                    let { title, preface, markdownHtml, cover, date } = data.articleContent;
                     // 格式化日期
                     date = formateDate(date);
                     const hour = date.match(/\s(\d+)/);
                     // 增加八个小时
                     date = date.replace(/\s(\d+)/, ' ' + add_hour8(hour));
-                    // 封面拼接
-                    cover = `${domain}${cover}`;
                     // 匹配h标签正则
                     const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
                     // 每一个标题
                     let catalogCache, catalogStr = '';
                     // 正则匹配文章标题
-                    while ((catalogCache = re.exec(content)) !== null) {
+                    while ((catalogCache = re.exec(markdownHtml)) !== null) {
                         const tag = catalogCache[1];
                         const id = catalogCache[2];
                         const html = catalogCache[3];
@@ -94,29 +114,34 @@ export const navData = [
                         <a href="javascript:;" class="catalog-link">${html}</a></div>`;
                     }
                     // 获取文章内容div
-                    const markdown_cnt = $(`<div id="markdown-cnt" class="markdown-cnt com-scroll">
+                    const markdown_main = $(`<div id="markdown-main" class="markdown-main com-scroll">
                         <div class="markdown-title">
                             <h1>${title}</h1>
                         </div>
                         <div class="markdown-meta">
-                            <time class="com-icon meta-time"><i class="com-icon__pic calendar-icon"></i> <span class="com-icon__text">${date}</span></time>
-                            <span class="com-icon meta-like"><i class="com-icon__pic eye-icon"></i> <span class="com-icon__text">喜欢(10)</span></span>
-                            <span class="com-icon meta-comment"><i class="com-icon__pic heart-icon"></i> <span class="com-icon__text">阅读(38)</span></span>
+                            <time class="com-icon meta-time">
+                                <i class="com-icon__pic calendar-icon">&nbsp;</i>
+                                <span class="com-icon__text">${date}</span>
+                            </time>
+                            <span class="com-icon meta-like">
+                                <i class="com-icon__pic eye-icon">&nbsp;</i>
+                                <span class="com-icon__text">喜欢(10)</span>
+                            </span>
+                            <span class="com-icon meta-comment">
+                                <i class="com-icon__pic heart-icon">&nbsp;</i>
+                                <span class="com-icon__text">阅读(38)</span>
+                            </span>
                         </div>
                         <div class="markdown-preface">${preface}</div>
                         <div class="markdown-cover" style="background-image: url(${cover})"></div>
-                        <div class="v-note-wrapper markdown-body">
-                            <div class="v-note-read-model scroll-style">
-                                <div class="v-note-read-content">
-                                    ${content}
-                                </div>
-                            </div>
+                        <div class="markdown-content">
+                            ${markdownHtml}
                         </div>
                     </div>
-                    <div class="markdown-catalog">
+                    <div class="markdown-catalog com-scroll">
                         <div class="markdown-catalog-title">目录</div>
                         ${catalogStr}
-                    </div>`).appendTo($(`<div id="markdown-main"></div>`).appendTo(this.element))
+                    </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element.empty()));
                     // 目录点击事件
                     const catalogItem = $('.catalog-item');
                     catalogItem.each(function (i, catalog) {
@@ -125,7 +150,7 @@ export const navData = [
                         $(catalog).click(function () {
                             catalogItem.removeClass('act');
                             $(this).addClass('act');
-                            markdown_cnt.scrollTop($(this).data('top'));
+                            markdown_main.scrollTop($(this).data('top'));
                         });
                     });
                 }
@@ -134,7 +159,7 @@ export const navData = [
     }
 ];
 // ajax
-export const ajax = function (url, data) {
+export const ajax = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "post",
@@ -186,7 +211,7 @@ export const picture3DSwitch = function (box, imgArr) {
     // 单元宽高
     const cell_w = Math.floor(box_width / rowLen);
     const cell_h = box_height / colLen;
-
+    const scale = box_height / 723;
     // 单元格总数
     const cell_num = rowLen * colLen;
     // 循环生成
@@ -250,9 +275,9 @@ export const tmp = {
                 <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
             </a>
             <div class="art-meta">
-                <a href="javascript:;" class="com-icon art-heart art-icon">
+                <a href="javascript:;" class="com-icon art-heart art-icon {{? atc.is_like }} act {{?}}">
                     <i class="com-icon__pic heart-icon__pic"></i>
-                    <span class="com-icon__text heart-icon__text">喜欢(10)</span>
+                    <span class="com-icon__text heart-icon__text">喜欢({{=atc.like_count}})</span>
                 </a>
                 <a href="javascript:;" class="com-icon art-comment art-icon">
                     <i class="com-icon__pic eye-icon"></i>

@@ -25,6 +25,7 @@
 .com-icon {
     @size: 16px;
     height: @size;
+    line-height: @size;
     .com-icon__pic {
         display: inline-block;
         vertical-align: middle;
@@ -34,9 +35,9 @@
     }
     .com-icon__text {
         display: inline-block;
-        padding-left: 1px;
-        vertical-align: middle;
         height: @size;
+        vertical-align: middle;
+        padding-left: 1px;
     }
     .eye-icon {
         background-image: url(../img/eye.png);
@@ -53,8 +54,8 @@
 
 #main-wrap {
     float: left;
-    position: relative;
     width: 100%;
+    min-height: 100%;
     box-sizing: border-box;
     #main-box {
         position: relative;
@@ -63,6 +64,7 @@
         .blog-element {
             width: 100%;
             box-sizing: border-box;
+            padding: 20px;
         }
         .blog-element.enter {
             animation: enter .2s forwards;
@@ -175,7 +177,6 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
-            background-color: @bg;
         }
         /* 附属信息 */
         .art-meta {
@@ -213,6 +214,14 @@
                 padding-left: 15px;
             }
         }
+        .art-heart.act .heart-icon__pic {
+            display: inline-block;
+            animation-name: heartBlast;
+            animation-duration: .8s;
+            animation-iteration-count: 1;
+            animation-timing-function: steps(28);
+            background-position-x: -1136px;
+        }
         @keyframes heartBlast {
             0% {
                 background-position-x: -6px;
@@ -221,14 +230,6 @@
                 background-position-x: -1136px;
             }
         }
-        .art-heart.act .heart-icon {
-            display: inline-block;
-            animation-name: heartBlast;
-            animation-duration: .8s;
-            animation-iteration-count: 1;
-            animation-timing-function: steps(28);
-            background-position-x: -1136px;
-        } // 媒体查询
         @media screen and (max-width: 650px) {
             .art-info {
                 width: 75%;
@@ -282,10 +283,6 @@
             transform: translateX(-30px);
             opacity: 0;
         }
-    } // 文章列表
-    #article-box,
-    #live-box {
-        padding: 20px;
     }
 }
 

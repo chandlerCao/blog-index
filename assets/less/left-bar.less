@@ -10,19 +10,6 @@
     z-index: 100;
 }
 
-#intrude-box:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background-color: #000;
-    opacity: .4;
-    z-index: 2;
-    pointer-events: none;
-}
-
 /*侧边栏背景*/
 
 #intrude-bg {
@@ -299,12 +286,17 @@
 }
 
 #contact-box #qq__icon {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    top: -5px;
     background-image: url(../img/qq.png);
 }
 
 #email__icon {
     background-image: url(../img/email.png);
 }
+
 #github__icon {
     background-image: url(../img/github.png);
 }

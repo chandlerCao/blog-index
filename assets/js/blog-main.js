@@ -1,13 +1,13 @@
 import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax } from './blog-public';
 require('./side-bar');
+const app = $('#app');
 const mainBox = $('#main-box');
-const body = $('body:first');
+// 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
     const { newURL, oldURL } = e;
     const newHash = newURL.split('#')[1];
     const oldHash = oldURL.split('#')[1];
     get_component_by_hash(newHash, oldHash);
-    // $(window).scrollTop(0);
 };
 // canvas雪花
 ; (function () {
@@ -38,21 +38,6 @@ window.onhashchange = function (e) {
     c.attr({
         width: win.width(),
         height: win.height()
-    });
-    win.resize(function () {
-        clearTimeout(initTimer);
-        initTimer = setTimeout(function () {
-            clearTimeout(timer);
-            starLen = Math.floor(win.width() / 100);
-            g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-            c.attr({
-                width: win.width(),
-                height: win.height()
-            });
-            snowArr = [];
-            initStar();
-            starFlash();
-        }, 100);
     });
     initStar();
     function initStar() {
@@ -126,18 +111,19 @@ const get_component_by_hash = function (newHash, oldHash) {
         navData[new_index].cb(getParmasByHash());
         // 元素切换
         element_switch(
-            navData[new_index].element,
+            navData[new_index].element.empty(),
             old_index >= 0 ? navData[old_index].element : $()
         );
-    } else window.location.hash = navData[0].href;
+    } else {
+        window.location.reload();
+        window.location.hash = navData[0].href;
+    }
 };
 // 首次加载
 ; (function () {
     get_component_by_hash(window.location.hash.substr(1));
     $('#head-portrait').addClass('zoomInDown animated');
     $('#intrude-info').addClass('bounceInLeft animated');
-    document.addEventListener('touchstart', function () {
-    })
 })();
 // 创建导航菜单
 ; (function () {
@@ -164,7 +150,7 @@ const get_component_by_hash = function (newHash, oldHash) {
 // 侧边栏3d图片切换
 ; (function () {
     // 引入服务器上的地址
-    if ($(window).width() > 1000) picture3DSwitch($('#intrude-bg'), [`${host}/bg/bg1.png`, `${host}/bg/bg2.png`, `${host}/bg/bg3.png`, `${host}/bg/bg4.png`]);
+    if ($(window).width() > 1000) picture3DSwitch($('#intrude-bg'), [`${host}/bg/bg1.jpg`, `${host}/bg/bg2.jpg`, `${host}/bg/bg3.jpg`, `${host}/bg/bg4.jpg`]);
     else $('#intrude-bg').css('background-image', `url(${host}/bg/s-bg${Math.ceil(Math.random() * 4)}.png)`);
 })();
 // 点赞

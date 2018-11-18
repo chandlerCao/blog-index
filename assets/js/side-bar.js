@@ -1,4 +1,4 @@
-import { toZero } from './blog-public';
+import { toZero, ajax } from './blog-public';
 ; (function () {
     const hour_num = $('#hour-num');
     const anchor_box = $('#anchor-box');
@@ -36,4 +36,18 @@ import { toZero } from './blog-public';
             requestAnimationFrame(clock_go);
         }, 1000);
     }
+})();
+// 获取标签云
+; (function () {
+    const tag_box = $('#tag-box');
+    ajax('index/getArticleTag').then(data => {
+        const tagData = data.tagList || [];
+        let tag_str = '';
+        tagData.forEach(tag_item => {
+            tag_str += `<a href="#article?tid=${tag_item.tid}&page=1" class="tag-item" title="${tag_item.tag_name}">
+                <span class="tag-text">${tag_item.tag_name}</span>
+            </a>`;
+        });
+        tag_box.html(tag_str);
+    });
 })();
