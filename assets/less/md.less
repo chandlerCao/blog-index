@@ -44,7 +44,7 @@
     /* 前言*/
     .markdown-preface {
         font-size: 14px;
-        line-height: 2.2;
+        line-height: 30px;
         text-indent: 2em;
         background-color: #f8f8f8;
         color: #666;
@@ -148,9 +148,11 @@
     .box-shadow();
     border-radius: 6px;
     .markdown-catalog-title {
-        font-size: 16px;
+        font-size: 18px;
+        font-weight: bold;
         color: @color;
-        margin: 10px 30px 5px;
+        text-align: center;
+        padding: 10px 0;
         letter-spacing: 2px;
     }
     .catalog-item {
@@ -161,27 +163,33 @@
         background-color: @bg;
         color: @blue;
     }
-    .catalog-link:before {
-        content: '';
-        position: relative;
-        display: inline-block;
-        background-color: currentColor;
-        border-radius: 50%;
+    .catalog-link {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:before {
+            content: '';
+            position: relative;
+            display: inline-block;
+            background-color: currentColor;
+            border-radius: 50%;
+        }
     }
     .catalog-h1 {
-        font-size: 17px;
-        padding-left: 30px;
-        font-weight: bold;
+        font-size: 16px;
+        line-height: 27px;
+        padding-left: 10px;
         .catalog-link:before {
-            width: 7px;
-            height: 7px;
-            margin-right: 5px;
-            top: 0;
+            width: 6px;
+            height: 6px;
+            margin-right: 4px;
+            top: -2px;
         }
     }
     .catalog-h2 {
-        font-size: 15px;
-        padding-left: 40px;
+        font-size: 14px;
+        line-height: 25px;
+        padding-left: 35px;
         .catalog-link:before {
             width: 5px;
             height: 5px;

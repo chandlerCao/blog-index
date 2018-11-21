@@ -1,6 +1,5 @@
 import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax } from './blog-public';
 require('./side-bar');
-const app = $('#app');
 const mainBox = $('#main-box');
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
@@ -14,7 +13,7 @@ window.onhashchange = function (e) {
     function drawStar(cxt, x, y, r, color) {
         let r2 = r / 2.5;
         cxt.beginPath();
-        for (var i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
             cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
             cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
         }
@@ -155,10 +154,25 @@ const get_component_by_hash = function (newHash, oldHash) {
 })();
 // 点赞
 ; (function () {
-    $('#blog-box').delegate('.art-heart', 'click', function () {
-        ajax('index/article-like').then(data => {
-            console.log(data);
-        })
-        // $(this).addClass('act');
+    let like_complete = true;
+    mainBox.delegate('.art-heart', 'click', function () {
+        if (!like_complete) return;
+        like_complete = false;
+        const aid = $(this).data('aid');
+        ajax('/index/article/givealike', { aid }).then(data => {
+            like_complete = true;
+            if (data.code === 0) {
+                $(this).addClass('act');
+                const like_num = $(this).find('.like-num:first');
+                let like_count = parseInt(like_num.text());
+                like_num.text((++like_count));
+            }
+            if (data.code === 1) {
+                $(this).removeClass('act');
+                const like_num = $(this).find('.like-num:first');
+                let like_count = parseInt(like_num.text());
+                like_num.text((--like_count));
+            }
+        });
     });
 })();

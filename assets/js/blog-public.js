@@ -9,7 +9,7 @@ export const navData = [
         'text': '前端',
         'icon': 'html.png',
         'element': $('<section id="article-box" class="blog-element"></section>'),
-        'reqUrl': 'index/getArticleList',
+        'reqUrl': '/index/article/getArticleList',
         'cb'(data = {}) {
             ajax(this.reqUrl, data).then(data => {
                 const articleData = data.articleList;
@@ -30,7 +30,7 @@ export const navData = [
         'text': '生活',
         'icon': 'live.png',
         'element': $('<section id="live-box" class="blog-element"></section>'),
-        'reqUrl': 'index/getArticleList',
+        'reqUrl': '/index/article/getArticleList',
         'cb'(page = 1) {
             ajax(this.reqUrl, { page }).then(data => {
                 const articleData = data.articleList;
@@ -50,7 +50,7 @@ export const navData = [
         'text': '简历',
         'icon': 'resume.png',
         'element': $('<section id="mood-box" class="blog-element"></section>'),
-        'reqUrl': 'index/getArticleList',
+        'reqUrl': '/index/article/getArticleList',
         'cb'(page = 1) {
             ajax(this.reqUrl, {
                 page
@@ -72,10 +72,9 @@ export const navData = [
         "reg": /^article\?tid=(\d+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
-        'reqUrl': 'index/getArticleListByTag',
+        'reqUrl': '/index/article/getArticleListByTag',
         'cb'(data = {}) {
             ajax(this.reqUrl, data).then(data => {
-                console.log(data);
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
@@ -91,11 +90,11 @@ export const navData = [
         'reg': /^article\?aid=(\w+)$/,
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
-        'reqUrl': 'index/getArticleCnt',
+        'reqUrl': '/index/article/getArticleCnt',
         'cb'(data = {}) {
             ajax(this.reqUrl, data).then(data => {
                 if (data.code === 0) {
-                    let { title, preface, markdownHtml, cover, date } = data.articleContent;
+                    let { title, preface, markdownHtml, cover, date, like_count, read_count } = data.articleContent;
                     // 格式化日期
                     date = formateDate(date);
                     const hour = date.match(/\s(\d+)/);
@@ -123,13 +122,13 @@ export const navData = [
                                 <i class="com-icon__pic calendar-icon">&nbsp;</i>
                                 <span class="com-icon__text">${date}</span>
                             </time>
-                            <span class="com-icon meta-like">
-                                <i class="com-icon__pic eye-icon">&nbsp;</i>
-                                <span class="com-icon__text">喜欢(10)</span>
-                            </span>
                             <span class="com-icon meta-comment">
                                 <i class="com-icon__pic heart-icon">&nbsp;</i>
-                                <span class="com-icon__text">阅读(38)</span>
+                                <span class="com-icon__text">喜欢(${like_count})</span>
+                            </span>
+                            <span class="com-icon meta-like">
+                                <i class="com-icon__pic eye-icon">&nbsp;</i>
+                                <span class="com-icon__text">阅读(${read_count})</span>
                             </span>
                         </div>
                         <div class="markdown-preface">${preface}</div>
@@ -163,7 +162,7 @@ export const ajax = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "post",
-            url: `${host}/${url}`,
+            url: `${host}${url}`,
             data,
             dataType: "json"
         })
@@ -275,13 +274,13 @@ export const tmp = {
                 <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
             </a>
             <div class="art-meta">
-                <a href="javascript:;" class="com-icon art-heart art-icon {{? atc.is_like }} act {{?}}">
+                <a href="javascript:;" class="com-icon art-heart art-icon {{? atc.is_like }} act {{?}}" data-aid="{{=atc.aid}}">
                     <i class="com-icon__pic heart-icon__pic"></i>
-                    <span class="com-icon__text heart-icon__text">喜欢({{=atc.like_count}})</span>
+                    <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
                 </a>
                 <a href="javascript:;" class="com-icon art-comment art-icon">
                     <i class="com-icon__pic eye-icon"></i>
-                    <span class="com-icon__text">阅读(38)</span>
+                    <span class="com-icon__text">阅读({{=atc.read_count}})</span>
                 </a>
                 <a href="javascript:;" class="com-icon art-tag art-icon">
                     <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>

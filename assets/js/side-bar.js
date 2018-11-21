@@ -1,4 +1,14 @@
 import { toZero, ajax } from './blog-public';
+// 右边栏固定定位
+; (function () {
+    const side_bar = $('#side-bar');
+    const side_bar_pos = side_bar.offset().top + side_bar.height();
+    $('#app').scroll(function () {
+        if ($(this).scrollTop() >= side_bar_pos && !side_bar.hasClass('fixed')) side_bar.addClass('fixed');
+        else if($(this).scrollTop() < side_bar_pos && side_bar.hasClass('fixed')) side_bar.removeClass('fixed');
+    });
+})();
+// 时钟
 ; (function () {
     const hour_num = $('#hour-num');
     const anchor_box = $('#anchor-box');
@@ -40,7 +50,7 @@ import { toZero, ajax } from './blog-public';
 // 获取标签云
 ; (function () {
     const tag_box = $('#tag-box');
-    ajax('index/getArticleTag').then(data => {
+    ajax('/index/article/getArticleTag').then(data => {
         const tagData = data.tagList || [];
         let tag_str = '';
         tagData.forEach(tag_item => {

@@ -2,10 +2,14 @@
 #side-bar {
     float: left;
     width: @sideW;
-    height: 100%; // 侧边栏块
     margin-left: -@sideW;
     box-sizing: border-box;
     padding-right: 20px;
+    &.fixed {
+        position: fixed;
+        top: 0;
+        right: 0;
+    }
     .sidebar-block {
         border-radius: 6px;
         margin-top: 20px;
