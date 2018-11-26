@@ -5,7 +5,7 @@ import { toZero, ajax } from './blog-public';
     const side_bar_pos = side_bar.offset().top + side_bar.height();
     $('#app').scroll(function () {
         if ($(this).scrollTop() >= side_bar_pos && !side_bar.hasClass('fixed')) side_bar.addClass('fixed');
-        else if($(this).scrollTop() < side_bar_pos && side_bar.hasClass('fixed')) side_bar.removeClass('fixed');
+        else if ($(this).scrollTop() < side_bar_pos && side_bar.hasClass('fixed')) side_bar.removeClass('fixed');
     });
 })();
 // 时钟

@@ -1,5 +1,5 @@
 // 后台端口
-export const host = 'http://192.168.1.35:1111';
+export const host = 'http://192.168.200.148:1111';
 // 路由
 export const navData = [
     {
@@ -8,10 +8,12 @@ export const navData = [
         'href': '#article?page=1',
         'text': '前端',
         'icon': 'html.png',
-        'element': $('<section id="article-box" class="blog-element"></section>'),
+        'element': $(`<section id="article-box" class="blog-element"></section>`),
+
         'reqUrl': '/index/article/getArticleList',
-        'cb'(data = {}) {
+        'cb'(data = {}, cb = function () { }) {
             ajax(this.reqUrl, data).then(data => {
+                cb();
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
@@ -19,7 +21,21 @@ export const navData = [
                 });
                 const arrText = doT.template(tmp.articleTmp);
                 // 博客盒子
-                this.element.html(arrText(articleData));
+                this.element.append(arrText(articleData));
+                `
+                <div class="com-page-box">
+                    <span class="com-page-total">共 32 条</span>
+                    <div class="com-page-ul">
+                        <a href="" class="com-page-li com-page-li__prev fa fa-angle-left"></a>
+                        <a href="" class="com-page-li">1</a>
+                        <a href="" class="com-page-li">2</a>
+                        <a href="" class="com-page-li">3</a>
+                        <a href="" class="com-page-li">4</a>
+                        <a href="" class="com-page-li">5</a>
+                        <a href="" class="com-page-li">6</a>
+                        <a href="" class="com-page-li com-page-li__next fa fa-angle-right"></a>
+                    </div>
+                </div>`;
             });
         }
     },
@@ -31,8 +47,9 @@ export const navData = [
         'icon': 'live.png',
         'element': $('<section id="live-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleList',
-        'cb'(page = 1) {
+        'cb'(page = 1, cb = function () { }) {
             ajax(this.reqUrl, { page }).then(data => {
+                cb();
                 const articleData = data.articleList;
                 // 格式化日期
                 articleData.map(function (articleItem) {
@@ -73,8 +90,9 @@ export const navData = [
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',
-        'cb'(data = {}) {
+        'cb'(data = {}, cb = function () { }) {
             ajax(this.reqUrl, data).then(data => {
+                cb();
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
@@ -91,9 +109,10 @@ export const navData = [
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleCnt',
-        'cb'(data = {}) {
+        'cb'(data = {}, cb = function () { }) {
             ajax(this.reqUrl, data).then(data => {
                 if (data.code === 0) {
+                    cb();
                     let { title, preface, markdownHtml, cover, date, like_count, read_count } = data.articleContent;
                     // 格式化日期
                     date = formateDate(date);
@@ -158,20 +177,19 @@ export const navData = [
     }
 ];
 // ajax
-export const ajax = function (url, data = {}) {
+export const ajax = function (url, data = {}, cb = function () { }) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "post",
             url: `${host}${url}`,
             data,
             dataType: "json"
-        })
-            .done(data => {
-                resolve(data);
-            })
-            .catch(err => {
-                reject(err);
-            });
+        }).done(data => {
+            resolve(data);
+            cb();
+        }).catch(err => {
+            reject(err);
+        });
     })
 };
 // 获取hash动态路径参数
@@ -240,6 +258,7 @@ export const add_hour8 = function (hour) {
     const new_hour = parseInt(hour);
     return toZero(new_hour + 8 < 24 ? new_hour + 8 : new_hour - 24);
 };
+// 转为0
 export const toZero = function (num) {
     return num < 10 ? '0' + num : num;
 };
@@ -291,3 +310,39 @@ export const tmp = {
     </article>
     {{~}}`
 };
+// loading图
+export const loading = function (wrapper) {
+    this.wrapper = wrapper;
+    this.loading_box = $(`<div class="com-loading-box">
+        <div class="com-loading-item"></div>
+        <div class="com-loading-item"></div>
+        <div class="com-loading-item"></div>
+    </div>`);
+    loading.prototype.show = function () {
+        this.wrapper.append(this.loading_box);
+        return this;
+    }
+    loading.prototype.hide = function () {
+        this.loading_box.remove();
+        return this;
+    }
+};
+// 分页
+export const page = function (options) {
+    /**
+     * 父级
+     * 总条数
+     * 当前页码
+     * 是否显示总数
+     * 样式
+     * on-change
+     */
+    const defaults = {
+        par: $('body:first'),
+        total: 0,
+        nowPage: 1,
+        style: obj.style || '#3b8cff',
+        change: obj.change
+    };
+    this.settings = $.extend({}, defaults, options);
+}

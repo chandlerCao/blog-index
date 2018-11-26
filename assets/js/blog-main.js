@@ -1,4 +1,4 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax } from './blog-public';
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading } from './blog-public';
 require('./side-bar');
 const mainBox = $('#main-box');
 // 存储当前组件的滚动条位置
@@ -107,7 +107,10 @@ const get_component_by_hash = function (newHash, oldHash) {
     // 如果找到对应的索引
     if (new_index > -1) {
         // 请求回调函数
-        navData[new_index].cb(getParmasByHash());
+        const load = new loading(mainBox).show();
+        navData[new_index].cb(getParmasByHash(), () => {
+            load.hide();
+        });
         // 元素切换
         element_switch(
             navData[new_index].element.empty(),

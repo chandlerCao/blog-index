@@ -129,3 +129,125 @@ table {
     transform-style: preserve-3d;
     perspective: 800px;
 }
+
+// loading
+.com-loading-box {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+}
+
+.com-loading-item {
+    float: left;
+    width: 20px;
+    height: 20px;
+    background-color: #41adef;
+    margin-right: 5px;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+
+.com-loading-item:nth-of-type(1) {
+    animation: move1 2s .1s infinite;
+}
+
+.com-loading-item:nth-of-type(2) {
+    animation: move2 2s infinite;
+}
+
+.com-loading-item:nth-of-type(3) {
+    animation: move3 2s .2s infinite;
+}
+
+@keyframes move1 {
+    25% {
+        transform: translate3D(25px, 0, 0);
+    }
+    50% {
+        transform: translate3D(25px, 25px, 0);
+    }
+    75% {
+        transform: translate3D(0, 25px, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+@keyframes move2 {
+    25% {
+        transform: translate3D(0, 25px, 0);
+    }
+    50% {
+        transform: translate3D(-25px, 25px, 0);
+    }
+    75% {
+        transform: translate3D(-25px, 0, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+@keyframes move3 {
+    25% {
+        transform: translate3D(0, -25px, 0);
+    }
+    50% {
+        transform: translate3D(25px, -25px, 0);
+    }
+    75% {
+        transform: translate3D(25px, 0, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+// 分页
+.com-page-box {
+    color: @color;
+}
+
+.com-page-total,
+.com-page-ul {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.com-page-total {
+    margin-right: 5px;
+    font-size: 12px;
+    padding-top: 7px;
+}
+
+.com-page-li {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 6px;
+    background-color: #fff;
+    border: 1px solid #dcdee2;
+    border-radius: 4px;
+    transition: border .15s;
+    font-size: 13px;
+}
+
+.com-page-li__prev,
+.com-page-li__next {
+    padding-top: 8px;
+    font-size: 14px;
+}
+
+.com-page-li.active,
+.com-page-li:hover {
+    border: 1px solid @blue;
+    color: @blue;
+}
