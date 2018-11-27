@@ -1,4 +1,4 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading } from './blog-public';
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading, page } from './blog-public';
 require('./side-bar');
 const mainBox = $('#main-box');
 // 存储当前组件的滚动条位置

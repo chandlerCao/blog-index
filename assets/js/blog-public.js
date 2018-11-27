@@ -1,18 +1,18 @@
 // 后台端口
-export const host = 'http://192.168.200.148:1111';
+export const host = 'http://192.168.1.34:1111';
 // 路由
-export const navData = [
-    {
+export const navData = [{
         'reg': /^article\?page=(\d+)$/,
         'name': 'articleList',
         'href': '#article?page=1',
         'text': '前端',
         'icon': 'html.png',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
-
         'reqUrl': '/index/article/getArticleList',
-        'cb'(data = {}, cb = function () { }) {
-            ajax(this.reqUrl, data).then(data => {
+        'cb'(data = {}, cb = function () {}) {
+            ajax(this.reqUrl, data).then(({
+                data
+            }) => {
                 cb();
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
@@ -21,21 +21,19 @@ export const navData = [
                 });
                 const arrText = doT.template(tmp.articleTmp);
                 // 博客盒子
-                this.element.append(arrText(articleData));
-                `
-                <div class="com-page-box">
-                    <span class="com-page-total">共 32 条</span>
-                    <div class="com-page-ul">
-                        <a href="" class="com-page-li com-page-li__prev fa fa-angle-left"></a>
-                        <a href="" class="com-page-li">1</a>
-                        <a href="" class="com-page-li">2</a>
-                        <a href="" class="com-page-li">3</a>
-                        <a href="" class="com-page-li">4</a>
-                        <a href="" class="com-page-li">5</a>
-                        <a href="" class="com-page-li">6</a>
-                        <a href="" class="com-page-li com-page-li__next fa fa-angle-right"></a>
-                    </div>
-                </div>`;
+                this.element.html(arrText(articleData));
+                new page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    url: '#article?page=',
+                    on_change() {
+                        $('#app').animate({
+                            scrollTop: 0
+                        }, 'fast');
+                    }
+                });
             });
         }
     },
@@ -47,8 +45,10 @@ export const navData = [
         'icon': 'live.png',
         'element': $('<section id="live-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleList',
-        'cb'(page = 1, cb = function () { }) {
-            ajax(this.reqUrl, { page }).then(data => {
+        'cb'(page = 1, cb = function () {}) {
+            ajax(this.reqUrl, {
+                page
+            }).then(data => {
                 cb();
                 const articleData = data.articleList;
                 // 格式化日期
@@ -70,8 +70,8 @@ export const navData = [
         'reqUrl': '/index/article/getArticleList',
         'cb'(page = 1) {
             ajax(this.reqUrl, {
-                page
-            })
+                    page
+                })
                 .then(data => {
                     const articleData = data.articleList;
                     articleData.splice(0, 2);
@@ -90,7 +90,7 @@ export const navData = [
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',
-        'cb'(data = {}, cb = function () { }) {
+        'cb'(data = {}, cb = function () {}) {
             ajax(this.reqUrl, data).then(data => {
                 cb();
                 const articleData = data.articleList;
@@ -109,11 +109,19 @@ export const navData = [
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleCnt',
-        'cb'(data = {}, cb = function () { }) {
+        'cb'(data = {}, cb = function () {}) {
             ajax(this.reqUrl, data).then(data => {
                 if (data.code === 0) {
                     cb();
-                    let { title, preface, markdownHtml, cover, date, like_count, read_count } = data.articleContent;
+                    let {
+                        title,
+                        preface,
+                        markdownHtml,
+                        cover,
+                        date,
+                        like_count,
+                        read_count
+                    } = data.articleContent;
                     // 格式化日期
                     date = formateDate(date);
                     const hour = date.match(/\s(\d+)/);
@@ -177,7 +185,7 @@ export const navData = [
     }
 ];
 // ajax
-export const ajax = function (url, data = {}, cb = function () { }) {
+export const ajax = function (url, data = {}, cb = function () {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "post",
@@ -217,7 +225,8 @@ export const picture3DSwitch = function (box, imgArr) {
     const box_width = box.width();
     const box_height = box.height();
 
-    let rowLen = 3, colLen = 5;
+    let rowLen = 3,
+        colLen = 5;
     while (box_width % rowLen === 0) {
         rowLen++;
     }
@@ -328,21 +337,84 @@ export const loading = function (wrapper) {
     }
 };
 // 分页
-export const page = function (options) {
+export const page = function (opts) {
     /**
-     * 父级
-     * 总条数
-     * 当前页码
-     * 是否显示总数
-     * 样式
-     * on-change
+     * 父级: par
+     * 总条数: total
+     * 每页显示条数: page_size
+     * 当前页码: now_page
+     * 是否显示总数: show_total
+     * 样式: theme
+     * url 连接
      */
-    const defaults = {
-        par: $('body:first'),
-        total: 0,
-        nowPage: 1,
-        style: obj.style || '#3b8cff',
-        change: obj.change
-    };
-    this.settings = $.extend({}, defaults, options);
+    this.par = opts.par || $();
+    this.total = opts.total || 0;
+    this.page_size = opts.page_size || 0;
+    this.now_page = opts.now_page || 0;
+    this.url = opts.url || 'javascript:;';
+    this.on_change = opts.on_change || function () {};
+    // 初始化
+    page.prototype.init = function () {
+        this.par.append(`<div class="com-page-box">
+            <span class="com-page-total">共 ${this.total} 条</span>
+            <div class="com-page-ul">${this.create_page_num()}</div>
+        </div>`);
+    }
+    // 循环出页码
+    page.prototype.create_page_num = function () {
+        // 多少页
+        const page_len = Math.ceil(this.total / this.page_size);
+        let list_str = '';
+        // 上一页
+        const is_first_page = this.now_page === 1;
+        list_str += `<a href="${is_first_page ? 'javascript:;' : this.url+(this.now_page-1)}" class="com-page-prev fa fa-angle-left${is_first_page ? ' disabled' : ''}"></a>`;
+        // 第一页
+        list_str += `<a href="${this.url}1" class="com-page-num${is_first_page ? ' active' : ''}">1</a>`;
+        // 向前5页
+        if (this.now_page > 5) {
+            list_str += `<a href="${this.url}${this.now_page - 5 < 1 ? 1 : this.now_page - 5}" class="com-page-li-jump__prev">
+                <i class="page-ellipsis"></i>
+                <i class="page-arrow page-arrow-left fa fa-angle-double-left"></i>
+            </a>`;
+        } else {
+            this.par.find('.com-page-li-jump__prev:first').remove();
+        }
+        // 循环生成页码
+        let [start, limit] = [1, 0];
+        if (this.now_page <= 5) {
+            start = 2;
+            limit = this.now_page + 2;
+        } else if (this.now_page > page_len - 5) {
+            start = this.now_page - 2;
+            limit = page_len - 1;
+        } else {
+            start = this.now_page - 2;
+            limit = this.now_page + 2
+        }
+        for (let i = start; i <= limit; i++) {
+            if (i > page_len - 1) break;
+            list_str += `<a href="${this.url}${i}" class="com-page-num${i === this.now_page ? ' active' : ''}">${i}</a>`;
+        }
+        // 向后5页
+        if (this.now_page <= page_len - 5) {
+            list_str += `<a href="${this.url}${this.now_page + 5 > page_len ? page_len : this.now_page + 5}" class="com-page-li-jump__next">
+                <i class="page-ellipsis"></i>
+                <i class="page-arrow page-arrow-right fa fa-angle-double-right"></i>
+            </a>`;
+        } else {
+            this.par.find('.com-page-li-jump__next:first').remove();
+        }
+        // 最后一页
+        if (page_len !== 1) list_str += `<a href="${this.url}${page_len}" class="com-page-num${this.now_page === page_len ? ' active' : ''}">${page_len}</a>`;
+        // 下一页
+        const is_last_page = this.now_page === page_len;
+        list_str += `<a href="${is_last_page ? 'javascript:;' : this.url+(this.now_page+1)}" class="com-page-next fa fa-angle-right${is_last_page ? ' disabled' : ''}"></a>`;
+        return list_str;
+    }
+    page.prototype.page_change = function () {
+        this.par.delegate('.com-page-li', 'click', this.on_change);
+    }
+    this.init();
+    // 按钮监听
+    this.page_change();
 }
