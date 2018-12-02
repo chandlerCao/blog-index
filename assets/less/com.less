@@ -1,0 +1,145 @@
+@import './config.less';
+// loading
+.com-loading-box {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+    .com-loading-item {
+        float: left;
+        width: 20px;
+        height: 20px;
+        background-color: #41adef;
+        margin-right: 5px;
+        margin-top: 5px;
+        border-radius: 4px;
+    }
+    .com-loading-item:nth-of-type(1) {
+        animation: move1 2s .1s infinite;
+    }
+    .com-loading-item:nth-of-type(2) {
+        animation: move2 2s infinite;
+    }
+    .com-loading-item:nth-of-type(3) {
+        animation: move3 2s .2s infinite;
+    }
+}
+
+@keyframes move1 {
+    25% {
+        transform: translate3D(25px, 0, 0);
+    }
+    50% {
+        transform: translate3D(25px, 25px, 0);
+    }
+    75% {
+        transform: translate3D(0, 25px, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+@keyframes move2 {
+    25% {
+        transform: translate3D(0, 25px, 0);
+    }
+    50% {
+        transform: translate3D(-25px, 25px, 0);
+    }
+    75% {
+        transform: translate3D(-25px, 0, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+@keyframes move3 {
+    25% {
+        transform: translate3D(0, -25px, 0);
+    }
+    50% {
+        transform: translate3D(25px, -25px, 0);
+    }
+    75% {
+        transform: translate3D(25px, 0, 0);
+    }
+    100% {
+        transform: translate3D(0, 0, 0);
+    }
+}
+
+// 分页
+.com-page-box {
+    margin-top: 30px;
+    text-align: center;
+    .com-page-total,
+    .com-page-ul {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .com-page-total {
+        margin-right: 5px;
+        font-size: 12px;
+    }
+    .com-page-num,
+    .com-page-prev,
+    .com-page-next {
+        display: inline-block;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        line-height: 28px;
+        text-align: center;
+        box-sizing: border-box;
+        background-color: #fff;
+        border: 1px solid #dcdee2;
+        border-radius: 4px;
+        transition: border .15s;
+        color: @color;
+        margin-right: 4px;
+        font-size: 13px;
+    }
+    .com-page-prev,
+    .com-page-next {
+        &.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        &:hover {
+            border: 1px solid #dcdee2;
+        }
+    } // 跳页码
+    .com-page-li-jump__prev,
+    .com-page-li-jump__next {
+        display: inline-block;
+        width: 32px;
+        margin: 0 5px;
+        font-size: 12px;
+        .page-ellipsis {
+            display: inline-block;
+            &:after {
+                content: "•••";
+                letter-spacing: 1px;
+                color: #ccc;
+                text-align: center;
+            }
+        }
+        .page-arrow {
+            display: none;
+            font-size: 14px;
+        }
+        &:hover {
+            .page-ellipsis {
+                display: none;
+            }
+            .page-arrow {
+                display: inline-block;
+            }
+        }
+    }
+}
