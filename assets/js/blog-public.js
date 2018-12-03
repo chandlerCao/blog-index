@@ -1,5 +1,5 @@
 // 后台端口
-export const host = 'http://192.168.200.147:1111';
+export const host = 'http://192.168.1.34:1111';
 // 路由
 export const navData = [
     {
@@ -263,7 +263,7 @@ export const picture3DSwitch = function (box, imgArr) {
             const bpy = Math.floor(i / rowLen) * cell_h;
             str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${box_width}px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
         });
-        html += `<div class="three-d" style="float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
+        html += `<div style="transform-style: preserve-3d; float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
     });
     box.html(html);
 };
