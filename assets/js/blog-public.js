@@ -1,5 +1,5 @@
 // 后台端口
-export const host = 'http://192.168.1.34:1111';
+export const host = 'http://192.168.200.147:1111';
 // 路由
 export const navData = [
     {
@@ -247,7 +247,6 @@ export const picture3DSwitch = function (box, imgArr) {
     // 单元宽高
     const cell_w = Math.floor(box_width / rowLen);
     const cell_h = box_height / colLen;
-    const scale = box_height / 723;
     // 单元格总数
     const cell_num = rowLen * colLen;
     // 循环生成
@@ -260,9 +259,9 @@ export const picture3DSwitch = function (box, imgArr) {
             if (j === 1) transform = `transform: rotateY(90deg)`;
             if (j === 2) transform = `transform: rotateY(180deg)`;
             if (j === 3) transform = `transform: rotateY(270deg)`;
-            const bpx = i % rowLen * cell_w + 50;
+            const bpx = i % rowLen * cell_w;
             const bpy = Math.floor(i / rowLen) * cell_h;
-            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: 500px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
+            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${box_width}px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
         });
         html += `<div class="three-d" style="float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
     });

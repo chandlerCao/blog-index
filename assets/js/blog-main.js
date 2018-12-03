@@ -152,8 +152,14 @@ const get_component_by_hash = function (newHash, oldHash) {
 // 侧边栏3d图片切换
 ; (function () {
     // 引入服务器上的地址
-    if ($(window).width() > 1000) picture3DSwitch($('#intrude-bg'), [`${host}/bg/bg1.jpg`, `${host}/bg/bg2.jpg`, `${host}/bg/bg3.jpg`, `${host}/bg/bg4.jpg`]);
-    else $('#intrude-bg').css('background-image', `url(${host}/bg/s-bg${Math.ceil(Math.random() * 4)}.png)`);
+    $(window).on('resize.initBg', () => {
+        let bg_dir;
+        if ($(window).width() > 1000) bg_dir = 'large';
+        else if ($(window).width() > 600) bg_dir = 'medium';
+        else bg_dir = 'small';
+        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
+    });
+    $(window).trigger('resize.initBg');
 })();
 // 点赞
 ; (function () {
