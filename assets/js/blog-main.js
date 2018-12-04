@@ -1,6 +1,8 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading, page } from './blog-public';
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading } from './blog-public';
 require('./side-bar');
 const mainBox = $('#main-box');
+const app = $('#app');
+const save_scroll = {};
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
     const { newURL, oldURL } = e;
@@ -106,16 +108,22 @@ const get_component_by_hash = function (newHash, oldHash) {
     });
     // 如果找到对应的索引
     if (new_index > -1) {
-        // 请求回调函数
+        // 请求回调函数，显示loading图
         const load = new loading(mainBox).show();
         navData[new_index].cb(getParmasByHash(), () => {
             load.hide();
         });
+        // 记录旧元素位置
+        if (navData[old_index]) save_scroll[navData[old_index].name] = app.scrollTop();
         // 元素切换
         element_switch(
-            navData[new_index].element.empty(),
+            navData[new_index].element,
             old_index >= 0 ? navData[old_index].element : $()
         );
+        if (save_scroll[navData[new_index].name] > -1) {
+            app.scrollTop(save_scroll[navData[new_index].name]);
+            // app.animate({ 'scrollTop': save_scroll[navData[new_index].name] }, 300);
+        }
     } else {
         window.location.reload();
         window.location.hash = navData[0].href;

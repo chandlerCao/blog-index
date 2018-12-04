@@ -235,14 +235,7 @@ export const picture3DSwitch = function (box, imgArr) {
     const box_width = box.width();
     const box_height = box.height();
 
-    let rowLen = 3,
-        colLen = 5;
-    while (box_width % rowLen === 0) {
-        rowLen++;
-    }
-    while (box_height % colLen === 0) {
-        colLen++;
-    }
+    let rowLen = 3, colLen = 5;
 
     // 单元宽高
     const cell_w = Math.floor(box_width / rowLen);
