@@ -1,8 +1,8 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading } from './blog-public';
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading, storage } from './blog-public';
 require('./side-bar');
 const mainBox = $('#main-box');
 const app = $('#app');
-const save_scroll = {};
+const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
     const { newURL, oldURL } = e;
@@ -83,7 +83,7 @@ window.onhashchange = function (e) {
 let timer = null;
 // 切换动画效果
 const element_switch = function (newEl, oldEl) {
-    if (newEl.attr('id') !== oldEl.attr('id')) {
+    return new Promise(resolve => {
         // 添加即将出现的元素
         mainBox.append(newEl);
         // 新元素出现
@@ -94,8 +94,9 @@ const element_switch = function (newEl, oldEl) {
         clearTimeout(timer);
         timer = setTimeout(function () {
             oldEl.detach();
+            resolve();
         }, 500);
-    }
+    })
 };
 // 通过hash匹配相应的组件
 const get_component_by_hash = function (newHash, oldHash) {
@@ -110,20 +111,27 @@ const get_component_by_hash = function (newHash, oldHash) {
     if (new_index > -1) {
         // 请求回调函数，显示loading图
         const load = new loading(mainBox).show();
-        navData[new_index].cb(getParmasByHash(), () => {
-            load.hide();
-        });
         // 记录旧元素位置
-        if (navData[old_index]) save_scroll[navData[old_index].name] = app.scrollTop();
-        // 元素切换
-        element_switch(
-            navData[new_index].element,
-            old_index >= 0 ? navData[old_index].element : $()
-        );
-        if (save_scroll[navData[new_index].name] > -1) {
-            app.scrollTop(save_scroll[navData[new_index].name]);
-            // app.animate({ 'scrollTop': save_scroll[navData[new_index].name] }, 300);
+        if (old_index > -1) {
+            scrollTop_data[navData[old_index].name] = app.scrollTop();
+            navData[old_index].element.empty();
         }
+        storage.set('scrollTop', scrollTop_data);
+        navData[new_index].cb(getParmasByHash()).then(() => {
+            load.hide();
+            if (navData[new_index] !== navData[old_index]) {
+                // 元素切换
+                element_switch(
+                    navData[new_index].element,
+                    old_index >= 0 ? navData[old_index].element : $()
+                ).then(() => {
+                    // 新元素滚动到上一次位置
+                    let scrollTop = 0;
+                    if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
+                    app.scrollTop(scrollTop);
+                });
+            }
+        });
     } else {
         window.location.reload();
         window.location.hash = navData[0].href;

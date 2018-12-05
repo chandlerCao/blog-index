@@ -1,5 +1,5 @@
 // 后台端口
-export const host = 'http://192.168.1.35:1111';
+export const host = 'http://192.168.1.34:1111';
 // 路由
 export const navData = [
     {
@@ -10,33 +10,34 @@ export const navData = [
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
         'reqUrl': '/index/article/getArticleList',
-        'cb'(data = {}, cb = function () { }) {
-            ajax(this.reqUrl, data).then(({
-                data
-            }) => {
-                cb();
-                const articleData = data.articleList;
-                articleData.map(function (articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                ajax(this.reqUrl, data).then(({ data }) => {
+                    const articleData = data.articleList;
+                    articleData.map(function (articleItem) {
+                        // 格式化日期
+                        articleItem.date = articleItem.date.split('T')[0];
+                    });
+                    const arrText = doT.template(tmp.articleTmp);
+                    // 博客盒子
+                    this.element.html(arrText(articleData));
+                    new page({
+                        par: this.element,
+                        total: data.total,
+                        page_size: data.page_size,
+                        now_page: parseInt(getParmasByHash().page),
+                        theme: '#3b8cff',
+                        url: '#article?page=',
+                        on_change() {
+                            console.log(1);
+                            $('#app').animate({
+                                'scrollTop': 0
+                            }, 'fast');
+                        }
+                    });
+                    resolve();
                 });
-                const arrText = doT.template(tmp.articleTmp);
-                // 博客盒子
-                this.element.html(arrText(articleData));
-                new page({
-                    par: this.element,
-                    total: data.total,
-                    page_size: data.page_size,
-                    now_page: parseInt(getParmasByHash().page),
-                    theme: '#3b8cff',
-                    url: '#article?page=',
-                    on_change() {
-                        $('#app').animate({
-                            scrollTop: 0
-                        }, 'fast');
-                    }
-                });
-            });
+            })
         }
     },
     {
@@ -47,32 +48,32 @@ export const navData = [
         'icon': 'fa fa-coffee',
         'element': $('<section id="live-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleList',
-        'cb'(data = {}, cb = function () { }) {
-            ajax(this.reqUrl, data).then(({
-                data
-            }) => {
-                cb();
-                const articleData = data.articleList;
-                articleData.map(function (articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                ajax(this.reqUrl, data).then(({ data }) => {
+                    const articleData = data.articleList;
+                    articleData.map(function (articleItem) {
+                        // 格式化日期
+                        articleItem.date = articleItem.date.split('T')[0];
+                    });
+                    const arrText = doT.template(tmp.articleTmp);
+                    // 博客盒子
+                    this.element.html(arrText(articleData));
+                    new page({
+                        par: this.element,
+                        total: data.total,
+                        page_size: data.page_size,
+                        now_page: parseInt(getParmasByHash().page),
+                        url: '#article?page=',
+                        on_change() {
+                            $('#app').animate({
+                                scrollTop: 0
+                            }, 'fast');
+                        }
+                    });
+                    resolve();
                 });
-                const arrText = doT.template(tmp.articleTmp);
-                // 博客盒子
-                this.element.html(arrText(articleData));
-                new page({
-                    par: this.element,
-                    total: data.total,
-                    page_size: data.page_size,
-                    now_page: parseInt(getParmasByHash().page),
-                    url: '#article?page=',
-                    on_change() {
-                        $('#app').animate({
-                            scrollTop: 0
-                        }, 'fast');
-                    }
-                });
-            });
+            })
         }
     },
     {
@@ -88,30 +89,32 @@ export const navData = [
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',
-        'cb'(data = {}, cb = function () { }) {
-            ajax(this.reqUrl, data).then(({ data }) => {
-                cb();
-                const articleData = data.articleList;
-                articleData.map(function (articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                ajax(this.reqUrl, data).then(({ data }) => {
+                    const articleData = data.articleList;
+                    articleData.map(function (articleItem) {
+                        // 格式化日期
+                        articleItem.date = articleItem.date.split('T')[0];
+                    });
+                    const arrText = doT.template(tmp.articleTmp);
+                    // 博客盒子
+                    this.element.html(arrText(articleData));
+                    new page({
+                        par: this.element,
+                        total: data.total,
+                        page_size: data.page_size,
+                        now_page: parseInt(getParmasByHash().page),
+                        url: `#article?tid=${getParmasByHash().tid}&page=`,
+                        on_change() {
+                            $('#app').animate({
+                                scrollTop: 0
+                            }, 'fast');
+                        }
+                    });
+                    resolve();
                 });
-                const arrText = doT.template(tmp.articleTmp);
-                // 博客盒子
-                this.element.html(arrText(articleData));
-                new page({
-                    par: this.element,
-                    total: data.total,
-                    page_size: data.page_size,
-                    now_page: parseInt(getParmasByHash().page),
-                    url: `#article?tid=${getParmasByHash().tid}&page=`,
-                    on_change() {
-                        $('#app').animate({
-                            scrollTop: 0
-                        }, 'fast');
-                    }
-                });
-            });
+            })
         }
     },
     {
@@ -119,83 +122,82 @@ export const navData = [
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleCnt',
-        'cb'(data = {}, cb = function () { }) {
-            ajax(this.reqUrl, data).then(data => {
-                if (data.code === 0) {
-                    cb();
-                    let {
-                        title,
-                        preface,
-                        markdownHtml,
-                        cover,
-                        date,
-                        like_count,
-                        read_count
-                    } = data.articleContent;
-                    // 格式化日期
-                    date = formateDate(date);
-                    const hour = date.match(/\s(\d+)/);
-                    // 增加八个小时
-                    date = date.replace(/\s(\d+)/, ' ' + add_hour8(hour));
-                    // 匹配h标签正则
-                    const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
-                    // 每一个标题
-                    let catalogCache, catalogStr = '';
-                    // 正则匹配文章标题
-                    while ((catalogCache = re.exec(markdownHtml)) !== null) {
-                        const tag = catalogCache[1];
-                        const id = catalogCache[2];
-                        const html = catalogCache[3];
-                        catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
-                        <a href="javascript:;" class="catalog-link">${html}</a></div>`;
-                    }
-                    // 获取文章内容div
-                    const markdown_main = $(`<div id="markdown-main" class="markdown-main com-scroll">
-                        <div class="markdown-title">
-                            <h1>${title}</h1>
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                ajax(this.reqUrl, data).then(data => {
+                    if (data.code === 0) {
+                        let {
+                            title,
+                            preface,
+                            markdownHtml,
+                            cover,
+                            date,
+                            like_count,
+                            read_count
+                        } = data.articleContent;
+                        // 格式化日期
+                        date = formateDate(date);
+                        // 匹配h标签正则
+                        const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
+                        // 每一个标题
+                        let catalogCache, catalogStr = '';
+                        // 正则匹配文章标题
+                        while ((catalogCache = re.exec(markdownHtml)) !== null) {
+                            const tag = catalogCache[1];
+                            const id = catalogCache[2];
+                            const html = catalogCache[3];
+                            catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
+                            <a href="javascript:;" class="catalog-link">${html}</a></div>`;
+                        }
+                        // 获取文章内容div
+                        const markdown_main = $(`<div id="markdown-main" class="markdown-main com-scroll">
+                            <div class="markdown-title">
+                                <h1>${title}</h1>
+                            </div>
+                            <div class="markdown-meta">
+                                <time class="com-icon meta-time">
+                                    <i class="com-icon__pic calendar-icon">&nbsp;</i>
+                                    <span class="com-icon__text">${date}</span>
+                                </time>
+                                <span class="com-icon meta-comment">
+                                    <i class="com-icon__pic heart-icon">&nbsp;</i>
+                                    <span class="com-icon__text">喜欢(${like_count})</span>
+                                </span>
+                                <span class="com-icon meta-like">
+                                    <i class="com-icon__pic eye-icon">&nbsp;</i>
+                                    <span class="com-icon__text">阅读(${read_count})</span>
+                                </span>
+                            </div>
+                            <div class="markdown-preface">${preface}</div>
+                            <div class="markdown-cover" style="background-image: url(${cover})"></div>
+                            <div class="markdown-content">
+                                ${markdownHtml}
+                            </div>
                         </div>
-                        <div class="markdown-meta">
-                            <time class="com-icon meta-time">
-                                <i class="com-icon__pic calendar-icon">&nbsp;</i>
-                                <span class="com-icon__text">${date}</span>
-                            </time>
-                            <span class="com-icon meta-comment">
-                                <i class="com-icon__pic heart-icon">&nbsp;</i>
-                                <span class="com-icon__text">喜欢(${like_count})</span>
-                            </span>
-                            <span class="com-icon meta-like">
-                                <i class="com-icon__pic eye-icon">&nbsp;</i>
-                                <span class="com-icon__text">阅读(${read_count})</span>
-                            </span>
-                        </div>
-                        <div class="markdown-preface">${preface}</div>
-                        <div class="markdown-cover" style="background-image: url(${cover})"></div>
-                        <div class="markdown-content">
-                            ${markdownHtml}
-                        </div>
-                    </div>
-                    <div class="markdown-catalog com-scroll">
-                        <div class="markdown-catalog-title">目录</div>
-                        ${catalogStr}
-                    </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element.empty()));
-                    // 目录点击事件
-                    const catalogItem = $('.catalog-item');
-                    catalogItem.each(function (i, catalog) {
-                        const id = $(this).data('id');
-                        $(catalog).data('top', $('#' + id).offset().top - 40);
-                        $(catalog).click(function () {
-                            catalogItem.removeClass('act');
-                            $(this).addClass('act');
-                            markdown_main.scrollTop($(this).data('top'));
+                        <div class="markdown-catalog com-scroll">
+                            <div class="markdown-catalog-title">目录</div>
+                            ${catalogStr}
+                        </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element.empty()));
+                        // 目录点击事件
+                        const catalogItem = $('.catalog-item');
+                        catalogItem.each(function (i, catalog) {
+                            const id = $(this).data('id');
+                            $(catalog).data('top', $('#' + id).offset().top - 40);
+                            $(catalog).click(function () {
+                                catalogItem.removeClass('act');
+                                $(this).addClass('act');
+                                markdown_main.scrollTop($(this).data('top'));
+                            });
                         });
-                    });
-                }
+                        resolve();
+                    }
+                })
             })
         }
     }
 ];
 // ajax
-export const ajax = function (url, data = {}, cb = function () { }) {
+export const ajax = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "post",
@@ -204,7 +206,6 @@ export const ajax = function (url, data = {}, cb = function () { }) {
             dataType: "json"
         }).done(data => {
             resolve(data);
-            cb();
         }).catch(err => {
             reject(err);
         });
@@ -262,12 +263,11 @@ export const picture3DSwitch = function (box, imgArr) {
 };
 // 日期格式化
 export const formateDate = function (date) {
-    return date.slice(0, date.length - 5).replace('T', ' ');
-};
-// 增加八个小时
-export const add_hour8 = function (hour) {
-    const new_hour = parseInt(hour);
-    return toZero(new_hour + 8 < 24 ? new_hour + 8 : new_hour - 24);
+    const new_date = date.slice(0, date.length - 5).replace('T', ' ');
+    const hour = parseInt(new_date.match(/\s(\d+)/));
+    // 增加八个小时
+    const new_hour = toZero(hour + 8);
+    return new_date.replace(/\s(\d+)/, ' ' + new_hour);
 };
 // 转为0
 export const toZero = function (num) {
@@ -322,15 +322,16 @@ export const tmp = {
     {{~}}`
 };
 // loading图
-export const loading = function (wrapper) {
-    this.wrapper = wrapper;
+export const loading = function () {
     this.loading_box = $(`<div class="com-loading-box">
-        <div class="com-loading-item"></div>
-        <div class="com-loading-item"></div>
-        <div class="com-loading-item"></div>
+        <div class="com-loading-main">
+            <div class="com-loading-item"></div>
+            <div class="com-loading-item"></div>
+            <div class="com-loading-item"></div>
+        </div>
     </div>`);
     loading.prototype.show = function () {
-        this.wrapper.append(this.loading_box);
+        this.loading_box.appendTo($('body:first'));
         return this;
     }
     loading.prototype.hide = function () {
@@ -420,11 +421,11 @@ export const page = function (opts) {
     page.prototype.page_listener = function () {
         const _this = this;
         // num鼠标移入
-        this.par.find('.com-page-num').on('mouseover', function () {
+        this.par.find('.com-page-num').on('click', function () {
+            _this.on_change($(this).data('page'));
+        }).on('mouseover', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_add_active($(this));
-        });
-        // num鼠标移出
-        this.par.find('.com-page-num').on('mouseout', function () {
+        }).on('mouseout', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_remove_active($(this));
         });
 
@@ -461,4 +462,13 @@ export const page = function (opts) {
     this.init();
     // 按钮监听
     this.page_listener();
+}
+// 本地存储
+export const storage = {
+    set(key, value) {
+        window.localStorage.setItem(key, JSON.stringify(value));
+    },
+    get(key) {
+        return JSON.parse(window.localStorage.getItem(key));
+    }
 }

@@ -66,14 +66,14 @@
             padding: 20px;
         }
         .blog-element.enter {
-            animation: enter .2s forwards;
+            animation: enter 1s forwards;
         }
         .blog-element.leave {
             position: absolute;
             width: 100%;
             left: 0;
             top: 0;
-            animation: leave .2s forwards;
+            animation: leave 1s forwards;
         }
     }
     .article-item {
@@ -265,21 +265,17 @@
     }
     @keyframes enter {
         0% {
-            transform: translateX(30px);
             opacity: 0;
         }
         100% {
-            transform: translateX(0);
             opacity: 1;
         }
     }
     @keyframes leave {
         0% {
-            transform: translateX(0);
             opacity: 1;
         }
         100% {
-            transform: translateX(-30px);
             opacity: 0;
         }
     }
