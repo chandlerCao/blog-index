@@ -1,2 +1,7 @@
 {
+    "less.compile": {
+        "compress": true,
+        "out": false,
+        "autoprefixer": "> 5%, last 50 Chrome versions, ff <= 15, opera <= 20"
+    }
 }

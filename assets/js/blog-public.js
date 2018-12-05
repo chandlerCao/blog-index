@@ -1,5 +1,5 @@
 // 后台端口
-export const host = 'http://192.168.1.34:1111';
+export const host = 'http://192.168.1.35:1111';
 // 路由
 export const navData = [
     {
