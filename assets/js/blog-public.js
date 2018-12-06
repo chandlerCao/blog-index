@@ -1,6 +1,6 @@
 import { page } from '../com/com';
 // 后台端口
-export const host = 'http://192.168.1.35:1111';
+export const host = 'http://192.168.1.34:1111';
 // 路由
 export const navData = [
     {
@@ -191,7 +191,7 @@ export const navData = [
                             $(catalog).click(function () {
                                 catalogItem.removeClass('act');
                                 $(this).addClass('act');
-                                markdown_main.scrollTop($(this).data('top'));
+                                markdown_main.stop().animate({ 'scrollTop': $(this).data('top') }, 400);
                             });
                         });
                         resolve();
