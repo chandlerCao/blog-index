@@ -1,5 +1,6 @@
+import { page } from '../com/com';
 // 后台端口
-export const host = 'http://192.168.1.34:1111';
+export const host = 'http://192.168.1.35:1111';
 // 路由
 export const navData = [
     {
@@ -136,7 +137,7 @@ export const navData = [
                             read_count
                         } = data.articleContent;
                         // 格式化日期
-                        date = formateDate(date);
+                        date = date.split('T')[0];
                         // 匹配h标签正则
                         const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
                         // 每一个标题
@@ -150,10 +151,13 @@ export const navData = [
                             <a href="javascript:;" class="catalog-link">${html}</a></div>`;
                         }
                         // 获取文章内容div
-                        const markdown_main = $(`<div id="markdown-main" class="markdown-main com-scroll">
+                        const markdown_main = $(`
+                        <div id="markdown-main" class="markdown-main com-scroll">
+                            <!-- 文字标题 -->
                             <div class="markdown-title">
                                 <h1>${title}</h1>
                             </div>
+                            <!-- 文章元信息 -->
                             <div class="markdown-meta">
                                 <time class="com-icon meta-time">
                                     <i class="com-icon__pic calendar-icon">&nbsp;</i>
@@ -174,10 +178,11 @@ export const navData = [
                                 ${markdownHtml}
                             </div>
                         </div>
+                        <!-- 目录 -->
                         <div class="markdown-catalog com-scroll">
                             <div class="markdown-catalog-title">目录</div>
                             ${catalogStr}
-                        </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element.empty()));
+                        </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
                         // 目录点击事件
                         const catalogItem = $('.catalog-item');
                         catalogItem.each(function (i, catalog) {
@@ -209,7 +214,7 @@ export const ajax = function (url, data = {}) {
         }).catch(err => {
             reject(err);
         });
-    })
+    });
 };
 // 获取hash动态路径参数
 export const getParmasByHash = function () {
@@ -264,6 +269,7 @@ export const picture3DSwitch = function (box, imgArr) {
 // 日期格式化
 export const formateDate = function (date) {
     const new_date = date.slice(0, date.length - 5).replace('T', ' ');
+    // 获取时间日期
     const hour = parseInt(new_date.match(/\s(\d+)/));
     // 增加八个小时
     const new_hour = toZero(hour + 8);
@@ -321,148 +327,6 @@ export const tmp = {
     </article>
     {{~}}`
 };
-// loading图
-export const loading = function () {
-    this.loading_box = $(`<div class="com-loading-box">
-        <div class="com-loading-main">
-            <div class="com-loading-item"></div>
-            <div class="com-loading-item"></div>
-            <div class="com-loading-item"></div>
-        </div>
-    </div>`);
-    loading.prototype.show = function () {
-        this.loading_box.appendTo($('body:first'));
-        return this;
-    }
-    loading.prototype.hide = function () {
-        this.loading_box.remove();
-        return this;
-    }
-};
-// 分页
-export const page = function (opts) {
-    /**
-     * 父级: par
-     * 总条数: total
-     * 每页显示条数: page_size
-     * 当前页码: now_page
-     * 是否显示总数: show_total
-     * 样式: theme
-     * url 连接
-     */
-    this.par = opts.par || $();
-    this.total = opts.total || 0;
-    this.page_size = opts.page_size || 0;
-    this.now_page = opts.now_page || 1;
-    this.url = opts.url || 'javascript:;';
-    this.theme = opts.theme || '#3b8cff';
-    this.on_change = opts.on_change || function () { };
-    this.page_len = Math.ceil(this.total / this.page_size);
-    // 初始化
-    page.prototype.init = function () {
-        this.par.append(`<div class="com-page-box">
-                <span class="com-page-total">共 ${this.total} 条</span>
-                <div class="com-page-ul">${this.create_page_num()}</div>
-            </div>
-        `);
-    }
-    // 循环出页码
-    page.prototype.create_page_num = function () {
-        // 多少页
-        const page_len = this.page_len;
-        let list_str = '';
-        // 上一页
-        const is_first_page = this.now_page === 1;
-        list_str += `<a href="${is_first_page ? 'javascript:;' : this.url + (this.now_page - 1)}" class="com-page-prev fa fa-angle-left${is_first_page ? ' disabled' : ''}"></a>`;
-        // 第一页
-        list_str += `<a href="${this.url}1" class="com-page-num" ${is_first_page ? `style="border: 1px solid ${this.theme}; color: ${this.theme}"` : ''} data-page="1">1</a>`;
-        // 向前5页
-        if (this.now_page > 5) {
-            list_str += `<a href="${this.url}${this.now_page - 5 < 1 ? 1 : this.now_page - 5}" class="com-page-li-jump__prev">
-                <i class="page-ellipsis"></i>
-                <i class="page-arrow page-arrow-left fa fa-angle-double-left" style="color: ${this.theme};"></i>
-            </a>`;
-        } else {
-            this.par.find('.com-page-li-jump__prev:first').remove();
-        }
-        // 循环生成页码
-        let [start, limit] = [1, 0];
-        if (this.now_page <= 5) {
-            start = 2;
-            limit = this.now_page + 2;
-        } else if (this.now_page > page_len - 5) {
-            start = this.now_page - 2;
-            limit = page_len - 1;
-        } else {
-            start = this.now_page - 2;
-            limit = this.now_page + 2
-        }
-        for (let i = start; i <= limit; i++) {
-            if (i > page_len - 1) break;
-            list_str += `<a href="${this.url}${i}" class="com-page-num" ${i === this.now_page ? `style="border: 1px solid ${this.theme}; color: ${this.theme}"` : ''}  data-page="${i}">${i}</a>`;
-        }
-        // 向后5页
-        if (this.now_page <= page_len - 5) {
-            list_str += `<a href="${this.url}${this.now_page + 5 > page_len ? page_len : this.now_page + 5}" class="com-page-li-jump__next">
-                <i class="page-ellipsis"></i>
-                <i class="page-arrow page-arrow-right fa fa-angle-double-right" style="color: ${this.theme};"></i>
-            </a>`;
-        } else {
-            this.par.find('.com-page-li-jump__next:first').remove();
-        }
-        // 最后一页
-        const is_last_page = this.now_page === page_len;
-        if (page_len !== 1) list_str += `<a href="${this.url}${page_len}" class="com-page-num" ${is_last_page ? `style="border: 1px solid ${this.theme}; color: ${this.theme}"` : ''} data-page="${page_len}">${page_len}</a>`;
-        // 下一页
-        list_str += `<a href="${is_last_page ? 'javascript:;' : this.url + (this.now_page + 1)}" class="com-page-next fa fa-angle-right${is_last_page ? ' disabled' : ''}"></a>`;
-        return list_str;
-    }
-    // 分页事件监听
-    page.prototype.page_listener = function () {
-        const _this = this;
-        // num鼠标移入
-        this.par.find('.com-page-num').on('click', function () {
-            _this.on_change($(this).data('page'));
-        }).on('mouseover', function () {
-            if (_this.now_page !== $(this).data('page')) _this.Page_add_active($(this));
-        }).on('mouseout', function () {
-            if (_this.now_page !== $(this).data('page')) _this.Page_remove_active($(this));
-        });
-
-        // 上页鼠标移入
-        this.par.find('.com-page-prev:first').on('mouseover', function () {
-            if (_this.now_page !== 1) _this.Page_add_active($(this));
-        });
-        // 上页鼠标移出
-        this.par.find('.com-page-prev:first').on('mouseout', function () {
-            if (_this.now_page !== 1) _this.Page_remove_active($(this));
-        });
-
-        // 下页鼠标移入
-        this.par.find('.com-page-next').on('mouseover', function () {
-            if (_this.now_page !== _this.page_len) _this.Page_add_active($(this));
-        });
-        // 下页鼠标移出
-        this.par.find('.com-page-next').on('mouseout', function () {
-            if (_this.now_page !== _this.page_len) _this.Page_remove_active($(this));
-        });
-    }
-    page.prototype.Page_add_active = function (page_el) {
-        page_el.css({
-            border: `1px solid ${this.theme}`,
-            color: this.theme
-        });
-    }
-    page.prototype.Page_remove_active = function (page_el) {
-        page_el.css({
-            border: '1px solid #dcdee2',
-            color: '#000'
-        });
-    }
-    this.init();
-    // 按钮监听
-    this.page_listener();
-}
 // 本地存储
 export const storage = {
     set(key, value) {

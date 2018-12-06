@@ -1,5 +1,5 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, loading, storage } from './blog-public';
-require('./side-bar');
+import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
+import { loading } from '../com/com';
 const mainBox = $('#main-box');
 const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};

@@ -1,4 +1,82 @@
-@import './config.less';
+@import './com.config.less';
+// 按钮
+.com-button {
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    transition: .1s;
+    font-weight: 500;
+    user-select: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border: 1px solid @grey;
+    background-color: #fff;
+    color: @grey;
+    border-radius: 4px;
+    &.blue {
+        background-color: @blue;
+        border: 1px solid @blue;
+        color: #fff;
+    }
+    &.blue:hover {
+        background-color: lighten(@blue, 3%);
+    }
+    &.blue:active {
+        background-color: darken(@blue, 3%);
+    }
+    &.red {
+        background-color: @red;
+        border: 1px solid @red;
+        color: #fff;
+    }
+    &.red:hover {
+        background-color: lighten(@red, 3%);
+    }
+    &.red:active {
+        background-color: darken(@red, 3%);
+    }
+    &.yellow {
+        background-color: @yellow;
+        border: 1px solid @yellow;
+        color: #fff;
+    }
+    &.yellow:hover {
+        background-color: lighten(@yellow, 3%);
+    }
+    &.yellow:active {
+        background-color: darken(@yellow, 3%);
+    }
+    &.green {
+        background-color: @green;
+        border: 1px solid @green;
+        color: #fff;
+    }
+    &.green:hover {
+        background-color: lighten(@green, 3%);
+    }
+    &.green:active {
+        background-color: darken(@green, 3%);
+    }
+    &.medium {
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+    &.small {
+        padding: 9px 15px;
+        font-size: 12px;
+        border-radius: 3px;
+    }
+    &.mini {
+        padding: 7px 15px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    &+.com-button {
+        margin-left: 8px;
+    }
+}
+
 // loading
 .com-loading-box {
     position: fixed;
@@ -20,7 +98,7 @@
             float: left;
             width: 20px;
             height: 20px;
-            background-color: #41adef;
+            background-color: @blue;
             margin-right: 5px;
             margin-top: 5px;
             border-radius: 4px;
@@ -103,21 +181,21 @@
         text-align: center;
         box-sizing: border-box;
         background-color: #fff;
-        border: 1px solid #dcdee2;
+        border: 1px solid @grey;
         border-radius: 4px;
         transition: border .15s;
-        color: @color;
+        color: @black;
         margin-right: 4px;
         font-size: 13px;
     }
     .com-page-prev,
     .com-page-next {
         &.disabled {
-            color: #ccc;
+            color: @disable;
             cursor: not-allowed;
         }
         &:hover {
-            border: 1px solid #dcdee2;
+            border: 1px solid @grey;
         }
     } // 跳页码
     .com-page-li-jump__prev,
@@ -131,7 +209,7 @@
             &:after {
                 content: "•••";
                 letter-spacing: 1px;
-                color: #ccc;
+                color: @grey;
                 text-align: center;
             }
         }
@@ -147,5 +225,46 @@
                 display: inline-block;
             }
         }
+    }
+}
+
+// 文字提示
+.com-tooltip-box {
+    position: absolute;
+    background-color: @black;
+    color: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    z-index: 2000;
+    font-size: 12px;
+    line-height: 1.2;
+    min-width: 10px;
+    word-wrap: break-word;
+    opacity: 0;
+    &.dark {
+        background-color: @black;
+        border: 1px solid @black;
+        &:after {
+            border-top-color: @black;
+        }
+    }
+    &.light {
+        background-color: @white;
+        border: 1px solid @grey;
+        &:after {
+            border-top-color: @white;
+        }
+    }
+    &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent;
+        top: 100%;
+        left: 50%;
+        margin-left: -6px;
     }
 }
