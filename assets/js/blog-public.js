@@ -1,4 +1,4 @@
-import { page } from '../com/com';
+import { page, PageUp } from '../com/com';
 // 后台端口
 export const host = 'http://192.168.1.34:1111';
 // 路由
@@ -86,7 +86,7 @@ export const navData = [
         'reqUrl': '/index/article/getArticleList'
     },
     {
-        "reg": /^article\?tid=(\d+)&page=(\d+)$/,
+        'reg': /^article\?tid=(\d+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',

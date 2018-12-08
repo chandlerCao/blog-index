@@ -1,5 +1,5 @@
 import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
-import { loading } from '../com/com';
+import { loading, PageUp } from '../com/com';
 const mainBox = $('#main-box');
 const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};
@@ -204,4 +204,10 @@ const get_component_by_hash = function (newHash, oldHash) {
             }
         });
     });
+})();
+// 回到顶部
+; (function () {
+    new PageUp({
+        scroll_el: app
+    })
 })();

@@ -1,3 +1,4 @@
+export const body = $('body:first');
 // loading图
 export const loading = function () {
     this.loading_box = $(`<div class="com-loading-box">
@@ -180,4 +181,26 @@ export const Tooltip = function (opts) {
         });
     }
     this.event();
+}
+// 回到顶部
+export const PageUp = function (opts) {
+    this.scroll_el = opts.scroll_el || body;
+    this.parent_el = opts.parent_el || body;
+    const { right, bottom } = opts.styles || {};
+    this.pageup_btn = $(`<div class="com-page-up" style="right: ${right}px; bottom: ${bottom}px;">
+        <i class="fa fa-caret-up"></i>
+    </div>`);
+    this.parent_el.append(this.pageup_btn);
+    PageUp.prototype.handler = function () {
+        // 鼠标移入动画效果
+        // 点击按钮回到顶部
+        this.pageup_btn.click(() => {
+            this.scroll_el.animate({ 'scrollTop': 0 }, 300);
+        }).hover(function () {
+            $(this).addClass('rubberBand animated');
+        }, function () {
+            $(this).removeClass('rubberBand animated');
+        })
+    }
+    this.handler();
 }
