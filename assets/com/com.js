@@ -30,6 +30,7 @@ export const Page = function (opts) {
      */
     this.el = opts.par || $();
     this.total = opts.total || 0;
+    if (this.total < 1) return;
     this.page_size = opts.page_size || 0;
     this.now_page = opts.now_page || 1;
     this.url = opts.url || 'javascript:;';

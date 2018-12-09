@@ -4,9 +4,9 @@ export const host = 'http://192.168.1.34:1111';
 // 路由
 export const navData = [
     {
-        'reg': /^article\?page=(\d+)$/,
-        'name': 'articleList',
-        'href': '#article?page=1',
+        'reg': /^article\?type=technology&page=(\d+)$/,
+        'name': 'technology',
+        'href': '#article?type=technology&page=1',
         'text': '前端',
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
@@ -42,9 +42,9 @@ export const navData = [
         }
     },
     {
-        'reg': /^live$/,
-        'name': 'liveList',
-        'href': '#live',
+        'reg': /^article\?type=live&page=(\d+)$/,
+        'name': 'live',
+        'href': '#article?type=live&page=1',
         'text': '生活',
         'icon': 'fa fa-coffee',
         'element': $('<section id="live-box" class="blog-element"></section>'),
@@ -86,7 +86,7 @@ export const navData = [
         'reqUrl': '/index/article/getArticleList'
     },
     {
-        'reg': /^article\?tid=(\d+)&page=(\d+)$/,
+        'reg': /^article\?tag=(\w+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',
@@ -260,7 +260,7 @@ export const picture3DSwitch = function (box, imgArr) {
             if (j === 3) transform = `transform: rotateY(270deg)`;
             const bpx = i % rowLen * cell_w;
             const bpy = Math.floor(i / rowLen) * cell_h;
-            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${box_width}px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
+            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: 500px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
         });
         html += `<div style="transform-style: preserve-3d; float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
     });
