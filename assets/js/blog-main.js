@@ -1,5 +1,5 @@
 import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
-import { loading, PageUp } from '../com/com';
+import { Loading, PageUp } from '../com/com';
 const mainBox = $('#main-box');
 const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};
@@ -112,7 +112,7 @@ const get_component_by_hash = function (newHash, oldHash) {
     if (new_index > -1) {
         // 请求回调函数，显示loading图
         if (load_prev) load_prev.hide();
-        const load = new loading(mainBox).show();
+        const load = new Loading(mainBox).show();
         load_prev = load;
         // 记录旧元素位置
         if (old_index > -1) {

@@ -1,4 +1,4 @@
-import { page, PageUp } from '../com/com';
+import { Page } from '../com/com';
 // 后台端口
 export const host = 'http://192.168.1.34:1111';
 // 路由
@@ -22,7 +22,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
@@ -60,7 +60,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
@@ -101,7 +101,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
