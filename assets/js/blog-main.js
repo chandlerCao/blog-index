@@ -10,6 +10,20 @@ window.onhashchange = function (e) {
     const oldHash = oldURL.split('#')[1];
     get_component_by_hash(newHash, oldHash);
 };
+// 侧边栏3d图片切换
+; (function () {
+    // 引入服务器上的地址
+    $(window).on('resize.initBg', () => {
+        let bg_dir;
+        if ($(window).width() > 1000) bg_dir = 'large';
+        else if ($(window).width() > 600) bg_dir = 'medium';
+        else bg_dir = 'small';
+        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
+    });
+    setTimeout(() => {
+        $(window).trigger('resize.initBg');
+    }, 500);
+})();
 // canvas雪花
 ; (function () {
     function drawStar(cxt, x, y, r, color) {
@@ -168,18 +182,6 @@ const get_component_by_hash = function (newHash, oldHash) {
         // 导航加上高亮
         $(this).addClass('act').siblings().removeClass('act');
     });
-})();
-// 侧边栏3d图片切换
-; (function () {
-    // 引入服务器上的地址
-    $(window).on('resize.initBg', () => {
-        let bg_dir;
-        if ($(window).width() > 1000) bg_dir = 'large';
-        else if ($(window).width() > 600) bg_dir = 'medium';
-        else bg_dir = 'small';
-        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
-    });
-    $(window).trigger('resize.initBg');
 })();
 // 点赞
 ; (function () {
