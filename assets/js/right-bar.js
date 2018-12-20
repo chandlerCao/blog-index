@@ -54,7 +54,7 @@ import { toZero, ajax } from './blog-public';
         const tagData = data.tagList || [];
         let tag_str = '';
         tagData.forEach(tag_item => {
-            tag_str += `<a href="#article?tid=${tag_item.tid}&page=1" class="tag-item" title="${tag_item.tag_name}">
+            tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="tag-item" title="${tag_item.tag_name}">
                 <span class="tag-text">${tag_item.tag_name}</span>
             </a>`;
         });

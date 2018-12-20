@@ -1,12 +1,12 @@
-import { page, PageUp } from '../com/com';
+import { Page } from '../com/com';
 // 后台端口
 export const host = 'http://192.168.1.35:1111';
 // 路由
 export const navData = [
     {
-        'reg': /^article\?page=(\d+)$/,
-        'name': 'articleList',
-        'href': '#article?page=1',
+        'reg': /^article\?type=technology&page=(\d+)$/,
+        'name': 'technology',
+        'href': '#article?type=technology&page=1',
         'text': '前端',
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
@@ -22,7 +22,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
@@ -42,9 +42,9 @@ export const navData = [
         }
     },
     {
-        'reg': /^live$/,
-        'name': 'liveList',
-        'href': '#live',
+        'reg': /^article\?type=live&page=(\d+)$/,
+        'name': 'live',
+        'href': '#article?type=live&page=1',
         'text': '生活',
         'icon': 'fa fa-coffee',
         'element': $('<section id="live-box" class="blog-element"></section>'),
@@ -60,7 +60,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
@@ -86,7 +86,7 @@ export const navData = [
         'reqUrl': '/index/article/getArticleList'
     },
     {
-        'reg': /^article\?tid=(\d+)&page=(\d+)$/,
+        'reg': /^article\?tag=(\w+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleListByTag',
@@ -101,7 +101,7 @@ export const navData = [
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
-                    new page({
+                    new Page({
                         par: this.element,
                         total: data.total,
                         page_size: data.page_size,
@@ -241,30 +241,66 @@ export const picture3DSwitch = function (box, imgArr) {
     const box_width = box.width();
     const box_height = box.height();
 
-    let rowLen = 3, colLen = 5;
+    let img_width, img_height;
+    getImageSizeByUrl(imgArr[0]).then(imgSize => {
+        img_width = imgSize.w;
+        img_height = imgSize.h;
 
-    // 单元宽高
-    const cell_w = Math.floor(box_width / rowLen);
-    const cell_h = box_height / colLen;
-    // 单元格总数
-    const cell_num = rowLen * colLen;
-    // 循环生成
-    let html = ``;
-    new Array(cell_num).fill('').forEach((item, i) => {
-        let str = ``;
-        imgArr.forEach((url, j) => {
-            let transform = '';
-            if (j === 0) transform = `transform: rotateY(0)`;
-            if (j === 1) transform = `transform: rotateY(90deg)`;
-            if (j === 2) transform = `transform: rotateY(180deg)`;
-            if (j === 3) transform = `transform: rotateY(270deg)`;
-            const bpx = i % rowLen * cell_w;
-            const bpy = Math.floor(i / rowLen) * cell_h;
-            str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${box_width}px ${box_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 30s ${0.03 * i + 2}s infinite"></div>`;
-        });
-        html += `<div style="transform-style: preserve-3d; float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
+        let new_width, new_height;
+        if (img_width < box_width) {
+            new_width = box_width;
+            new_height = box_height * box_width / img_width;
+        } else if (img_height < box_height) {
+            new_height = box_height;
+            new_width = box_width * box_height / img_height;
+        }
+
+        init(new_width, new_height)
+    }).catch(e => {
+        console.log(e);
     });
-    box.html(html);
+
+    function init(new_width, new_height) {
+        let rowLen = 3, colLen = 5;
+
+        // 单元宽高
+        const cell_w = Math.floor(box_width / rowLen);
+        const cell_h = box_height / colLen;
+        // 单元格总数
+        const cell_num = rowLen * colLen;
+        // 循环生成
+        let html = ``;
+        new Array(cell_num).fill('').forEach((item, i) => {
+            let str = ``;
+            imgArr.forEach((url, j) => {
+                let transform = '';
+                if (j === 0) transform = `transform: rotateY(0)`;
+                if (j === 1) transform = `transform: rotateY(90deg)`;
+                if (j === 2) transform = `transform: rotateY(180deg)`;
+                if (j === 3) transform = `transform: rotateY(270deg)`;
+                const bpx = i % rowLen * cell_w;
+                const bpy = Math.floor(i / rowLen) * cell_h;
+                str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${new_width}px ${new_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 20s ${0.04 * i + 2}s infinite"></div>`;
+            });
+            html += `<div style="transform-style: preserve-3d; float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
+        });
+        box.html(html);
+    }
+
+    // 获取图片宽高
+    function getImageSizeByUrl(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function () {
+                resolve({ w: img.width, h: img.height });
+            }
+            img.onerror = function (e) {
+                reject(e);
+            }
+            img.src = src;
+        })
+    }
+    getImageSizeByUrl(imgArr[0]);
 };
 // 日期格式化
 export const formateDate = function (date) {

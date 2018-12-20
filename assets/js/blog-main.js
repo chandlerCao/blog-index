@@ -1,5 +1,5 @@
 import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
-import { loading, PageUp } from '../com/com';
+import { Loading, PageUp } from '../com/com';
 const mainBox = $('#main-box');
 const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};
@@ -10,6 +10,20 @@ window.onhashchange = function (e) {
     const oldHash = oldURL.split('#')[1];
     get_component_by_hash(newHash, oldHash);
 };
+// 侧边栏3d图片切换
+; (function () {
+    // 引入服务器上的地址
+    $(window).on('resize.initBg', () => {
+        let bg_dir;
+        if ($(window).width() > 1000) bg_dir = 'large';
+        else if ($(window).width() > 600) bg_dir = 'medium';
+        else bg_dir = 'small';
+        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
+    });
+    setTimeout(() => {
+        $(window).trigger('resize.initBg');
+    }, 500);
+})();
 // canvas雪花
 ; (function () {
     function drawStar(cxt, x, y, r, color) {
@@ -112,7 +126,7 @@ const get_component_by_hash = function (newHash, oldHash) {
     if (new_index > -1) {
         // 请求回调函数，显示loading图
         if (load_prev) load_prev.hide();
-        const load = new loading(mainBox).show();
+        const load = new Loading(mainBox).show();
         load_prev = load;
         // 记录旧元素位置
         if (old_index > -1) {
@@ -168,18 +182,6 @@ const get_component_by_hash = function (newHash, oldHash) {
         // 导航加上高亮
         $(this).addClass('act').siblings().removeClass('act');
     });
-})();
-// 侧边栏3d图片切换
-; (function () {
-    // 引入服务器上的地址
-    $(window).on('resize.initBg', () => {
-        let bg_dir;
-        if ($(window).width() > 1000) bg_dir = 'large';
-        else if ($(window).width() > 600) bg_dir = 'medium';
-        else bg_dir = 'small';
-        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
-    });
-    $(window).trigger('resize.initBg');
 })();
 // 点赞
 ; (function () {

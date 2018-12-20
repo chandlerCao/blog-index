@@ -1,6 +1,6 @@
 export const body = $('body:first');
 // loading图
-export const loading = function () {
+export const Loading = function () {
     this.loading_box = $(`<div class="com-loading-box">
         <div class="com-loading-main">
             <div class="com-loading-item"></div>
@@ -8,17 +8,17 @@ export const loading = function () {
             <div class="com-loading-item"></div>
         </div>
     </div>`);
-    loading.prototype.show = function () {
+    Loading.prototype.show = function () {
         this.loading_box.appendTo($(document.body));
         return this;
     }
-    loading.prototype.hide = function () {
+    Loading.prototype.hide = function () {
         this.loading_box.remove();
         return this;
     }
 };
 // 分页
-export const page = function (opts) {
+export const Page = function (opts) {
     /**
      * 父级: par
      * 总条数: total
@@ -30,6 +30,7 @@ export const page = function (opts) {
      */
     this.el = opts.par || $();
     this.total = opts.total || 0;
+    if (this.total < 1) return;
     this.page_size = opts.page_size || 0;
     this.now_page = opts.now_page || 1;
     this.url = opts.url || 'javascript:;';
@@ -37,7 +38,7 @@ export const page = function (opts) {
     this.on_change = opts.on_change || function () { };
     this.page_len = Math.ceil(this.total / this.page_size);
     // 初始化
-    page.prototype.init = function () {
+    Page.prototype.init = function () {
         this.el.append(`<div class="com-page-box">
                 <span class="com-page-total">共 ${this.total} 条</span>
                 <div class="com-page-ul">${this.create_page_num()}</div>
@@ -45,7 +46,7 @@ export const page = function (opts) {
         `);
     }
     // 循环出页码
-    page.prototype.create_page_num = function () {
+    Page.prototype.create_page_num = function () {
         // 多少页
         const page_len = this.page_len;
         let list_str = '';
@@ -96,7 +97,7 @@ export const page = function (opts) {
         return list_str;
     }
     // 分页事件监听
-    page.prototype.page_listener = function () {
+    Page.prototype.page_listener = function () {
         const _this = this;
         // num鼠标移入
         this.el.find('.com-page-num').on('click', function () {
@@ -125,13 +126,13 @@ export const page = function (opts) {
             if (_this.now_page !== _this.page_len) _this.Page_remove_active($(this));
         });
     }
-    page.prototype.Page_add_active = function (page_el) {
+    Page.prototype.Page_add_active = function (page_el) {
         page_el.css({
             border: `1px solid ${this.theme}`,
             color: this.theme
         });
     }
-    page.prototype.Page_remove_active = function (page_el) {
+    Page.prototype.Page_remove_active = function (page_el) {
         page_el.css({
             border: '1px solid #dcdee2',
             color: '#000'
