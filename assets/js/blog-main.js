@@ -151,7 +151,6 @@ const get_component_by_hash = function (newHash, oldHash) {
             });
         }
     } else {
-        window.location.reload();
         window.location.hash = navData[0].href;
     }
 };

@@ -1,6 +1,5 @@
 import { Page } from '../com/com';
-// 后台端口
-export const host = 'http://192.168.1.34:1111';
+export const host = '';
 // 路由
 export const navData = [
     {
@@ -8,6 +7,7 @@ export const navData = [
         'name': 'technology',
         'href': '#article?type=technology&page=1',
         'text': '前端',
+        'target': '',
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
         'reqUrl': '/index/article/getArticleList',
@@ -19,6 +19,7 @@ export const navData = [
                         // 格式化日期
                         articleItem.date = articleItem.date.split('T')[0];
                     });
+                    console.log(articleData);
                     const arrText = doT.template(tmp.articleTmp);
                     // 博客盒子
                     this.element.html(arrText(articleData));
@@ -46,6 +47,7 @@ export const navData = [
         'name': 'live',
         'href': '#article?type=live&page=1',
         'text': '生活',
+        'target': '',
         'icon': 'fa fa-coffee',
         'element': $('<section id="live-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleList',
@@ -79,8 +81,9 @@ export const navData = [
     },
     {
         'reg': /^aboutMe$/,
-        'href': 'https://www.baidu.com',
+        'href': 'http://resume.caodj.cn',
         'text': '简历',
+        'target': 'target="_blank"',
         'icon': 'fa fa-book',
         'element': $('<section id="mood-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleList'
@@ -319,7 +322,7 @@ export const toZero = function (num) {
 export const tmp = {
     navTmp: `{{~it:nav}}
     <li class="nav-item" data-reg="{{=nav.reg}}">
-        <a href="{{=nav.href}}" class="nav-outer">
+        <a href="{{=nav.href}}" class="nav-outer" {{=nav.target}}>
             <span class="nav-inner">
                 <i class="nav-icon {{=nav.icon}}"></i>
                 <span class="nav-text">{{=nav.text}}</span>
