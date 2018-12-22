@@ -1,5 +1,5 @@
 import { Page } from '../com/com';
-export const host = '';
+export const host = 'http://localhost:1111';
 // 路由
 export const navData = [
     {
