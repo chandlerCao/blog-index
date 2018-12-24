@@ -9,15 +9,15 @@ const isDev = process.env.mode === 'development';
 // 抽离css
 const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const lessExtract = new extractTextWebpackPlugin({
-    filename: 'css/[hash].css',
+    filename: 'css/[name]-[hash:8].css',
 });
 const config = {
     entry: {
         blog: path.join(__dirname, 'app.js')
     },
     output: {
-        path: path.join(__dirname, 'build'),
-        filename: 'js/[hash].js'
+        path: path.join(__dirname, '../koa-blog/index/view'),
+        filename: 'js/[name]-[hash:8].js'
     },
     module: {
         rules: [
@@ -46,7 +46,7 @@ const config = {
                         loader: 'url-loader',
                         options: {
                             publicPath: '../',
-                            name: 'img/[hash].[ext]', // 将要打包的哪个文件夹下
+                            name: 'img/[name]-[hash:8].[ext]', // 将要打包的哪个文件夹下
                             limit: 1024
                         }
                     }
@@ -92,6 +92,6 @@ if (isDev) {
     );
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin(['build']));
+    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
 }
 module.exports = config;

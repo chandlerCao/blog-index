@@ -146,12 +146,10 @@ const get_component_by_hash = function (newHash, oldHash) {
                 // 新元素滚动到上一次位置
                 let scrollTop = 0;
                 if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
-                // app.scrollTop(scrollTop);
                 app.animate({ 'scrollTop': scrollTop }, 300);
             });
         }
     } else {
-        window.location.reload();
         window.location.hash = navData[0].href;
     }
 };
