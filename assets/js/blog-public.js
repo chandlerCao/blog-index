@@ -1,10 +1,5 @@
 import { Page } from '../com/com';
-<<<<<<< HEAD
-// 后台端口
-export const host = 'http://192.168.1.35:1111';
-=======
 export const host = 'http://localhost:1111';
->>>>>>> 9434ec30060f088df9114fed3fdbb3017a8eb977
 // 路由
 export const navData = [
     {
