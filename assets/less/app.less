@@ -176,50 +176,6 @@
             background-repeat: no-repeat;
             background-position: center center;
         }
-        /* 附属信息 */
-        .art-meta {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            white-space: nowrap;
-            color: @color;
-            margin-top: 14px;
-            .art-icon {
-                margin-right: 30px;
-            }
-            /* 点赞 */
-            .art-heart {
-                position: relative;
-                .art-icon__text {
-                    padding-left: 15px;
-                }
-            }
-            .heart-icon__pic {
-                position: absolute;
-                width: 30px;
-                height: 35px;
-                left: -8px;
-                top: -10px;
-                background-image: url(../img/zan.png);
-                background-repeat: no-repeat;
-                cursor: pointer;
-                z-index: 1000;
-                background-size: 3900%;
-                background-position-x: -6px;
-                background-position-y: -1px;
-            }
-            .heart-icon__text {
-                padding-left: 15px;
-            }
-        }
-        .art-heart.act .heart-icon__pic {
-            display: inline-block;
-            animation-name: heartBlast;
-            animation-duration: .8s;
-            animation-iteration-count: 1;
-            animation-timing-function: steps(28);
-            background-position-x: -1136px;
-        }
         @keyframes heartBlast {
             0% {
                 background-position-x: -6px;
@@ -278,6 +234,54 @@
             opacity: 0;
         }
     }
+}
+
+/* 附属信息 */
+
+.art-meta {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    white-space: nowrap;
+    color: @color;
+    margin-top: 14px;
+}
+
+/* 点赞 */
+
+.art-heart {
+    position: relative;
+    .art-icon__text {
+        padding-left: 15px;
+    }
+}
+
+.heart-icon__pic {
+    position: absolute;
+    width: 30px !important;
+    height: 35px !important;
+    left: -8px;
+    top: -10px;
+    background-image: url(../img/zan.png);
+    background-repeat: no-repeat;
+    cursor: pointer;
+    z-index: 1000;
+    background-size: 3900% !important;
+    background-position-x: -6px !important;
+    background-position-y: -1px !important;
+}
+
+.heart-icon__text {
+    padding-left: 15px !important;
+}
+
+.art-heart.act .heart-icon__pic {
+    display: inline-block;
+    animation-name: heartBlast;
+    animation-duration: .8s;
+    animation-iteration-count: 1;
+    animation-timing-function: steps(28);
+    background-position-x: -1136px !important;
 }
 
 @media all and (max-width: 1200px) {

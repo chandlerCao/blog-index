@@ -85,7 +85,7 @@
     left: 0;
     top: 0;
     z-index: 999;
-    background-color: rgba(0, 0, 0, .005);
+    background-color: rgba(255, 255, 255, .5);
     .com-loading-main {
         position: fixed;
         width: 50px;
@@ -285,3 +285,36 @@
     cursor: pointer;
     box-shadow: 1px 1px 0 #d3e6fc;
 }
+
+.ml(@i) when (@i > 0) {
+    .ml(@i - 10);
+    .ml@{i} {
+        margin-left: @i * 1px;
+    }
+}
+
+.ml(100);
+.mr(@i) when (@i > 0) {
+    .mr(@i - 10);
+    .mr@{i} {
+        margin-right: @i * 1px;
+    }
+}
+
+.mr(100);
+.mt(@i) when (@i > 0) {
+    .mt(@i - 10);
+    .mt@{i} {
+        margin-top: @i * 1px;
+    }
+}
+
+.mt(100);
+.mb(@i) when (@i > 0) {
+    .mb(@i - 10);
+    .mb@{i} {
+        margin-bottom: @i * 1px;
+    }
+}
+
+.mb(100);

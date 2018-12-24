@@ -9,7 +9,7 @@ const isDev = process.env.mode === 'development';
 // 抽离css
 const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const lessExtract = new extractTextWebpackPlugin({
-    filename: 'css/[name]-[hash:8].css',
+    filename: 'css/[name]-[hash:8].css'
 });
 const config = {
     entry: {

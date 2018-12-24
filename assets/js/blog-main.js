@@ -22,7 +22,7 @@ window.onhashchange = function (e) {
     });
     setTimeout(() => {
         $(window).trigger('resize.initBg');
-    }, 500);
+    }, 1000);
 })();
 // canvas雪花
 ; (function () {

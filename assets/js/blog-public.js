@@ -1,5 +1,6 @@
 import { Page } from '../com/com';
-export const host = 'http://localhost:1111';
+export const host = 'http://192.168.1.34:1111';
+// 路由
 export const navData = [
     {
         'reg': /^article\?type=technology&page=(\d+)$/,
@@ -123,77 +124,60 @@ export const navData = [
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
         'reqUrl': '/index/article/getArticleCnt',
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                ajax(this.reqUrl, data).then(data => {
-                    if (data.code === 0) {
-                        let {
-                            title,
-                            preface,
-                            markdownHtml,
-                            cover,
-                            date,
-                            like_count,
-                            read_count
-                        } = data.articleContent;
-                        // 格式化日期
-                        date = date.split('T')[0];
-                        // 匹配h标签正则
-                        const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
-                        // 每一个标题
-                        let catalogCache, catalogStr = '';
-                        // 正则匹配文章标题
-                        while ((catalogCache = re.exec(markdownHtml)) !== null) {
-                            const tag = catalogCache[1];
-                            const id = catalogCache[2];
-                            const html = catalogCache[3];
-                            catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
-                            <a href="javascript:;" class="catalog-link">${html}</a></div>`;
-                        }
-                        // 获取文章内容div
-                        const markdown_main = $(`
-                        <div id="markdown-main" class="markdown-main com-scroll">
-                            <!-- 文字标题 -->
-                            <div class="markdown-title">
-                                <h1>${title}</h1>
-                            </div>
-                            <!-- 文章元信息 -->
-                            <div class="markdown-meta">
-                                <time class="com-icon meta-time">
-                                    <i class="com-icon__pic calendar-icon">&nbsp;</i>
-                                    <span class="com-icon__text">${date}</span>
-                                </time>
-                                <span class="com-icon meta-comment">
-                                    <i class="com-icon__pic heart-icon">&nbsp;</i>
-                                    <span class="com-icon__text">喜欢(${like_count})</span>
-                                </span>
-                                <span class="com-icon meta-like">
-                                    <i class="com-icon__pic eye-icon">&nbsp;</i>
-                                    <span class="com-icon__text">阅读(${read_count})</span>
-                                </span>
-                            </div>
-                            <div class="markdown-preface">${preface}</div>
-                            <div class="markdown-cover" style="background-image: url(${cover})"></div>
-                            <div class="markdown-content">
-                                ${markdownHtml}
-                            </div>
-                        </div>
-                        <!-- 目录 -->
-                        <div class="markdown-catalog com-scroll">
-                            <div class="markdown-catalog-title">目录</div>
-                            ${catalogStr}
-                        </div>`).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
+        'fns': {
+            // 目录点击
+            'createCatalog'(text = '') {
+                // 匹配h标签正则
+                const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
+                // 每一个标题
+                let catalogCache, catalogStr = '';
+                // 正则匹配文章标题
+                while ((catalogCache = re.exec(text)) !== null) {
+                    const tag = catalogCache[1];
+                    const id = catalogCache[2];
+                    const html = catalogCache[3];
+                    catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
+                    <a href="javascript:;" class="catalog-link">${html}</a></div>`;
+                }
+                return {
+                    catalogStr,
+                    handler(scroll_el) {
                         // 目录点击事件
                         const catalogItem = $('.catalog-item');
                         catalogItem.each(function (i, catalog) {
                             const id = $(this).data('id');
-                            $(catalog).data('top', $('#' + id).offset().top - 40);
+                            $(catalog).data('top', $('#' + id).position().top - 30);
                             $(catalog).click(function () {
                                 catalogItem.removeClass('act');
                                 $(this).addClass('act');
-                                markdown_main.stop().animate({ 'scrollTop': $(this).data('top') }, 400);
+                                scroll_el.stop().animate({ 'scrollTop': $(this).data('top') }, 400);
                             });
                         });
+                    }
+                };
+            },
+            // 日期格式化
+            'dateFormatter'(date) {
+                return date.split('T')[0];
+            }
+        },
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                ajax(this.reqUrl, data).then(data => {
+                    if (data.code === 0) {
+                        // 文章数据
+                        const { articleContent } = data;
+                        // 格式化日期
+                        articleContent.date = this.fns.dateFormatter(articleContent.date);
+                        // 生成目录
+                        const catalogRes = this.fns.createCatalog(articleContent.markdownHtml);
+                        articleContent.catalog = catalogRes.catalogStr;
+                        // 生成文字模板 dot
+                        var markdown_cnt = doT.template(tmp.articleCntTmp)(articleContent);
+                        // 获取文章内容div
+                        const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
+                        // 执行目录点击事件
+                        catalogRes.handler(markdown_main);
                         resolve();
                     }
                 })
@@ -257,7 +241,6 @@ export const picture3DSwitch = function (box, imgArr) {
 
         init(new_width, new_height)
     }).catch(e => {
-        console.log(e);
     });
 
     function init(new_width, new_height) {
@@ -315,54 +298,6 @@ export const formateDate = function (date) {
 export const toZero = function (num) {
     return num < 10 ? '0' + num : num;
 };
-// 模板
-export const tmp = {
-    navTmp: `{{~it:nav}}
-    <li class="nav-item" data-reg="{{=nav.reg}}">
-        <a href="{{=nav.href}}" class="nav-outer" {{=nav.target}}>
-            <span class="nav-inner">
-                <i class="nav-icon {{=nav.icon}}"></i>
-                <span class="nav-text">{{=nav.text}}</span>
-            </span>
-        </a>
-    </li>
-    {{~}}`,
-    articleTmp: `{{~it:atc}}
-    <article class="article-item">
-        <div class="art-pretty">
-            <b class="art-dotts"></b>
-            <time class="art-time">
-                {{=atc.date}}
-            </time>
-        </div>
-        <div class="art-main">
-            <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                <div class="art-info">
-                    <h2 class="art-title">{{=atc.title}}</h2>
-                    <h3 class="art-note" title="{{=atc.preface}}">
-                        <span>{{=atc.preface}}</span>
-                    </h3>
-                </div>
-                <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-            </a>
-            <div class="art-meta">
-                <a href="javascript:;" class="com-icon art-heart art-icon {{? atc.is_like }} act {{?}}" data-aid="{{=atc.aid}}">
-                    <i class="com-icon__pic heart-icon__pic"></i>
-                    <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                </a>
-                <a href="javascript:;" class="com-icon art-comment art-icon">
-                    <i class="com-icon__pic eye-icon"></i>
-                    <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                </a>
-                <a href="javascript:;" class="com-icon art-tag art-icon">
-                    <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
-                    <span class="com-icon__text">{{=atc.tag_name}}</span>
-                </a>
-            </div>
-        </div>
-    </article>
-    {{~}}`
-};
 // 本地存储
 export const storage = {
     set(key, value) {
@@ -372,3 +307,87 @@ export const storage = {
         return JSON.parse(window.localStorage.getItem(key));
     }
 }
+// 模板
+export const tmp = {
+    // 导航
+    navTmp: `{{~it:nav}}
+        <li class="nav-item" data-reg="{{=nav.reg}}">
+            <a href="{{=nav.href}}" class="nav-outer" {{=nav.target}}>
+                <span class="nav-inner">
+                    <i class="nav-icon {{=nav.icon}}"></i>
+                    <span class="nav-text">{{=nav.text}}</span>
+                </span>
+            </a>
+        </li>
+    {{~}}`,
+    // 文章列表
+    articleTmp: `{{~it:atc}}
+        <article class="article-item">
+            <div class="art-pretty">
+                <b class="art-dotts"></b>
+                <time class="art-time">
+                    {{=atc.date}}
+                </time>
+            </div>
+            <div class="art-main">
+                <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                    <div class="art-info">
+                        <h2 class="art-title">{{=atc.title}}</h2>
+                        <h3 class="art-note" title="{{=atc.preface}}">
+                            <span>{{=atc.preface}}</span>
+                        </h3>
+                    </div>
+                    <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+                </a>
+                <div class="art-meta">
+                    <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                        <i class="heart-icon__pic"></i>
+                        <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                    </a>
+                    <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                        <i class="com-icon__pic eye-icon"></i>
+                        <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                    </a>
+                    <a href="javascript:;" class="com-icon art-tag art-icon mr20">
+                        <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                        <span class="com-icon__text">{{=atc.tag_name}}</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+    {{~}}`,
+    articleCntTmp: `
+        <div id="markdown-main" class="markdown-main com-scroll">
+            <!-- 文字标题 -->
+            <div class="markdown-title">
+                <h1>{{=it.title}}</h1>
+            </div>
+            <!-- 文章元信息 -->
+            <div class="markdown-meta">
+                <time class="com-icon meta-time mr20">
+                    <i class="com-icon__pic calendar-icon">&nbsp;</i>
+                    <span class="com-icon__text">{{=it.date}}</span>
+                </time>
+                <a href="javascript:;" class="com-icon art-heart art-icon mr20 {{? it.is_like }} act {{?}}" data-aid="ec445fbd4084316720834729">
+                    <i class="com-icon__pic heart-icon__pic"></i>
+                    <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
+                </a>
+                <span class="com-icon meta-like mr20">
+                    <i class="com-icon__pic eye-icon">&nbsp;</i>
+                    <span class="com-icon__text">阅读({{=it.read_count}})</span>
+                </span>
+                <a href="javascript:;" class="com-icon art-tag art-icon mr20">
+                    <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
+                    <span class="com-icon__text">{{=it.tag_name}}</span>
+                </a>
+            </div>
+            <div class="markdown-preface">{{=it.preface}}</div>
+            <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
+            <div class="markdown-content">{{=it.markdownHtml}}</div>
+        </div>
+        <!-- 目录 -->
+        <div class="markdown-catalog com-scroll">
+            <div class="markdown-catalog-title">目录</div>
+            {{=it.catalog}}
+        </div>`
+};
