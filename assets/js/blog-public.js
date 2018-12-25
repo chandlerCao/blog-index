@@ -10,10 +10,9 @@ export const navData = [
         'target': '',
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
-        'reqUrl': '/index/article/getArticleList',
         'cb'(data = {}) {
             return new Promise(resolve => {
-                ajax(this.reqUrl, data).then(({ data }) => {
+                ajax('/index/article/getArticleList', data).then(({ data }) => {
                     const articleData = data.articleList;
                     articleData.map(function (articleItem) {
                         // 格式化日期
@@ -48,10 +47,9 @@ export const navData = [
         'target': '',
         'icon': 'fa fa-coffee',
         'element': $('<section id="live-box" class="blog-element"></section>'),
-        'reqUrl': '/index/article/getArticleList',
         'cb'(data = {}) {
             return new Promise(resolve => {
-                ajax(this.reqUrl, data).then(({ data }) => {
+                ajax('/index/article/getArticleList', data).then(({ data }) => {
                     const articleData = data.articleList;
                     articleData.map(function (articleItem) {
                         // 格式化日期
@@ -74,6 +72,21 @@ export const navData = [
                     });
                     resolve();
                 });
+            })
+        }
+    },
+    {
+        'reg': /^comment\?&page=(\d+)$/,
+        'name': 'comment',
+        'href': '#comment?&page=1',
+        'text': '留言',
+        'target': '',
+        'icon': 'fa fa-comment',
+        'element': $('<section id="comment-box" class="blog-element"></section>'),
+        'cb'(data = {}) {
+            return new Promise(resolve => {
+                this.element.html('留言');
+                resolve();
             })
         }
     },
@@ -189,10 +202,10 @@ export const navData = [
 export const ajax = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            type: "post",
+            type: 'post',
             url: `${host}${url}`,
             data,
-            dataType: "json"
+            dataType: 'json'
         }).done(data => {
             resolve(data);
         }).catch(err => {
