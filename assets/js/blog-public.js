@@ -400,7 +400,9 @@ export const tmp = {
         </div>
         <!-- 目录 -->
         <div class="markdown-catalog com-scroll">
-            <div class="markdown-catalog-title">目录</div>
+            <div class="markdown-catalog-title">
+                <span class="markdown-catalog-item">目录</span>
+            </div>
             {{=it.catalog}}
         </div>`
 };
