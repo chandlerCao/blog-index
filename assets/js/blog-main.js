@@ -134,19 +134,20 @@ const get_component_by_hash = function (newHash, oldHash) {
             navData[old_index].element.empty();
         }
         storage.set('scrollTop', scrollTop_data);
-        navData[new_index].cb(getParmasByHash()).then(() => {
-            load.hide();
-        });
+
         if (navData[new_index] !== navData[old_index]) {
-            // 元素切换
-            element_switch(
-                navData[new_index].element,
-                old_index >= 0 ? navData[old_index].element : $()
-            ).then(() => {
-                // 新元素滚动到上一次位置
-                let scrollTop = 0;
-                if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
-                app.animate({ 'scrollTop': scrollTop }, 300);
+            navData[new_index].cb(getParmasByHash()).then(() => {
+                load.hide();
+                // 元素切换
+                element_switch(
+                    navData[new_index].element,
+                    old_index >= 0 ? navData[old_index].element : $()
+                ).then(() => {
+                    // 新元素滚动到上一次位置
+                    let scrollTop = 0;
+                    if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
+                    app.animate({ 'scrollTop': scrollTop }, 300);
+                });
             });
         }
     } else {

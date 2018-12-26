@@ -320,6 +320,19 @@ export const storage = {
         return JSON.parse(window.localStorage.getItem(key));
     }
 }
+// 图片加载完成
+export const imgload = function (src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function () {
+            resolve(img);
+        }
+        img.onerror = function (e) {
+            reject(e);
+        }
+        img.src = src;
+    })
+}
 // 模板
 export const tmp = {
     // 导航

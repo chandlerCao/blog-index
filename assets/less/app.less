@@ -65,14 +65,14 @@
             padding: 20px;
         }
         .blog-element.enter {
-            animation: enter .35s linear forwards;
+            animation: enter .25s forwards;
         }
         .blog-element.leave {
             position: absolute;
             width: 100%;
             left: 0;
             top: 0;
-            animation: leave .35s linear forwards;
+            animation: leave .25s forwards;
         }
     }
     .article-item {
@@ -111,7 +111,7 @@
             border-style: solid;
             border-color: transparent;
             border-right-color: @blue;
-            left: -19px;
+            left: -20px;
             top: 0;
         }
         .art-dotts {
@@ -221,17 +221,21 @@
     @keyframes enter {
         0% {
             opacity: 0;
+            transform: translateX(30px);
         }
         100% {
             opacity: 1;
+            transform: translateX(0px);
         }
     }
     @keyframes leave {
         0% {
             opacity: 1;
+            transform: translateX(0px);
         }
         100% {
             opacity: 0;
+            transform: translateX(-30px);
         }
     }
 }
@@ -284,7 +288,7 @@
     background-position-x: -1136px !important;
 }
 
-@media all and (max-width: 1200px) {
+@media all and (max-width: 1300px) {
     #main-wrap #main-box {
         float: none;
         margin-right: 0;
