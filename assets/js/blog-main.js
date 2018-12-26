@@ -20,9 +20,7 @@ window.onhashchange = function (e) {
         else bg_dir = 'small';
         picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
     });
-    setTimeout(() => {
-        $(window).trigger('resize.initBg');
-    }, 1000);
+    $(window).trigger('resize.initBg');
 })();
 // canvas雪花
 ; (function () {
@@ -109,7 +107,7 @@ const element_switch = function (newEl, oldEl) {
         timer = setTimeout(function () {
             oldEl.detach();
             resolve();
-        }, 500);
+        }, 250);
     })
 };
 // 通过hash匹配相应的组件
@@ -191,16 +189,13 @@ const get_component_by_hash = function (newHash, oldHash) {
         const aid = $(this).data('aid');
         ajax('/index/article/givealike', { aid }).then(data => {
             like_complete = true;
+            $(this).toggleClass('act');
+            const like_num = $(this).find('.like-num:first');
+            let like_count = parseInt(like_num.text());
             if (data.code === 0) {
-                $(this).addClass('act');
-                const like_num = $(this).find('.like-num:first');
-                let like_count = parseInt(like_num.text());
                 like_num.text((++like_count));
             }
             if (data.code === 1) {
-                $(this).removeClass('act');
-                const like_num = $(this).find('.like-num:first');
-                let like_count = parseInt(like_num.text());
                 like_num.text((--like_count));
             }
         });

@@ -18,7 +18,7 @@ const config = {
         blog: path.join(__dirname, 'app.js')
     },
     output: {
-        path: path.join(__dirname, '../koa-blog/index/view'),
+        path: path.join(__dirname, 'blog'),
         filename: 'js/[name]-[hash:8].js'
     },
     module: {
@@ -94,6 +94,6 @@ if (isDev) {
     );
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
+    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, 'blog')]));
 }
 module.exports = config;

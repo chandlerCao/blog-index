@@ -1,5 +1,5 @@
 import { Page } from '../com/com';
-export const host = 'http://192.168.1.34:1111';
+export const host = 'http://localhost:1111';
 // 路由
 export const navData = [
     {
@@ -209,7 +209,7 @@ export const navData = [
 export const ajax = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            type: 'post',
+            type: 'get',
             url: `${host}${url}`,
             data,
             dataType: 'json'
