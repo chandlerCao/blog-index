@@ -10,33 +10,37 @@ export const navData = [
         'target': '',
         'icon': 'fa fa-html5',
         'element': $(`<section id="article-box" class="blog-element"></section>`),
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                ajax('/index/article/getArticleList', data).then(({ data }) => {
-                    const articleData = data.articleList;
-                    articleData.map(function (articleItem) {
-                        // 格式化日期
-                        articleItem.date = articleItem.date.split('T')[0];
+        'handler': {
+            ajax(data = {}) {
+                return new Promise(resolve => {
+                    ajax('/index/article/getArticleList', data).then(({ data }) => {
+                        resolve(data);
                     });
-                    const arrText = doT.template(tmp.articleTmp);
-                    // 博客盒子
-                    this.element.html(arrText(articleData));
-                    new Page({
-                        par: this.element,
-                        total: data.total,
-                        page_size: data.page_size,
-                        now_page: parseInt(getParmasByHash().page),
-                        theme: '#3b8cff',
-                        url: '#article?page=',
-                        on_change() {
-                            $('#app').animate({
-                                'scrollTop': 0
-                            }, 'fast');
-                        }
-                    });
-                    resolve();
+                })
+            },
+            callback(data = {}) {
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
                 });
-            })
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.html(arrText(articleData));
+                new Page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    theme: '#3b8cff',
+                    url: '#article?page=',
+                    on_change() {
+                        $('#app').animate({
+                            'scrollTop': 0
+                        }, 'fast');
+                    }
+                });
+            }
         }
     },
     {
@@ -136,7 +140,6 @@ export const navData = [
         'reg': /^article\?aid=(\w+)$/,
         'name': 'articleContent',
         'element': $('<section id="markdown-box" class="blog-element"></section>'),
-        'reqUrl': '/index/article/getArticleCnt',
         'fns': {
             // 目录点击
             'createCatalog'(text = '') {
@@ -167,34 +170,38 @@ export const navData = [
                             });
                         });
                     }
-                };
+                }
             },
             // 日期格式化
             'dateFormatter'(date) {
                 return date.split('T')[0];
             }
         },
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                ajax(this.reqUrl, data).then(data => {
-                    if (data.code === 0) {
-                        // 文章数据
-                        const { articleContent } = data;
-                        // 格式化日期
-                        articleContent.date = this.fns.dateFormatter(articleContent.date);
-                        // 生成目录
-                        const catalogRes = this.fns.createCatalog(articleContent.markdownHtml);
-                        articleContent.catalog = catalogRes.catalogStr;
-                        // 生成文字模板 dot
-                        var markdown_cnt = doT.template(tmp.articleCntTmp)(articleContent);
-                        // 获取文章内容div
-                        const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
-                        // 执行目录点击事件
-                        catalogRes.handler(markdown_main);
-                        resolve();
-                    }
+        'handler': {
+            ajax(data = {}) {
+                return new Promise(resolve => {
+                    ajax('/index/article/getArticleCnt', data).then(data => {
+                        if (data.code === 0) {
+                            resolve(data);
+                        }
+                    })
                 })
-            })
+            },
+            callback(data = {}) {
+                // 文章数据
+                const { articleContent } = data;
+                // 格式化日期
+                articleContent.date = this.fns.dateFormatter(articleContent.date);
+                // 生成目录
+                const catalogRes = this.fns.createCatalog(articleContent.markdownHtml);
+                articleContent.catalog = catalogRes.catalogStr;
+                // 生成文字模板 dot
+                var markdown_cnt = doT.template(tmp.articleCntTmp)(articleContent);
+                // 获取文章内容div
+                const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
+                // 执行目录点击事件
+                catalogRes.handler(markdown_main);
+            }
         }
     }
 ];
