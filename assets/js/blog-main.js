@@ -1,4 +1,4 @@
-import { host, picture3DSwitch, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
+import { host, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
 import { Loading, PageUp } from '../com/com';
 const mainBox = $('#main-box');
 const app = $('#app');
@@ -18,7 +18,7 @@ window.onhashchange = function (e) {
         if ($(window).width() > 1000) bg_dir = 'large';
         else if ($(window).width() > 600) bg_dir = 'medium';
         else bg_dir = 'small';
-        picture3DSwitch($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
+        banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
     });
     $(window).trigger('resize.initBg');
 })();

@@ -234,7 +234,7 @@ export const getParmasByHash = function () {
     } else return {};
 };
 // 侧边栏背景切换
-export const picture3DSwitch = function (box, imgArr) {
+export const banner3d = function (box, imgArr) {
     /**
      * box: 父级
      * imgArr 图片数组
