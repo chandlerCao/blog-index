@@ -103,7 +103,7 @@ const element_switch = function (newEl, oldEl) {
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
         setTimeout(() => {
-            oldEl.detach();
+            oldEl.empty().detach();
             resolve();
         }, 500);
     })
