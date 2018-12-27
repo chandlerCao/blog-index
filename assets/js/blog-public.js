@@ -141,7 +141,6 @@ export const navData = [
         'handler': {
             'ajax'(data = {}) {
                 return new Promise(resolve => {
-                    console.log(data);
                     ajax('/index/article/getArticleListByTag', data).then(({ data }) => {
                         resolve(data);
                     });
