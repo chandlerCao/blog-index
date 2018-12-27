@@ -34,7 +34,7 @@ export const Page = function (opts) {
     this.page_size = opts.page_size || 0;
     this.now_page = opts.now_page || 1;
     this.url = opts.url || 'javascript:;';
-    this.theme = opts.theme || '#3b8cff';
+    this.theme = opts.theme || '#424e67';
     this.on_change = opts.on_change || function () { };
     this.page_len = Math.ceil(this.total / this.page_size);
     // 初始化
@@ -99,32 +99,31 @@ export const Page = function (opts) {
     // 分页事件监听
     Page.prototype.page_listener = function () {
         const _this = this;
-        // num鼠标移入
         this.el.find('.com-page-num').on('click', function () {
-            _this.on_change($(this).data('page'));
+            _this.on_change();
         }).on('mouseover', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_add_active($(this));
         }).on('mouseout', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_remove_active($(this));
         });
 
-        // 上页鼠标移入
-        this.el.find('.com-page-prev:first').on('mouseover', function () {
+        // 上页鼠标移入移出
+        this.el.find('.com-page-prev:first').hover(function () {
             if (_this.now_page !== 1) _this.Page_add_active($(this));
-        });
-        // 上页鼠标移出
-        this.el.find('.com-page-prev:first').on('mouseout', function () {
+        }, function () {
             if (_this.now_page !== 1) _this.Page_remove_active($(this));
-        });
+        }).on('click', function () {
+            _this.on_change();
+        })
 
         // 下页鼠标移入
-        this.el.find('.com-page-next').on('mouseover', function () {
+        this.el.find('.com-page-next:first').hover(function () {
             if (_this.now_page !== _this.page_len) _this.Page_add_active($(this));
-        });
-        // 下页鼠标移出
-        this.el.find('.com-page-next').on('mouseout', function () {
+        }, function () {
             if (_this.now_page !== _this.page_len) _this.Page_remove_active($(this));
-        });
+        }).on('click', function () {
+            _this.on_change();
+        })
     }
     Page.prototype.Page_add_active = function (page_el) {
         page_el.css({
