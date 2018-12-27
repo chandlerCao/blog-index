@@ -24,8 +24,8 @@ import { toZero, ajax } from './blog-public';
     let hour_str = '';
     for (let i = 1; i <= 12; i++) {
         hour_str += `<span class="hour-text" style="transform: rotate(${i * 30}deg);">
-                <span style="${i > 9 ? 'left: -9px;' : ''} transform: rotate(${-i * 30}deg);">${i}</span>
-            </span>`;
+            <span style="${i > 9 ? 'left: -9px;' : ''} transform: rotate(${-i * 30}deg);">${i}</span>
+        </span>`;
     }
     hour_num.html(hour_str);
 

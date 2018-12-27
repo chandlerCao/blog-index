@@ -44,9 +44,6 @@
     .calendar-icon {
         background-image: url(../img/calendar.png);
     }
-    .heart-icon {
-        background-image: url(../img/heart.png);
-    }
 }
 
 /* 主板块 */
@@ -54,6 +51,7 @@
 #main-wrap {
     float: left;
     width: 100%;
+    min-height: 1px;
     box-sizing: border-box;
     #main-box {
         position: relative;
@@ -65,14 +63,14 @@
             padding: 20px;
         }
         .blog-element.enter {
-            animation: enter .25s forwards;
+            animation: enter .3s forwards;
         }
         .blog-element.leave {
             position: absolute;
             width: 100%;
             left: 0;
             top: 0;
-            animation: leave .25s forwards;
+            animation: leave .3s forwards;
         }
     }
     .article-item {

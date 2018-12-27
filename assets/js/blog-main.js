@@ -102,12 +102,10 @@ const element_switch = function (newEl, oldEl) {
         newEl.removeClass('leave').addClass('enter');
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
-        // 移除旧元素
-        clearTimeout(timer);
-        timer = setTimeout(function () {
+        setTimeout(() => {
             oldEl.detach();
             resolve();
-        }, 250);
+        }, 500);
     })
 };
 // 通过hash匹配相应的组件
@@ -126,15 +124,14 @@ const get_component_by_hash = function (newHash, oldHash) {
         // 记录旧元素位置
         if (old_index > -1) {
             scrollTop_data[navData[old_index].name] = app.scrollTop();
-            navData[old_index].element.empty();
         }
         storage.set('scrollTop', scrollTop_data);
 
-        if (navData[new_index] !== navData[old_index]) {
-            // 发送当前组件请求
-            navData[new_index].handler.ajax(getParmasByHash()).then(data => {
-                load.hide();
-                // 元素切换
+        // 发送当前组件请求
+        navData[new_index].handler.ajax(getParmasByHash()).then(data => {
+            load.hide();
+            // 元素切换
+            if (navData[new_index] !== navData[old_index]) {
                 element_switch(
                     navData[new_index].element,
                     old_index >= 0 ? navData[old_index].element : $()
@@ -144,10 +141,10 @@ const get_component_by_hash = function (newHash, oldHash) {
                     if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
                     app.animate({ 'scrollTop': scrollTop }, 300);
                 });
-                // 执行当前组件回调函数
-                navData[new_index].handler.callback.call(navData[new_index], data);
-            })
-        }
+            }
+            // 执行当前组件回调函数
+            navData[new_index].handler.callback.call(navData[new_index], data);
+        })
     } else {
         window.location.hash = navData[0].href;
     }

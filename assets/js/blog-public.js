@@ -3,14 +3,14 @@ export const host = 'http://localhost:1111';
 // 路由
 export const navData = [
     {
-        'reg': /^article\?type=technology&page=(\d+)$/,
-        'name': 'technology',
-        'href': '#article?type=technology&page=1',
-        'text': '前端',
-        'target': '',
-        'icon': 'fa fa-html5',
-        'element': $(`<section id="article-box" class="blog-element"></section>`),
-        'handler': {
+        reg: /^article\?type=technology&page=(\d+)$/,
+        name: 'technology',
+        href: '#article?type=technology&page=1',
+        text: '前端',
+        target: '',
+        icon: 'fa fa-html5',
+        element: $(`<section id="article-box" class="blog-element"></section>`),
+        handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
                     ajax('/index/article/getArticleList', data).then(({ data }) => {
@@ -44,96 +44,131 @@ export const navData = [
         }
     },
     {
-        'reg': /^article\?type=live&page=(\d+)$/,
-        'name': 'live',
-        'href': '#article?type=live&page=1',
-        'text': '生活',
-        'target': '',
-        'icon': 'fa fa-coffee',
-        'element': $('<section id="live-box" class="blog-element"></section>'),
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                ajax('/index/article/getArticleList', data).then(({ data }) => {
-                    const articleData = data.articleList;
-                    articleData.map(function (articleItem) {
-                        // 格式化日期
-                        articleItem.date = articleItem.date.split('T')[0];
+        reg: /^article\?type=live&page=(\d+)$/,
+        name: 'live',
+        href: '#article?type=live&page=1',
+        text: '生活',
+        target: '',
+        icon: 'fa fa-coffee',
+        element: $('<section id="live-box" class="blog-element"></section>'),
+        handler: {
+            ajax(data = {}) {
+                return new Promise(resolve => {
+                    ajax('/index/article/getArticleList', data).then(({ data }) => {
+                        resolve(data);
                     });
-                    const arrText = doT.template(tmp.articleTmp);
-                    // 博客盒子
-                    this.element.html(arrText(articleData));
-                    new Page({
-                        par: this.element,
-                        total: data.total,
-                        page_size: data.page_size,
-                        now_page: parseInt(getParmasByHash().page),
-                        url: '#article?page=',
-                        on_change() {
-                            $('#app').animate({
-                                scrollTop: 0
-                            }, 'fast');
-                        }
-                    });
-                    resolve();
+                })
+            },
+            callback(data = {}) {
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
                 });
-            })
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.html(arrText(articleData));
+                new Page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    theme: '#3b8cff',
+                    url: '#article?page=',
+                    on_change() {
+                        $('#app').animate({
+                            'scrollTop': 0
+                        }, 'fast');
+                    }
+                });
+            }
         }
     },
     {
-        'reg': /^comment\?&page=(\d+)$/,
-        'name': 'comment',
-        'href': '#comment?&page=1',
-        'text': '留言',
-        'target': '',
-        'icon': 'fa fa-comment',
-        'element': $('<section id="comment-box" class="blog-element"></section>'),
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                this.element.html('留言');
-                resolve();
-            })
+        reg: /^comment\?&page=(\d+)$/,
+        name: 'comment',
+        href: '#comment?&page=1',
+        text: '留言',
+        target: '',
+        icon: 'fa fa-comment',
+        element: $('<section id="comment-box" class="blog-element"></section>'),
+        handler: {
+            ajax(data = {}) {
+                return new Promise(resolve => {
+                    ajax('/index/article/getArticleList', data).then(({ data }) => {
+                        resolve(data);
+                    });
+                })
+            },
+            callback(data = {}) {
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
+                });
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.html(arrText(articleData));
+                new Page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    theme: '#3b8cff',
+                    url: '#article?page=',
+                    on_change() {
+                        $('#app').animate({
+                            'scrollTop': 0
+                        }, 'fast');
+                    }
+                });
+            }
         }
     },
     {
-        'reg': /^aboutMe$/,
-        'href': 'http://resume.caodj.cn',
-        'text': '简历',
-        'target': 'target="_blank"',
-        'icon': 'fa fa-book',
-        'element': $('<section id="mood-box" class="blog-element"></section>'),
-        'reqUrl': '/index/article/getArticleList'
+        reg: /^aboutMe$/,
+        href: 'http://resume.caodj.cn',
+        text: '简历',
+        target: 'target="_blank"',
+        icon: 'fa fa-book',
+        element: $('<section id="mood-box" class="blog-element"></section>'),
+        reqUrl: '/index/article/getArticleList'
     },
     {
         'reg': /^article\?tag=(\w+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
-        'reqUrl': '/index/article/getArticleListByTag',
-        'cb'(data = {}) {
-            return new Promise(resolve => {
-                ajax(this.reqUrl, data).then(({ data }) => {
-                    const articleData = data.articleList;
-                    articleData.map(function (articleItem) {
-                        // 格式化日期
-                        articleItem.date = articleItem.date.split('T')[0];
+        'handler': {
+            'ajax'(data = {}) {
+                return new Promise(resolve => {
+                    console.log(data);
+                    ajax('/index/article/getArticleListByTag', data).then(({ data }) => {
+                        resolve(data);
                     });
-                    const arrText = doT.template(tmp.articleTmp);
-                    // 博客盒子
-                    this.element.html(arrText(articleData));
-                    new Page({
-                        par: this.element,
-                        total: data.total,
-                        page_size: data.page_size,
-                        now_page: parseInt(getParmasByHash().page),
-                        url: `#article?tid=${getParmasByHash().tid}&page=`,
-                        on_change() {
-                            $('#app').animate({
-                                scrollTop: 0
-                            }, 'fast');
-                        }
-                    });
-                    resolve();
+                })
+            },
+            'callback'(data = {}) {
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = articleItem.date.split('T')[0];
                 });
-            })
+                const arrText = doT.template(tmp.articleTmp);
+                // 博客盒子
+                this.element.html(arrText(articleData));
+                new Page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    url: `#article?tag=${getParmasByHash().tag}&page=`,
+                    on_change() {
+                        $('#app').animate({
+                            scrollTop: 0
+                        }, 'fast');
+                    }
+                });
+            }
         }
     },
     {
