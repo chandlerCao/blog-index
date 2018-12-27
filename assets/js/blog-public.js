@@ -32,6 +32,7 @@ export const navData = [
                     total: data.total,
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
+                    theme: '#7297ff',
                     url: '#article?type=technology&page=',
                     on_change() {
                         $('#app').animate({
@@ -73,6 +74,7 @@ export const navData = [
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
                     url: '#article?type=live&page=',
+                    theme: '#7297ff',
                     on_change() {
                         $('#app').animate({
                             'scrollTop': 0
@@ -114,6 +116,7 @@ export const navData = [
                     now_page: parseInt(getParmasByHash().page),
                     theme: '#3b8cff',
                     url: '#article?page=',
+                    theme: '#7297ff',
                     on_change() {
                         $('#app').animate({
                             'scrollTop': 0
@@ -159,6 +162,7 @@ export const navData = [
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
                     url: `#article?tag=${getParmasByHash().tag}&page=`,
+                    theme: '#7297ff',
                     on_change() {
                         $('#app').animate({
                             scrollTop: 0
