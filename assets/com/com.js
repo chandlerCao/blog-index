@@ -13,7 +13,9 @@ export const Loading = function () {
         return this;
     }
     Loading.prototype.hide = function () {
-        this.loading_box.remove();
+        this.loading_box.fadeOut(100, function () {
+            $(this).remove();
+        });
         return this;
     }
 };
