@@ -1,5 +1,7 @@
 import { Page } from '../com/com';
 export const host = 'http://192.168.1.34:1111';
+// app
+export const app = $('#app');
 // 路由
 export const navData = [
     {
@@ -35,7 +37,7 @@ export const navData = [
                     theme: '#7297ff',
                     url: '#article?type=technology&page=',
                     on_change() {
-                        $('#app').animate({
+                        app.animate({
                             'scrollTop': 0
                         }, 'fast');
                     }
@@ -76,7 +78,7 @@ export const navData = [
                     url: '#article?type=live&page=',
                     theme: '#7297ff',
                     on_change() {
-                        $('#app').animate({
+                        app.animate({
                             'scrollTop': 0
                         }, 'fast');
                     }
@@ -118,7 +120,7 @@ export const navData = [
                     url: '#article?page=',
                     theme: '#7297ff',
                     on_change() {
-                        $('#app').animate({
+                        app.animate({
                             'scrollTop': 0
                         }, 'fast');
                     }
@@ -164,7 +166,7 @@ export const navData = [
                     url: `#article?tag=${getParmasByHash().tag}&page=`,
                     theme: '#7297ff',
                     on_change() {
-                        $('#app').animate({
+                        app.animate({
                             scrollTop: 0
                         }, 'fast');
                     }
@@ -352,7 +354,7 @@ export const formateDate = function (date) {
 // 转为0
 export const toZero = function (num) {
     return num < 10 ? '0' + num : num;
-};
+}
 // 本地存储
 export const storage = {
     set(key, value) {

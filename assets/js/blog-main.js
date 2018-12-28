@@ -1,7 +1,6 @@
-import { host, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
+import { host, app, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
 import { Loading, PageUp } from '../com/com';
 const mainBox = $('#main-box');
-const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
