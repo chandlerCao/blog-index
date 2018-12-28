@@ -139,15 +139,15 @@ export const navData = [
         'reg': /^article\?tag=(\w+)&page=(\d+)$/,
         'name': 'articleTagList',
         'element': $('<section id="article-tag-box" class="blog-element"></section>'),
-        'handler': {
-            'ajax'(data = {}) {
+        handler: {
+            ajax(data = {}) {
                 return new Promise(resolve => {
                     ajax('/index/article/getArticleListByTag', data).then(({ data }) => {
                         resolve(data);
                     });
                 })
             },
-            'callback'(data = {}) {
+            callback(data = {}) {
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
@@ -213,7 +213,7 @@ export const navData = [
                 return date.split('T')[0];
             }
         },
-        'handler': {
+        handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
                     ajax('/index/article/getArticleCnt', data).then(data => {
@@ -255,7 +255,7 @@ export const ajax = function (url, data = {}) {
             reject(err);
         });
     });
-};
+}
 // 获取hash动态路径参数
 export const getParmasByHash = function () {
     const hash = window.location.hash;
@@ -268,7 +268,7 @@ export const getParmasByHash = function () {
         });
         return data;
     } else return {};
-};
+}
 // 侧边栏背景切换
 export const banner3d = function (box, imgArr) {
     /**
@@ -339,8 +339,7 @@ export const banner3d = function (box, imgArr) {
             img.src = src;
         })
     }
-    getImageSizeByUrl(imgArr[0]);
-};
+}
 // 日期格式化
 export const formateDate = function (date) {
     const new_date = date.slice(0, date.length - 5).replace('T', ' ');
@@ -349,7 +348,7 @@ export const formateDate = function (date) {
     // 增加八个小时
     const new_hour = toZero(hour + 8);
     return new_date.replace(/\s(\d+)/, ' ' + new_hour);
-};
+}
 // 转为0
 export const toZero = function (num) {
     return num < 10 ? '0' + num : num;
@@ -461,4 +460,4 @@ export const tmp = {
             </div>
             {{=it.catalog}}
         </div>`
-};
+}

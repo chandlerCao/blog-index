@@ -18,7 +18,7 @@ export const Loading = function () {
         });
         return this;
     }
-};
+}
 // 分页
 export const Page = function (opts) {
     /**
