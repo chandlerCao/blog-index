@@ -1,5 +1,5 @@
 import { host, app, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
-import { Loading, PageUp } from '../com/com';
+import { Loading, PageUp } from '../com/js/com';
 const mainBox = $('#main-box');
 const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置

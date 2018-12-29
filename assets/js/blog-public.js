@@ -1,4 +1,4 @@
-import { Page } from '../com/com';
+import { Page } from '../com/js/com';
 export const host = 'http://192.168.1.34:1111';
 // app
 export const app = $('#app');

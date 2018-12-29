@@ -272,18 +272,19 @@
 
 // 回到顶部
 .com-page-up {
+    @size: 40px;
     position: fixed;
-    width: 60px;
-    height: 60px;
+    width: @size;
+    height: @size;
+    font-size: @size / 2;
     line-height: 2;
     right: 20px;
     bottom: 20px;
     text-align: center;
-    font-size: 30px;
     background-color: #fff;
     color: @blue;
     border-radius: 50%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, .05);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .15);
     cursor: pointer;
 }
 
