@@ -20,7 +20,9 @@ window.onhashchange = function (e) {
         else bg_dir = 'small';
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
     });
-    $(window).trigger('resize.initBg');
+    setTimeout(() => {
+        $(window).trigger('resize.initBg');
+    }, 0);
 })();
 // canvas雪花
 ; (function () {
