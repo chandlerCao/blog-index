@@ -1,4 +1,4 @@
-import { Tooltip } from "../com/com";
+import { Tooltip } from "../com/js/com";
 import { imgload } from "./blog-public";
 // 联系方式
 ; (function () {

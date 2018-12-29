@@ -18,7 +18,7 @@ export const Loading = function () {
         });
         return this;
     }
-};
+}
 // 分页
 export const Page = function (opts) {
     /**
@@ -193,16 +193,20 @@ export const PageUp = function (opts) {
         <i class="fa fa-caret-up"></i>
     </div>`);
     this.parent_el.append(this.pageup_btn);
-    PageUp.prototype.handler = function () {
-        // 鼠标移入动画效果
-        // 点击按钮回到顶部
-        this.pageup_btn.click(() => {
-            this.scroll_el.animate({ 'scrollTop': 0 }, 300);
-        }).hover(function () {
-            $(this).addClass('rubberBand animated');
-        }, function () {
+
+    // top按钮动画
+    PageUp.prototype.animateEnd = function () {
+        this.pageup_btn.on('animationEnd webkitAnimationEnd', function () {
             $(this).removeClass('rubberBand animated');
-        })
+        });
+    }
+    // 回到顶部
+    PageUp.prototype.handler = function () {
+        this.pageup_btn.click(() => {
+            this.pageup_btn.addClass('rubberBand animated');
+            this.scroll_el.animate({ 'scrollTop': 0 }, 300);
+        });
     }
     this.handler();
+    this.animateEnd();
 }

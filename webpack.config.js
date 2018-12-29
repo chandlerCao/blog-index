@@ -8,8 +8,6 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const isDev = process.env.mode === 'development';
 // 抽离css
 const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
-// 压缩css
-const miniCssExtractPlugin = require('mini-css-extract-plugin');
 const lessExtract = new extractTextWebpackPlugin({
     filename: 'css/[name]-[hash:8].css',
 });

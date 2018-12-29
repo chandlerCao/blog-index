@@ -1,7 +1,6 @@
-import { host, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
-import { Loading, PageUp } from '../com/com';
+import { host, app, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
+import { Loading, PageUp } from '../com/js/com';
 const mainBox = $('#main-box');
-const app = $('#app');
 const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
@@ -26,8 +25,9 @@ window.onhashchange = function (e) {
 })();
 // canvas雪花
 ; (function () {
-    function drawStar(cxt, x, y, r, color) {
-        let r2 = r / 2.5;
+    function drawObj(cxt, x, y, r, color) {
+        /**星星 */
+        /* let r2 = r / 2.5;
         cxt.beginPath();
         for (let i = 0; i < 5; i++) {
             cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
@@ -36,7 +36,17 @@ window.onhashchange = function (e) {
         cxt.closePath();
         //设置边框样式以及填充颜色
         cxt.fillStyle = color;
-        cxt.fill();
+        cxt.fill(); */
+        /**星星 */
+
+        /**雪花 */
+        cxt.beginPath();
+        var img = new Image();
+        img.src = './assets/img/snow.png';
+        cxt.drawImage(img, x, y);
+        cxt.closePath();
+        /**雪花 */
+
     }
     const c = $('#canvasBg');
     const g = c[0].getContext('2d');
@@ -78,7 +88,7 @@ window.onhashchange = function (e) {
         for (let i = 0; i < starLen; i++) {
             // y轴加
             snowArr[i].y += snowArr[i].speedY;
-            if (snowArr[i].y >= win.height() + snowArr[i].r) snowArr[i].y = -snowArr[i].r;
+            if (snowArr[i].y >= win.height()) snowArr[i].y = -snowArr[i].r;
 
             snowArr[i].xNum--;
             if (snowArr[i].xNum === -360) snowArr[i].xNum = 0;
@@ -86,11 +96,11 @@ window.onhashchange = function (e) {
             snowArr[i].x = snowArr[i].startX - snowArr[i].range * Math.sin(Math.PI / 180 * snowArr[i].xNum);
 
             // g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
-            drawStar(g, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
+            drawObj(g, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
         };
         timer = setTimeout(function () {
             requestAnimationFrame(starFlash);
-        }, 50);
+        }, 20);
     };
 })();
 // 元素切换函数
