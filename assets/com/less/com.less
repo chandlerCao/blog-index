@@ -1,4 +1,12 @@
 @import './com.config.less';
+// 公共block
+.com-block {
+    border-radius: 6px;
+    box-sizing: border-box;
+    padding: 15px 18px;
+    box-shadow: 0px 0px 8px #dfe3f2;
+}
+
 // 按钮
 .com-button {
     display: inline-block;
@@ -278,8 +286,8 @@
     height: @size;
     font-size: @size / 2;
     line-height: @size;
-    right: 20px;
-    bottom: 20px;
+    right: @size / 5;
+    bottom: @size / 5;
     text-align: center;
     background-color: #fff;
     color: @blue;

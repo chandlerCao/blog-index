@@ -5,9 +5,10 @@ const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置
 window.onhashchange = function (e) {
     const { newURL, oldURL } = e;
+    // 获取新旧hash
     const newHash = newURL.split('#')[1];
     const oldHash = oldURL.split('#')[1];
-    get_component_by_hash(newHash, oldHash);
+    getComponent(newHash, oldHash);
 };
 // 侧边栏3d图片切换
 ; (function () {
@@ -42,8 +43,8 @@ window.onhashchange = function (e) {
         /**雪花 */
         cxt.beginPath();
         var img = new Image();
-        img.src = './assets/img/snow.png';
-        cxt.drawImage(img, x, y);
+        img.src = '/assets/img/snow.png';
+        cxt.drawImage(img, x, y, r, r);
         cxt.closePath();
         /**雪花 */
 
@@ -75,7 +76,7 @@ window.onhashchange = function (e) {
                 startX: x,
                 y: random() * c.attr('height'),
                 speedY: 1,
-                r: random() * 8,
+                r: random() * 8 + 8,
                 xNum: 0,
                 range: random() * 40,
             });
@@ -103,10 +104,9 @@ window.onhashchange = function (e) {
         }, 20);
     };
 })();
-// 元素切换函数
-let timer = null;
 // 切换动画效果
-const element_switch = function (newEl, oldEl) {
+let timer = null;
+const componentSwitch = function (newEl, oldEl) {
     return new Promise(resolve => {
         // 添加即将出现的元素
         mainBox.append(newEl);
@@ -114,14 +114,15 @@ const element_switch = function (newEl, oldEl) {
         newEl.removeClass('leave').addClass('enter');
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
-        setTimeout(() => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
             oldEl.empty().detach();
             resolve();
-        }, 500);
+        }, 300);
     })
 };
 // 通过hash匹配相应的组件
-const get_component_by_hash = function (newHash, oldHash) {
+const getComponent = function (newHash, oldHash) {
     // 即将出现组件索引
     let [new_index, old_index] = [-1, -1];
     // 如果能找到对应的hash
@@ -131,20 +132,20 @@ const get_component_by_hash = function (newHash, oldHash) {
     });
     // 如果找到对应的索引
     if (new_index > -1) {
-        // 请求回调函数，显示loading图
+        // 显示loading图
         const load = new Loading(mainBox).show();
-        // 记录旧元素位置
+        // 记录旧元素滚动条位置
         if (old_index > -1) {
             scrollTop_data[navData[old_index].name] = app.scrollTop();
+            // 存储到本地存储
+            storage.set('scrollTop', scrollTop_data);
         }
-        storage.set('scrollTop', scrollTop_data);
-
-        // 发送当前组件请求
+        // 发送当前组件对应请求
         navData[new_index].handler.ajax(getParmasByHash()).then(data => {
             load.hide();
             // 元素切换
             if (navData[new_index] !== navData[old_index]) {
-                element_switch(
+                componentSwitch(
                     navData[new_index].element,
                     old_index >= 0 ? navData[old_index].element : $()
                 ).then(() => {
@@ -158,12 +159,13 @@ const get_component_by_hash = function (newHash, oldHash) {
             navData[new_index].handler.callback.call(navData[new_index], data);
         })
     } else {
+        // 没有找到对应的hash值，默认跳转到第一个
         window.location.hash = navData[0].href;
     }
 };
 // 首次加载
 ; (function () {
-    get_component_by_hash(window.location.hash.substr(1));
+    getComponent(window.location.hash.substr(1));
     $('#head-portrait').addClass('zoomInDown animated');
     $('#intrude-info').addClass('bounceInLeft animated');
 })();
@@ -197,16 +199,9 @@ const get_component_by_hash = function (newHash, oldHash) {
         like_complete = false;
         const aid = $(this).data('aid');
         ajax('/index/article/givealike', { aid }).then(data => {
-            like_complete = true;
             $(this).toggleClass('act');
-            const like_num = $(this).find('.like-num:first');
-            let like_count = parseInt(like_num.text());
-            if (data.code === 0) {
-                like_num.text((++like_count));
-            }
-            if (data.code === 1) {
-                like_num.text((--like_count));
-            }
+            $(this).find('.like-num:first').text(data.likeTotal);
+            like_complete = true;
         });
     });
 })();

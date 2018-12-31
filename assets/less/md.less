@@ -1,25 +1,16 @@
-#markdown-box {
-    height: 100vh;
-    overflow: hidden;
-}
+#markdown-box {}
 
 #markdown-wrap {
-    height: 100%;
-    overflow: hidden;
+    position: relative;
 }
 
 @catalogW: 200px;
 // 文章主要内容
 #markdown-main {
-    float: left;
     position: relative;
     width: calc(100% - @catalogW);
-    height: 100%;
     overflow: auto;
-    box-sizing: border-box;
-    .box-shadow();
-    padding: 18px 20px;
-    border-radius: 6px;
+    .com-block();
     background-color: #fff;
     text-align: justify;
     /* 标题*/
@@ -33,10 +24,11 @@
     }
     /* 附属信息*/
     .markdown-meta {
-        display: block;
+        width: 320px;
+        display: flex;
+        justify-content: space-between;
         font-size: 12px;
-        text-align: center;
-        margin: 16px 0;
+        margin: 16px auto;
     }
     /* 前言*/
     .markdown-preface {
@@ -137,20 +129,28 @@
 }
 
 // 目录
+.markdown-catalog-block {
+    position: absolute;
+    width: @catalogW;
+    height: 200px;
+    right: 0;
+    top: 0;
+    box-sizing: border-box;
+    padding-left: 18px;
+}
+
 .markdown-catalog {
-    float: right;
-    width: @catalogW - 10;
-    height: 100%;
+    position: fixed;
+    width: @catalogW - 20;
+    top: 20px;
     background-color: #fff;
-    .box-shadow();
-    border-radius: 6px;
+    .com-block();
     .markdown-catalog-title {
         font-size: 15px;
         font-weight: bold;
         color: @color;
         text-align: center;
-        padding: 10px 0;
-        margin-bottom: 8px;
+        margin-bottom: 16px;
         letter-spacing: 2px;
         .markdown-catalog-item {
             padding: 3px 8px;
@@ -180,7 +180,7 @@
     }
     .catalog-h1 {
         font-size: 13px;
-        padding-left: 10px;
+        padding-left: 5px;
         .catalog-link:before {
             width: 6px;
             height: 6px;
@@ -190,7 +190,7 @@
     }
     .catalog-h2 {
         font-size: 12px;
-        padding-left: 30px;
+        padding-left: 25px;
         .catalog-link:before {
             width: 5px;
             height: 5px;
@@ -200,7 +200,7 @@
     }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1100px) {
     #markdown-box {
         height: auto;
         padding: 0 !important;

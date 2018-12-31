@@ -1,13 +1,13 @@
-import { toZero, ajax } from './blog-public';
+import { toZero, ajax, app } from './blog-public';
 // 右边栏固定定位
-; (function () {
+const rightBarFixed = () => {
     const side_bar = $('#side-bar');
     const side_bar_pos = side_bar.offset().top + side_bar.height();
-    $('#app').scroll(function () {
+    app.scroll(function () {
         if ($(this).scrollTop() >= side_bar_pos && !side_bar.hasClass('fixed')) side_bar.addClass('fixed');
         else if ($(this).scrollTop() < side_bar_pos && side_bar.hasClass('fixed')) side_bar.removeClass('fixed');
     });
-})();
+};
 // 时钟
 ; (function () {
     const hour_num = $('#hour-num');
@@ -59,5 +59,7 @@ import { toZero, ajax } from './blog-public';
             </a>`;
         });
         tag_box.html(tag_str);
+        // 右边栏自动固定定位
+        rightBarFixed();
     });
 })();

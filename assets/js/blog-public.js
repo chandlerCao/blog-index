@@ -103,28 +103,7 @@ export const navData = [
                 })
             },
             callback(data = {}) {
-                const articleData = data.articleList;
-                articleData.map(function (articleItem) {
-                    // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
-                });
-                const arrText = doT.template(tmp.articleTmp);
-                // 博客盒子
-                this.element.html(arrText(articleData));
-                new Page({
-                    par: this.element,
-                    total: data.total,
-                    page_size: data.page_size,
-                    now_page: parseInt(getParmasByHash().page),
-                    theme: '#3b8cff',
-                    url: '#article?page=',
-                    theme: '#2e97ff',
-                    on_change() {
-                        app.animate({
-                            'scrollTop': 0
-                        }, 'fast');
-                    }
-                });
+                this.element.html('留言');
             }
         }
     },
@@ -236,7 +215,7 @@ export const navData = [
                 // 生成文字模板 dot
                 var markdown_cnt = doT.template(tmp.articleCntTmp)(articleContent);
                 // 获取文章内容div
-                const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap"></div>`).appendTo(this.element));
+                const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
                 catalogRes.handler(markdown_main);
             }
@@ -434,19 +413,19 @@ export const tmp = {
             </div>
             <!-- 文章元信息 -->
             <div class="markdown-meta">
-                <time class="com-icon meta-time mr20">
+                <time class="com-icon meta-time">
                     <i class="com-icon__pic calendar-icon">&nbsp;</i>
                     <span class="com-icon__text">{{=it.date}}</span>
                 </time>
-                <a href="javascript:;" class="com-icon art-heart art-icon mr20 {{? it.is_like }} act {{?}}" data-aid="ec445fbd4084316720834729">
+                <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="ec445fbd4084316720834729">
                     <i class="com-icon__pic heart-icon__pic"></i>
                     <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
                 </a>
-                <span class="com-icon meta-like mr20">
+                <span class="com-icon meta-like">
                     <i class="com-icon__pic eye-icon">&nbsp;</i>
                     <span class="com-icon__text">阅读({{=it.read_count}})</span>
                 </span>
-                <a href="javascript:;" class="com-icon art-tag art-icon mr20">
+                <a href="javascript:;" class="com-icon art-tag art-icon">
                     <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
                     <span class="com-icon__text">{{=it.tag_name}}</span>
                 </a>
@@ -454,12 +433,17 @@ export const tmp = {
             <div class="markdown-preface">{{=it.preface}}</div>
             <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
             <div class="markdown-content">{{=it.markdownHtml}}</div>
+            <div class="markdown-action">
+                
+            </div>
         </div>
         <!-- 目录 -->
-        <div class="markdown-catalog com-scroll">
-            <div class="markdown-catalog-title">
-                <span class="markdown-catalog-item">目录</span>
+        <div class="markdown-catalog-block com-scroll">
+            <div class="markdown-catalog">
+                <div class="markdown-catalog-title">
+                    <span class="markdown-catalog-item">目录</span>
+                </div>
+                {{=it.catalog}}
             </div>
-            {{=it.catalog}}
         </div>`
 }

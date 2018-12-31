@@ -18,6 +18,7 @@
 
 #app {
     height: 100%;
+    position: relative;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -52,7 +53,6 @@
 #main-wrap {
     float: left;
     width: 100%;
-    min-height: 1px;
     box-sizing: border-box;
     #main-box {
         position: relative;
@@ -64,14 +64,14 @@
             padding: 20px;
         }
         .blog-element.enter {
-            animation: enter .3s forwards;
+            animation: enter .3s;
         }
         .blog-element.leave {
             position: absolute;
             width: 100%;
             left: 0;
             top: 0;
-            animation: leave .3s forwards;
+            animation: leave .3s;
         }
     }
     .article-item {
@@ -127,7 +127,7 @@
             background-color: #fff;
             margin-top: 5px;
             padding: 15px 20px;
-            .box-shadow();
+            .com-block();
         }
         .art-wrap {
             display: block;
@@ -264,7 +264,7 @@
     width: 30px !important;
     height: 35px !important;
     left: -8px;
-    top: -10px;
+    top: -11px;
     background-image: url(../img/zan.png);
     background-repeat: no-repeat;
     cursor: pointer;

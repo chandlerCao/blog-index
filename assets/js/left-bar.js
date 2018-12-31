@@ -28,6 +28,12 @@ import { imgload } from "./blog-public";
             content: qqImg.prop('outerHTML')
         });
     });
+    // github
+    new Tooltip({
+        el: $('#github__icon'),
+        theme: 'light',
+        content: 'github'
+    });
     // 邮箱
     new Tooltip({
         el: $('#email__icon'),

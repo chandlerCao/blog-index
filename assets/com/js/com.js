@@ -204,7 +204,7 @@ export const PageUp = function (opts) {
     PageUp.prototype.handler = function () {
         this.pageup_btn.click(() => {
             this.pageup_btn.addClass('rubberBand animated');
-            this.scroll_el.animate({ 'scrollTop': 0 }, 300);
+            this.scroll_el.stop().animate({ 'scrollTop': 0 }, 300);
         });
     }
     this.handler();
