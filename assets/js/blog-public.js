@@ -10,6 +10,41 @@ export const navData = [
         href: '#article?type=technology&page=1',
         text: '前端',
         target: '',
+        articleTmp: `{{~it:atc}}
+            <article class="article-item">
+                <div class="art-pretty">
+                    <b class="art-dotts"></b>
+                    <time class="art-time">
+                        {{=atc.date}}
+                    </time>
+                </div>
+                <div class="art-main">
+                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                        <div class="art-info">
+                            <h2 class="art-title">{{=atc.title}}</h2>
+                            <h3 class="art-note" title="{{=atc.preface}}">
+                                <span>{{=atc.preface}}</span>
+                            </h3>
+                        </div>
+                        <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+                    </a>
+                    <div class="art-meta">
+                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                            <i class="heart-icon__pic"></i>
+                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                        </a>
+                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                            <i class="com-icon__pic eye-icon"></i>
+                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                        </a>
+                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
+                            <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                            <span class="com-icon__text">{{=atc.tag_name}}</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {{~}}`,
         icon: 'fa fa-html5',
         element: $(`<section id="article-box" class="blog-element"></section>`),
         handler: {
@@ -26,7 +61,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(tmp.articleTmp);
+                const arrText = doT.template(this.articleTmp);
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -51,6 +86,41 @@ export const navData = [
         href: '#article?type=live&page=1',
         text: '生活',
         target: '',
+        articleTmp: `{{~it:atc}}
+            <article class="article-item">
+                <div class="art-pretty">
+                    <b class="art-dotts"></b>
+                    <time class="art-time">
+                        {{=atc.date}}
+                    </time>
+                </div>
+                <div class="art-main">
+                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                        <div class="art-info">
+                            <h2 class="art-title">{{=atc.title}}</h2>
+                            <h3 class="art-note" title="{{=atc.preface}}">
+                                <span>{{=atc.preface}}</span>
+                            </h3>
+                        </div>
+                        <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+                    </a>
+                    <div class="art-meta">
+                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                            <i class="heart-icon__pic"></i>
+                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                        </a>
+                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                            <i class="com-icon__pic eye-icon"></i>
+                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                        </a>
+                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
+                            <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                            <span class="com-icon__text">{{=atc.tag_name}}</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {{~}}`,
         icon: 'fa fa-coffee',
         element: $('<section id="live-box" class="blog-element"></section>'),
         handler: {
@@ -67,7 +137,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(tmp.articleTmp);
+                const arrText = doT.template(this.articleTmp);
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -117,9 +187,9 @@ export const navData = [
         reqUrl: '/index/article/getArticleList'
     },
     {
-        'reg': /^article\?tag=(\w+)&page=(\d+)$/,
-        'name': 'articleTagList',
-        'element': $('<section id="article-tag-box" class="blog-element"></section>'),
+        reg: /^article\?tag=(\w+)&page=(\d+)$/,
+        name: 'articleTagList',
+        element: $('<section id="article-tag-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
@@ -154,11 +224,11 @@ export const navData = [
         }
     },
     {
-        'reg': /^article\?aid=(\w+)$/,
-        'name': 'articleContent',
-        'element': $('<section id="markdown-box" class="blog-element"></section>'),
-        'fns': {
-            // 目录点击
+        reg: /^article\?aid=(\w+)$/,
+        name: 'articleContent',
+        element: $('<section id="markdown-box" class="blog-element"></section>'),
+        fns: {
+            // 生成文章目录
             'createCatalog'(text = '') {
                 // 匹配h标签正则
                 const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
@@ -194,6 +264,111 @@ export const navData = [
                 return date.split('T')[0];
             }
         },
+        tmps: {
+            articleMainTmp() {
+                return `<div id="markdown-main" class="markdown-main com-scroll">
+                    <!-- 文字标题 -->
+                    <div class="markdown-title">
+                        <h1>{{=it.title}}</h1>
+                    </div>
+                    <!-- 文章元信息 -->
+                    <div class="markdown-meta">
+                        <time class="com-icon meta-time">
+                            <i class="com-icon__pic calendar-icon">&nbsp;</i>
+                            <span class="com-icon__text">{{=it.date}}</span>
+                        </time>
+                        <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
+                            <i class="com-icon__pic heart-icon__pic"></i>
+                            <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
+                        </a>
+                        <span class="com-icon meta-like">
+                            <i class="com-icon__pic eye-icon">&nbsp;</i>
+                            <span class="com-icon__text">阅读({{=it.read_count}})</span>
+                        </span>
+                        <a href="#article?tag={{=it.tag_name}}&page=1" class="com-icon art-tag art-icon">
+                            <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
+                            <span class="com-icon__text">{{=it.tag_name}}</span>
+                        </a>
+                    </div>
+                    <div class="markdown-preface">{{=it.preface}}</div>
+                    <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
+                    <div class="markdown-content">{{=it.markdownHtml}}</div>
+                    <div class="markdown-comment">
+                        <div class="comment-line">
+                            <span>评论</span>
+                        </div>
+                        <!-- 发布评论框 -->
+                        <div class="publish-box">
+                            <div class="user-face"></div>
+                            <div class="ml50">
+                                <!-- 公共评论输入框 -->
+                                ${this.pubPublishInput()}
+                            </div>
+                        </div>
+                        <!-- 评论列表 -->
+                        <div class="comment-box">
+                            <!-- 评论列表项 -->
+                            <div class="comment-item">
+                                <div class="user-face"></div>
+                                <div class="ml50">
+                                    
+                                    </div>
+                                    <!-- 回复block -->
+                                    <div class="reply-box mt10">
+                                        <!-- 回复列表项 -->
+                                        <div class="reply-item">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 目录 -->
+                <div class="markdown-action com-scroll">
+                    <div class="markdown-catalog">
+                        <div class="markdown-catalog-title">
+                            <span class="markdown-catalog-item">目录</span>
+                        </div>
+                        {{=it.catalog}}
+                    </div>
+                </div>
+                `
+            },
+            // 公共评论输入框
+            pubPublishInput(placeholder = '说点啥呗~') {
+                return `<div class="pub-publish-submit">
+                    <div class="publish-input">
+                        <input type="text" class="com-area comment-input" placeholder="${placeholder}">
+                    </div>
+                    <div class="publish-action clear">
+                        <button type="button" class="publish-btn com-button blue mini"> <i class="fa fa-send"></i> 评论</button>
+                    </div>
+                </div>`;
+            },
+            // 公共评论主要内容展示
+            pub() {
+                return `<div class="pub-publish-content">
+                    <div class="user-name">CDJ</div>
+                <div class="comment-content">你好呀，我觉得你的博客写得非常nice，可不可以加个微信呀~</div>
+                <div class="comment-bar clear mt10">
+                    <div class="com-icon fl">
+                        <i class="com-icon__pic calendar-icon"></i>
+                        <span class="com-icon__text">2018-12-31</span>
+                    </div>
+                    <div class="comment-action fr">
+                        <a href="javascript:;" class="art-heart art-icon act mr20">
+                            <i class="heart-icon__pic"></i>
+                            <span class="heart-icon__text">喜欢(<span class="like-num">5</span>)</span>
+                        </a>
+                        <a href="javascript:;" class="com-icon">
+                            <i class="com-icon__pic reply-icon">&nbsp;</i>
+                            <span class="com-icon__text">回复</span>
+                        </a>
+                    </div>
+                </div>`
+            }
+        },
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
@@ -209,15 +384,15 @@ export const navData = [
                 const { articleContent } = data;
                 // 格式化日期
                 articleContent.date = this.fns.dateFormatter(articleContent.date);
-                // 生成目录
+                // 生成文章目录
                 const catalogRes = this.fns.createCatalog(articleContent.markdownHtml);
                 articleContent.catalog = catalogRes.catalogStr;
                 // 生成文字模板 dot
-                var markdown_cnt = doT.template(tmp.articleCntTmp)(articleContent);
+                var markdown_cnt = doT.template(this.tmps.articleMainTmp())(articleContent);
                 // 获取文章内容div
-                const markdown_main = $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
+                $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
-                catalogRes.handler(markdown_main);
+                catalogRes.handler(app);
             }
         }
     }
@@ -369,81 +544,4 @@ export const tmp = {
             </a>
         </li>
     {{~}}`,
-    // 文章列表
-    articleTmp: `{{~it:atc}}
-        <article class="article-item">
-            <div class="art-pretty">
-                <b class="art-dotts"></b>
-                <time class="art-time">
-                    {{=atc.date}}
-                </time>
-            </div>
-            <div class="art-main">
-                <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                    <div class="art-info">
-                        <h2 class="art-title">{{=atc.title}}</h2>
-                        <h3 class="art-note" title="{{=atc.preface}}">
-                            <span>{{=atc.preface}}</span>
-                        </h3>
-                    </div>
-                    <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-                </a>
-                <div class="art-meta">
-                    <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
-                        <i class="heart-icon__pic"></i>
-                        <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                    </a>
-                    <a href="javascript:;" class="com-icon art-comment art-icon mr20">
-                        <i class="com-icon__pic eye-icon"></i>
-                        <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                    </a>
-                    <a href="javascript:;" class="com-icon art-tag art-icon mr20">
-                        <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
-                        <span class="com-icon__text">{{=atc.tag_name}}</span>
-                    </a>
-                </div>
-            </div>
-        </article>
-    {{~}}`,
-    articleCntTmp: `
-        <div id="markdown-main" class="markdown-main com-scroll">
-            <!-- 文字标题 -->
-            <div class="markdown-title">
-                <h1>{{=it.title}}</h1>
-            </div>
-            <!-- 文章元信息 -->
-            <div class="markdown-meta">
-                <time class="com-icon meta-time">
-                    <i class="com-icon__pic calendar-icon">&nbsp;</i>
-                    <span class="com-icon__text">{{=it.date}}</span>
-                </time>
-                <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="ec445fbd4084316720834729">
-                    <i class="com-icon__pic heart-icon__pic"></i>
-                    <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
-                </a>
-                <span class="com-icon meta-like">
-                    <i class="com-icon__pic eye-icon">&nbsp;</i>
-                    <span class="com-icon__text">阅读({{=it.read_count}})</span>
-                </span>
-                <a href="javascript:;" class="com-icon art-tag art-icon">
-                    <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
-                    <span class="com-icon__text">{{=it.tag_name}}</span>
-                </a>
-            </div>
-            <div class="markdown-preface">{{=it.preface}}</div>
-            <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
-            <div class="markdown-content">{{=it.markdownHtml}}</div>
-            <div class="markdown-action">
-                
-            </div>
-        </div>
-        <!-- 目录 -->
-        <div class="markdown-catalog-block com-scroll">
-            <div class="markdown-catalog">
-                <div class="markdown-catalog-title">
-                    <span class="markdown-catalog-item">目录</span>
-                </div>
-                {{=it.catalog}}
-            </div>
-        </div>`
 }

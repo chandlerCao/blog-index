@@ -54,12 +54,13 @@ const rightBarFixed = () => {
         const tagData = data.tagList || [];
         let tag_str = '';
         tagData.forEach(tag_item => {
-            tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="tag-item" title="${tag_item.tag_name}">
-                <span class="tag-text">${tag_item.tag_name}</span>
-            </a>`;
+            tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
+                <i class="com-icon__pic eye-icon" style="background-image: url(http://192.168.1.34:1111/tag-icon/${tag_item.tag_name})"></i>
+                <span class="com-icon__text">${tag_item.tag_name}</span>
+            </span>`;
         });
         tag_box.html(tag_str);
         // 右边栏自动固定定位
-        rightBarFixed();
+        // rightBarFixed();
     });
 })();

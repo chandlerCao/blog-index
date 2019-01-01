@@ -5,7 +5,8 @@
 }
 
 @catalogW: 200px;
-// 文章主要内容
+/* 文章主要内容 */
+
 #markdown-main {
     position: relative;
     width: calc(100% - @catalogW);
@@ -13,7 +14,7 @@
     .com-block();
     background-color: #fff;
     text-align: justify;
-    /* 标题*/
+    /* 标题 */
     .markdown-title {
         margin-bottom: 16px;
         font-size: 22px;
@@ -22,7 +23,7 @@
             font-weight: bold;
         }
     }
-    /* 附属信息*/
+    /* 附属信息 */
     .markdown-meta {
         width: 320px;
         display: flex;
@@ -30,7 +31,7 @@
         font-size: 12px;
         margin: 16px auto;
     }
-    /* 前言*/
+    /* 前言 */
     .markdown-preface {
         font-size: 14px;
         line-height: 30px;
@@ -41,7 +42,7 @@
         border-radius: 10px;
         font-weight: bold;
     }
-    /* 封面*/
+    /* 封面 */
     .markdown-cover {
         position: relative;
         background-size: 100%;
@@ -51,7 +52,7 @@
         background-repeat: no-repeat;
         margin-top: 20px;
     }
-    /* 封面填充*/
+    /* 封面填充 */
     .markdown-cover:before {
         content: "";
         position: absolute;
@@ -66,7 +67,63 @@
         padding-top: 50%;
         width: 100%;
     }
-    /* 覆盖markdown*/
+    /* 评论 */
+    .markdown-comment {
+        font-size: 12px;
+        .comment-line {
+            margin-top: 30px;
+            border-top: 1px solid lighten(@color, 60%);
+            text-align: center;
+            span {
+                position: relative;
+                top: -12px;
+                padding: 0 20px;
+                background-color: #fff;
+            }
+        }
+        /* 发布输入框 */
+        .user-face {
+            float: left;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: lighten(@color, 40%);
+        }
+        .publish-input {
+            font-size: 14px;
+            height: 40px;
+        }
+        /* 评论操作 */
+        .publish-action {
+            margin-top: 8px;
+        }
+        /* 发布按钮 */
+        .publish-btn {
+            float: right;
+        }
+        /* 评论列表 */
+        .comment-list {
+            margin-top: 10px;
+            padding-top: 5px;
+            border-top: 1px solid lighten(@color, 60%);
+        }
+        .user-name,
+        .comment-content {
+            font-size: 12px;
+        }
+        .comment-content {
+            padding-top: 4px;
+        }
+        /* 回复列表 */
+        .reply-box {
+            background-color: @bg;
+            .reply-item {
+                padding: 10px;
+            }
+        }
+    }
+    /* 覆盖markdown */
     .markdown-content {
         font-size: 14px;
         ul {
@@ -83,7 +140,7 @@
         li {
             margin-top: 5px;
         }
-        /* 引用*/
+        /* 引用 */
         blockquote {
             padding: 1px 23px;
             margin: 22px 0;
@@ -128,11 +185,12 @@
     }
 }
 
-// 目录
-.markdown-catalog-block {
+/* 目录 */
+
+.markdown-action {
     position: absolute;
     width: @catalogW;
-    height: 200px;
+    min-height: 100%;
     right: 0;
     top: 0;
     box-sizing: border-box;
@@ -167,6 +225,7 @@
         color: @blue;
     }
     .catalog-link {
+        width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -208,7 +267,7 @@
     #markdown-main {
         width: 100%;
     }
-    .markdown-catalog {
+    .markdown-action {
         display: none;
     }
 }

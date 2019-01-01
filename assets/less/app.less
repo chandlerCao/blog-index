@@ -46,6 +46,11 @@
     .calendar-icon {
         background-image: url(../img/calendar.png);
     }
+    .reply-icon {
+        background-image: url(../img/reply.png);
+        position: relative;
+        top: 2px;
+    }
 }
 
 /* 主板块 */
@@ -287,14 +292,14 @@
     background-position-x: -1136px !important;
 }
 
+// 右边栏消失，mr变为0
 @media all and (max-width: 1300px) {
     #main-wrap #main-box {
-        float: none;
         margin-right: 0;
     }
 }
 
-@media all and (max-width: 1000px) {
+@media all and (max-width: 800px) {
     #main-wrap #main-box {
         position: relative;
         width: 100%;

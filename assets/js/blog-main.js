@@ -15,7 +15,7 @@ window.onhashchange = function (e) {
     // 引入服务器上的地址
     $(window).on('resize.initBg', () => {
         let bg_dir;
-        if ($(window).width() > 1000) bg_dir = 'large';
+        if ($(window).width() > 800) bg_dir = 'large';
         else if ($(window).width() > 600) bg_dir = 'medium';
         else bg_dir = 'small';
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
