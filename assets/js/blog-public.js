@@ -56,6 +56,7 @@ export const navData = [
                 })
             },
             callback(data = {}) {
+                console.log(data);
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
@@ -190,6 +191,41 @@ export const navData = [
         reg: /^article\?tag=(\w+)&page=(\d+)$/,
         name: 'articleTagList',
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
+        articleTmp: `{{~it:atc}}
+        <article class="article-item">
+            <div class="art-pretty">
+                <b class="art-dotts"></b>
+                <time class="art-time">
+                    {{=atc.date}}
+                </time>
+            </div>
+            <div class="art-main">
+                <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                    <div class="art-info">
+                        <h2 class="art-title">{{=atc.title}}</h2>
+                        <h3 class="art-note" title="{{=atc.preface}}">
+                            <span>{{=atc.preface}}</span>
+                        </h3>
+                    </div>
+                    <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+                </a>
+                <div class="art-meta">
+                    <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                        <i class="heart-icon__pic"></i>
+                        <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                    </a>
+                    <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                        <i class="com-icon__pic eye-icon"></i>
+                        <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                    </a>
+                    <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
+                        <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                        <span class="com-icon__text">{{=atc.tag_name}}</span>
+                    </a>
+                </div>
+            </div>
+        </article>
+    {{~}}`,
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
@@ -204,7 +240,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(tmp.articleTmp);
+                const arrText = doT.template(this.articleTmp);
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -229,7 +265,7 @@ export const navData = [
         element: $('<section id="markdown-box" class="blog-element"></section>'),
         fns: {
             // 生成文章目录
-            'createCatalog'(text = '') {
+            createCatalog(text = '') {
                 // 匹配h标签正则
                 const re = /<(h[1-3])><a id="(\w+)"><\/a>(.+)<\/\1>/ig;
                 // 每一个标题
@@ -265,6 +301,7 @@ export const navData = [
             }
         },
         tmps: {
+            // 文章模板
             articleMainTmp() {
                 return `<div id="markdown-main" class="markdown-main com-scroll">
                     <!-- 文字标题 -->
@@ -273,56 +310,35 @@ export const navData = [
                     </div>
                     <!-- 文章元信息 -->
                     <div class="markdown-meta">
+                        <!-- 文章发布时间 -->
                         <time class="com-icon meta-time">
                             <i class="com-icon__pic calendar-icon">&nbsp;</i>
                             <span class="com-icon__text">{{=it.date}}</span>
                         </time>
+                        <!-- 文章点赞 -->
                         <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
                             <i class="com-icon__pic heart-icon__pic"></i>
                             <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
                         </a>
+                        <!-- 文章阅读量 -->
                         <span class="com-icon meta-like">
                             <i class="com-icon__pic eye-icon">&nbsp;</i>
                             <span class="com-icon__text">阅读({{=it.read_count}})</span>
                         </span>
+                        <!-- 文章标签 -->
                         <a href="#article?tag={{=it.tag_name}}&page=1" class="com-icon art-tag art-icon">
                             <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
                             <span class="com-icon__text">{{=it.tag_name}}</span>
                         </a>
                     </div>
+                    <!-- 文章前言 -->
                     <div class="markdown-preface">{{=it.preface}}</div>
+                    <!-- 文章封面 -->
                     <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
+                    <!-- 文章内容 -->
                     <div class="markdown-content">{{=it.markdownHtml}}</div>
-                    <div class="markdown-comment">
-                        <div class="comment-line">
-                            <span>评论</span>
-                        </div>
-                        <!-- 发布评论框 -->
-                        <div class="publish-box">
-                            <div class="user-face"></div>
-                            <div class="ml50">
-                                <!-- 公共评论输入框 -->
-                                ${this.pubPublishInput()}
-                            </div>
-                        </div>
-                        <!-- 评论列表 -->
-                        <div class="comment-box">
-                            <!-- 评论列表项 -->
-                            <div class="comment-item">
-                                <div class="user-face"></div>
-                                <div class="ml50">
-                                    
-                                    </div>
-                                    <!-- 回复block -->
-                                    <div class="reply-box mt10">
-                                        <!-- 回复列表项 -->
-                                        <div class="reply-item">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- 评论 -->
+                    ${this.commentBox()}
                 </div>
                 <!-- 目录 -->
                 <div class="markdown-action com-scroll">
@@ -332,41 +348,95 @@ export const navData = [
                         </div>
                         {{=it.catalog}}
                     </div>
-                </div>
-                `
+                </div>`
+            },
+            // 评论block
+            commentBox() {
+                return `<div class="markdown-comment">
+                    <div class="comment-line">
+                        <span>评论</span>
+                    </div>
+                    <!-- 发布评论框 -->
+                    <div class="publish-box">
+                        <!-- 用户头像 -->
+                        ${this.userFace()}
+                        <div class="ml50">
+                            <!-- 公共评论输入框 -->
+                            ${this.pubPublishInput()}
+                        </div>
+                    </div>
+                    <!-- 评论列表 -->
+                    <div class="comment-box">
+                        <!-- 评论列表项 -->
+                        ${this.commentList()}
+                    </div>
+                </div>`
+            },
+            // 头像
+            userFace() {
+                return `<div class="user-face">翠</div>`
             },
             // 公共评论输入框
             pubPublishInput(placeholder = '说点啥呗~') {
-                return `<div class="pub-publish-submit">
+                return `<div class="pub-publish-submit mt10">
                     <div class="publish-input">
                         <input type="text" class="com-area comment-input" placeholder="${placeholder}">
                     </div>
                     <div class="publish-action clear">
                         <button type="button" class="publish-btn com-button blue mini"> <i class="fa fa-send"></i> 评论</button>
                     </div>
-                </div>`;
+                </div>`
             },
             // 公共评论主要内容展示
-            pub() {
+            pubPublishContent() {
                 return `<div class="pub-publish-content">
-                    <div class="user-name">CDJ</div>
-                <div class="comment-content">你好呀，我觉得你的博客写得非常nice，可不可以加个微信呀~</div>
-                <div class="comment-bar clear mt10">
-                    <div class="com-icon fl">
-                        <i class="com-icon__pic calendar-icon"></i>
-                        <span class="com-icon__text">2018-12-31</span>
-                    </div>
-                    <div class="comment-action fr">
-                        <a href="javascript:;" class="art-heart art-icon act mr20">
-                            <i class="heart-icon__pic"></i>
-                            <span class="heart-icon__text">喜欢(<span class="like-num">5</span>)</span>
-                        </a>
-                        <a href="javascript:;" class="com-icon">
-                            <i class="com-icon__pic reply-icon">&nbsp;</i>
-                            <span class="com-icon__text">回复</span>
-                        </a>
+                    <div class="user-name">翠花</div>
+                    <div class="comment-content">我要给你生猴子！</div>
+                    <div class="comment-bar clear mt10">
+                        <div class="com-icon fl">
+                            <i class="com-icon__pic calendar-icon"></i>
+                            <span class="com-icon__text">2018-12-31</span>
+                        </div>
+                        <div class="comment-action fr">
+                            <a href="javascript:;" class="art-heart art-icon act mr20">
+                                <i class="heart-icon__pic"></i>
+                                <span class="heart-icon__text">喜欢(<span class="like-num">5</span>)</span>
+                            </a>
+                            <a href="javascript:;" class="com-icon">
+                                <i class="com-icon__pic reply-icon">&nbsp;</i>
+                                <span class="com-icon__text">回复</span>
+                            </a>
+                        </div>
                     </div>
                 </div>`
+            },
+            // 评论列表项
+            commentList(commentData = [1, 2, 3, 4, 5, 6, 7]) {
+                return commentData.reduce((commentStr, commentItem) => {
+                    return commentStr += `<div class="comment-item mt20">
+                        ${this.userFace()}
+                        <div class="ml50">
+                            ${this.pubPublishContent()}
+                            <!-- 回复block，如果有回复内容 -->
+                            <div class="reply-box mt10">
+                                ${this.replyList()}
+                            </div>
+                        </div>
+                    </div>`
+                }, '')
+            },
+            // 回复列表
+            replyList(replyData = [1, 2]) {
+                return replyData.reduce((replyStr, replyItem) => {
+                    return replyStr += `<div class="reply-item">
+                        <div class="reply-wrap">
+                            ${this.userFace()}
+                            <div class="ml50">
+                                ${this.pubPublishContent()}
+                            </div>
+                        </div>
+                    </div>`
+                }, '')
             }
         },
         handler: {
@@ -543,5 +613,5 @@ export const tmp = {
                 </span>
             </a>
         </li>
-    {{~}}`,
+    {{~}}`
 }

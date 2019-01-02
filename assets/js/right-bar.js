@@ -37,7 +37,7 @@ const rightBarFixed = () => {
         const date = new Date();
         const sec = date.getSeconds() * 6;
         const min = date.getMinutes() * 6 + sec / 360 * 6;
-        const hour = (date.getHours() > 11 ? date.getHours() - 12 : date.getHours()) * 30 + min / 360 * 30;
+        const hour = (date.getHours() > 11 ? date.getHours() - 12 : date.getHours()) * 30 + (min / 360 * 30);
 
         hour_hand.css('transform', `rotate(${hour}deg)`);
         min_hand.css('transform', `rotate(${min}deg)`);
@@ -57,7 +57,7 @@ const rightBarFixed = () => {
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
                 <i class="com-icon__pic eye-icon" style="background-image: url(http://192.168.1.34:1111/tag-icon/${tag_item.tag_name})"></i>
                 <span class="com-icon__text">${tag_item.tag_name}</span>
-            </span>`;
+            </a>`;
         });
         tag_box.html(tag_str);
         // 右边栏自动固定定位
