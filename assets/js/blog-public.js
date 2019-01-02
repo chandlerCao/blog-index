@@ -374,7 +374,7 @@ export const navData = [
             },
             // 头像
             userFace() {
-                return `<div class="user-face">翠</div>`
+                return `<div class="user-face"></div>`
             },
             // 公共评论输入框
             pubPublishInput(placeholder = '说点啥呗~') {
