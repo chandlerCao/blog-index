@@ -1,15 +1,16 @@
 import { host, app, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
 import { Loading, PageUp } from '../com/js/com';
 const mainBox = $('#main-box');
-const scrollTop_data = storage.get('scrollTop') || {};
 // 存储当前组件的滚动条位置
-window.onhashchange = function (e) {
-    const { newURL, oldURL } = e;
-    // 获取新旧hash
-    const newHash = newURL.split('#')[1];
-    const oldHash = oldURL.split('#')[1];
-    getComponent(newHash, oldHash);
-};
+; (function () {
+    window.onhashchange = function (e) {
+        // 获取新旧hash
+        const { newURL, oldURL } = e;
+        const newHash = newURL.split('#')[1];
+        const oldHash = oldURL.split('#')[1];
+        getComponent(newHash, oldHash);
+    };
+})();
 // 侧边栏3d图片切换
 ; (function () {
     // 引入服务器上的地址
@@ -105,23 +106,23 @@ window.onhashchange = function (e) {
     };
 })();
 // 切换动画效果
-let timer = null;
+let componentTimer = null;
 const componentSwitch = function (newEl, oldEl) {
     return new Promise(resolve => {
+        oldEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', function () {
+            $(this).off('animationend webkitAnimationEnd').empty().detach();
+            resolve();
+        });
         // 添加即将出现的元素
         mainBox.append(newEl);
         // 新元素出现
         newEl.removeClass('leave').addClass('enter');
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            oldEl.empty().detach();
-            resolve();
-        }, 300);
     })
 };
 // 通过hash匹配相应的组件
+let load = null;
 const getComponent = function (newHash, oldHash) {
     // 即将出现组件索引
     let [new_index, old_index] = [-1, -1];
@@ -132,32 +133,30 @@ const getComponent = function (newHash, oldHash) {
     });
     // 如果找到对应的索引
     if (new_index > -1) {
-        // 显示loading图
-        const load = new Loading(mainBox).show();
-        // 记录旧元素滚动条位置
-        if (old_index > -1) {
-            scrollTop_data[navData[old_index].name] = app.scrollTop();
-            // 存储到本地存储
-            storage.set('scrollTop', scrollTop_data);
-        }
+        // 关闭上次load，显示loading图
+        if (load) load.hide();
+        load = new Loading(mainBox).show();
+        // 关闭上个loading
         // 发送当前组件对应请求
-        navData[new_index].handler.ajax(getParmasByHash()).then(data => {
+        navData[new_index].handler.ajax.call(navData[new_index], getParmasByHash()).then(data => {
             load.hide();
             // 元素切换
             if (navData[new_index] !== navData[old_index]) {
                 componentSwitch(
                     navData[new_index].element,
-                    old_index >= 0 ? navData[old_index].element : $()
+                    navData[old_index] ? navData[old_index].element : $()
                 ).then(() => {
                     // 新元素滚动到上一次位置
-                    let scrollTop = 0;
-                    if (scrollTop_data[navData[new_index].name]) scrollTop = scrollTop_data[navData[new_index].name];
+                    const scrollTop_data = storage.get('scrollTop') || {};
+                    // 如果本地存储了当前的滚动位置，没有就跳转到顶部
+                    let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
                     app.animate({ 'scrollTop': scrollTop }, 300);
+                    // app.scrollTop(scrollTop);
                 });
             }
             // 执行当前组件回调函数
             navData[new_index].handler.callback.call(navData[new_index], data);
-        })
+        });
     } else {
         // 没有找到对应的hash值，默认跳转到第一个
         window.location.hash = navData[0].href;
@@ -209,5 +208,20 @@ const getComponent = function (newHash, oldHash) {
 ; (function () {
     new PageUp({
         scroll_el: app
+    })
+})();
+// 记录滚动条位置
+; (function () {
+    let timer = null;
+    app.on('scroll', function () {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            const scrollTop_data = storage.get('scrollTop') || {};
+            let hash = window.location.hash;
+            hash = hash.substr(1, hash.length);
+            scrollTop_data[hash] = app.scrollTop();
+            // 存储到本地存储
+            storage.set('scrollTop', scrollTop_data);
+        }, 200);
     })
 })();

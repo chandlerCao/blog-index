@@ -51,11 +51,7 @@ export const navData = [
         element: $(`<section id="article-box" class="blog-element"></section>`),
         handler: {
             ajax(data = {}) {
-                return new Promise(resolve => {
-                    ajax('/index/article/getArticleList', data).then(data => {
-                        resolve(data);
-                    });
-                })
+                return ajax('/index/article/getArticleList', data);
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -127,11 +123,7 @@ export const navData = [
         element: $('<section id="live-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
-                return new Promise(resolve => {
-                    ajax('/index/article/getArticleList', data).then(data => {
-                        resolve(data);
-                    });
-                })
+                return ajax('/index/article/getArticleList', data)
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -168,14 +160,8 @@ export const navData = [
         element: $('<section id="comment-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
-                return new Promise(resolve => {
-                    ajax('/index/article/getArticleList', data).then(({ data }) => {
-                        resolve(data);
-                    });
-                })
             },
             callback(data = {}) {
-                this.element.html('留言');
             }
         }
     },
@@ -229,11 +215,7 @@ export const navData = [
         {{~}}`,
         handler: {
             ajax(data = {}) {
-                return new Promise(resolve => {
-                    ajax('/index/article/getArticleListByTag', data).then(data => {
-                        resolve(data);
-                    });
-                })
+                return ajax('/index/article/getArticleListByTag', data)
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -442,11 +424,7 @@ export const navData = [
         },
         handler: {
             ajax(data = {}) {
-                return new Promise(resolve => {
-                    ajax('/index/article/getArticleCnt', data).then(data => {
-                        resolve(data);
-                    })
-                })
+                return ajax('/index/article/getArticleCnt', data)
             },
             callback(data = {}) {
                 // 格式化日期
@@ -474,7 +452,10 @@ export const ajax = function (url, data = {}) {
             dataType: 'json'
         }).done(data => {
             if (data.c === 0) resolve(data.d);
-            else { alert(data.m) }
+            else {
+                reject()
+                alert(data.m)
+            }
         }).catch(err => {
             alert('请求超时！');
         });

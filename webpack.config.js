@@ -79,7 +79,7 @@ const config = {
 if (isDev) {
     config.mode = 'development';
     config.devServer = {
-        port: 3333,
+        port: 8090,
         host: '0.0.0.0',
         overlay: true,
         compress: true,
