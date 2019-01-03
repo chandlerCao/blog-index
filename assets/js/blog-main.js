@@ -198,9 +198,9 @@ const getComponent = function (newHash, oldHash) {
         if (!like_complete) return;
         like_complete = false;
         const aid = $(this).data('aid');
-        ajax('/index/article/givealike', { aid }).then(data => {
+        ajax('/index/article/givealike', { aid }).then(likeTotal => {
             $(this).toggleClass('act');
-            $(this).find('.like-num:first').text(data.likeTotal);
+            $(this).find('.like-num:first').text(likeTotal);
             like_complete = true;
         });
     });

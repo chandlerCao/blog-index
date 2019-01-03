@@ -125,6 +125,11 @@
                 padding-bottom: 10px;
             }
         }
+        @media all and (max-width: 400px) {
+            .reply-action {
+                display: none;
+            }
+        }
     }
     /* 覆盖markdown */
     .markdown-content {
@@ -184,6 +189,7 @@
         }
         .hljs {
             line-height: 1.5;
+            background-color: @bg;
         }
     }
 }

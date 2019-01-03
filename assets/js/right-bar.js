@@ -50,10 +50,9 @@ const rightBarFixed = () => {
 // 获取标签云
 ; (function () {
     const tag_box = $('#tag-box');
-    ajax('/index/article/getArticleTag').then(data => {
-        const tagData = data.tagList || [];
+    ajax('/index/article/getArticleTag').then((tagList = []) => {
         let tag_str = '';
-        tagData.forEach(tag_item => {
+        tagList.forEach(tag_item => {
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
                 <i class="com-icon__pic eye-icon" style="background-image: url(http://192.168.1.34:1111/tag-icon/${tag_item.tag_name})"></i>
                 <span class="com-icon__text">${tag_item.tag_name}</span>

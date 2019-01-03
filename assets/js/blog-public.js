@@ -39,7 +39,7 @@ export const navData = [
                                 <span class="com-icon__text">阅读({{=atc.read_count}})</span>
                             </a>
                             <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                                <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                                <i class="com-icon__pic tag-icon" style="background-image: url({{=atc.tag_url}}"></i>
                                 <span class="com-icon__text">{{=atc.tag_name}}</span>
                             </a>
                         </div>
@@ -52,8 +52,8 @@ export const navData = [
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
-                    ajax('/index/article/getArticleList', data).then((data) => {
-                        resolve(data.d);
+                    ajax('/index/article/getArticleList', data).then(data => {
+                        resolve(data);
                     });
                 })
             },
@@ -128,7 +128,7 @@ export const navData = [
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
-                    ajax('/index/article/getArticleList', data).then(({ data }) => {
+                    ajax('/index/article/getArticleList', data).then(data => {
                         resolve(data);
                     });
                 })
@@ -193,44 +193,44 @@ export const navData = [
         name: 'articleTagList',
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
         articleTmp: `{{~it:atc}}
-        <article class="article-item">
-            <div class="art-pretty">
-                <b class="art-dotts"></b>
-                <time class="art-time">
-                    {{=atc.date}}
-                </time>
-            </div>
-            <div class="art-main">
-                <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                    <div class="art-info">
-                        <h2 class="art-title">{{=atc.title}}</h2>
-                        <h3 class="art-note" title="{{=atc.preface}}">
-                            <span>{{=atc.preface}}</span>
-                        </h3>
-                    </div>
-                    <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-                </a>
-                <div class="art-meta">
-                    <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
-                        <i class="heart-icon__pic"></i>
-                        <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                    </a>
-                    <a href="javascript:;" class="com-icon art-comment art-icon mr20">
-                        <i class="com-icon__pic eye-icon"></i>
-                        <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                    </a>
-                    <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                        <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
-                        <span class="com-icon__text">{{=atc.tag_name}}</span>
-                    </a>
+            <article class="article-item">
+                <div class="art-pretty">
+                    <b class="art-dotts"></b>
+                    <time class="art-time">
+                        {{=atc.date}}
+                    </time>
                 </div>
-            </div>
-        </article>
-    {{~}}`,
+                <div class="art-main">
+                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                        <div class="art-info">
+                            <h2 class="art-title">{{=atc.title}}</h2>
+                            <h3 class="art-note" title="{{=atc.preface}}">
+                                <span>{{=atc.preface}}</span>
+                            </h3>
+                        </div>
+                        <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
+                    </a>
+                    <div class="art-meta">
+                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                            <i class="heart-icon__pic"></i>
+                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                        </a>
+                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                            <i class="com-icon__pic eye-icon"></i>
+                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                        </a>
+                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
+                            <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
+                            <span class="com-icon__text">{{=atc.tag_name}}</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {{~}}`,
         handler: {
             ajax(data = {}) {
                 return new Promise(resolve => {
-                    ajax('/index/article/getArticleListByTag', data).then(({ data }) => {
+                    ajax('/index/article/getArticleListByTag', data).then(data => {
                         resolve(data);
                     });
                 })
@@ -297,7 +297,7 @@ export const navData = [
                 }
             },
             // 日期格式化
-            'dateFormatter'(date) {
+            dateFormatter(date) {
                 return date.split('T')[0];
             }
         },
@@ -389,7 +389,7 @@ export const navData = [
                 </div>`
             },
             // 公共评论主要内容展示
-            pubPublishContent() {
+            pubPublishContent(type = "comment") {
                 return `<div class="pub-publish-content">
                     <div class="user-name">翠花</div>
                     <div class="comment-content">我要给你生猴子！</div>
@@ -398,7 +398,7 @@ export const navData = [
                             <i class="com-icon__pic calendar-icon"></i>
                             <span class="com-icon__text">2018-12-31</span>
                         </div>
-                        <div class="comment-action fr">
+                        <div class="${type}-action fr">
                             <a href="javascript:;" class="art-heart art-icon act mr20">
                                 <i class="heart-icon__pic"></i>
                                 <span class="heart-icon__text">喜欢(<span class="like-num">5</span>)</span>
@@ -433,7 +433,7 @@ export const navData = [
                         <div class="reply-wrap">
                             ${this.userFace()}
                             <div class="ml50">
-                                ${this.pubPublishContent()}
+                                ${this.pubPublishContent('reply')}
                             </div>
                         </div>
                     </div>`
@@ -444,22 +444,18 @@ export const navData = [
             ajax(data = {}) {
                 return new Promise(resolve => {
                     ajax('/index/article/getArticleCnt', data).then(data => {
-                        if (data.c === 0) {
-                            resolve(data.d);
-                        }
+                        resolve(data);
                     })
                 })
             },
             callback(data = {}) {
-                // 文章数据
-                const { articleContent } = data;
                 // 格式化日期
-                articleContent.date = this.fns.dateFormatter(articleContent.date);
+                data.date = this.fns.dateFormatter(data.date);
                 // 生成文章目录
-                const catalogRes = this.fns.createCatalog(articleContent.markdownHtml);
-                articleContent.catalog = catalogRes.catalogStr;
+                const catalogRes = this.fns.createCatalog(data.markdownHtml);
+                data.catalog = catalogRes.catalogStr;
                 // 生成文字模板 dot
-                var markdown_cnt = doT.template(this.tmps.articleMainTmp())(articleContent);
+                var markdown_cnt = doT.template(this.tmps.articleMainTmp())(data);
                 // 获取文章内容div
                 $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
@@ -477,7 +473,7 @@ export const ajax = function (url, data = {}) {
             data,
             dataType: 'json'
         }).done(data => {
-            if (data.code === 0) resolve(data);
+            if (data.c === 0) resolve(data.d);
             else { alert(data.m) }
         }).catch(err => {
             alert('请求超时！');
