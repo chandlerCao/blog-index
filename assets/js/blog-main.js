@@ -115,10 +115,10 @@ const componentSwitch = function (newEl, oldEl) {
         });
         // 添加即将出现的元素
         mainBox.append(newEl);
-        // 新元素出现
-        newEl.removeClass('leave').addClass('enter');
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
+        // 新元素出现
+        newEl.off('animationend webkitAnimationEnd').removeClass('leave').addClass('enter');
     })
 };
 // 通过hash匹配相应的组件

@@ -1,5 +1,5 @@
 import { Page } from '../com/js/com';
-export const host = 'http://192.168.1.34:1111';
+export const host = 'http://localhost:1111';
 // app
 export const app = $('#app');
 // 路由
@@ -10,43 +10,6 @@ export const navData = [
         href: '#article?type=technology&page=1',
         text: '前端',
         target: '',
-        articleTmp() {
-            return `{{~it:atc}}
-                <article class="article-item">
-                    <div class="art-pretty">
-                        <b class="art-dotts"></b>
-                        <time class="art-time">
-                            {{=atc.date}}
-                        </time>
-                    </div>
-                    <div class="art-main">
-                        <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                            <div class="art-info">
-                                <h2 class="art-title">{{=atc.title}}</h2>
-                                <h3 class="art-note" title="{{=atc.preface}}">
-                                    <span>{{=atc.preface}}</span>
-                                </h3>
-                            </div>
-                            <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-                        </a>
-                        <div class="art-meta">
-                            <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
-                                <i class="heart-icon__pic"></i>
-                                <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                            </a>
-                            <a href="javascript:;" class="com-icon art-comment art-icon mr20">
-                                <i class="com-icon__pic eye-icon"></i>
-                                <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                            </a>
-                            <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                                <i class="com-icon__pic tag-icon" style="background-image: url({{=atc.tag_url}}"></i>
-                                <span class="com-icon__text">{{=atc.tag_name}}</span>
-                            </a>
-                        </div>
-                    </div>
-                </article>
-            {{~}}`
-        },
         icon: 'fa fa-html5',
         element: $(`<section id="article-box" class="blog-element"></section>`),
         handler: {
@@ -59,7 +22,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(this.articleTmp());
+                const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -84,41 +47,6 @@ export const navData = [
         href: '#article?type=live&page=1',
         text: '生活',
         target: '',
-        articleTmp: `{{~it:atc}}
-            <article class="article-item">
-                <div class="art-pretty">
-                    <b class="art-dotts"></b>
-                    <time class="art-time">
-                        {{=atc.date}}
-                    </time>
-                </div>
-                <div class="art-main">
-                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                        <div class="art-info">
-                            <h2 class="art-title">{{=atc.title}}</h2>
-                            <h3 class="art-note" title="{{=atc.preface}}">
-                                <span>{{=atc.preface}}</span>
-                            </h3>
-                        </div>
-                        <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-                    </a>
-                    <div class="art-meta">
-                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
-                            <i class="heart-icon__pic"></i>
-                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                        </a>
-                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
-                            <i class="com-icon__pic eye-icon"></i>
-                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                        </a>
-                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                            <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
-                            <span class="com-icon__text">{{=atc.tag_name}}</span>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        {{~}}`,
         icon: 'fa fa-coffee',
         element: $('<section id="live-box" class="blog-element"></section>'),
         handler: {
@@ -131,7 +59,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(this.articleTmp);
+                const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -178,41 +106,6 @@ export const navData = [
         reg: /^article\?tag=(\w+)&page=(\d+)$/,
         name: 'articleTagList',
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
-        articleTmp: `{{~it:atc}}
-            <article class="article-item">
-                <div class="art-pretty">
-                    <b class="art-dotts"></b>
-                    <time class="art-time">
-                        {{=atc.date}}
-                    </time>
-                </div>
-                <div class="art-main">
-                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
-                        <div class="art-info">
-                            <h2 class="art-title">{{=atc.title}}</h2>
-                            <h3 class="art-note" title="{{=atc.preface}}">
-                                <span>{{=atc.preface}}</span>
-                            </h3>
-                        </div>
-                        <div class="art-img" style="background-image: url({{=atc.cover}})"></div>
-                    </a>
-                    <div class="art-meta">
-                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
-                            <i class="heart-icon__pic"></i>
-                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
-                        </a>
-                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
-                            <i class="com-icon__pic eye-icon"></i>
-                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
-                        </a>
-                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                            <i class="com-icon__pic tag-icon" style="background: url({{=atc.tag_url}}"></i>
-                            <span class="com-icon__text">{{=atc.tag_name}}</span>
-                        </a>
-                    </div>
-                </div>
-            </article>
-        {{~}}`,
         handler: {
             ajax(data = {}) {
                 return ajax('/index/article/getArticleListByTag', data)
@@ -223,7 +116,7 @@ export const navData = [
                     // 格式化日期
                     articleItem.date = articleItem.date.split('T')[0];
                 });
-                const arrText = doT.template(this.articleTmp);
+                const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
                 this.element.html(arrText(articleData));
                 new Page({
@@ -310,14 +203,14 @@ export const navData = [
                         </span>
                         <!-- 文章标签 -->
                         <a href="#article?tag={{=it.tag_name}}&page=1" class="com-icon art-tag art-icon">
-                            <i class="com-icon__pic tag-icon" style="background-image: url({{=it.tag_url}})"></i>
+                            <i class="com-icon__pic tag-icon" style="background-image: url(${host}/{{=it.tag_url}})"></i>
                             <span class="com-icon__text">{{=it.tag_name}}</span>
                         </a>
                     </div>
                     <!-- 文章前言 -->
                     <div class="markdown-preface">{{=it.preface}}</div>
                     <!-- 文章封面 -->
-                    <div class="markdown-cover" style="background-image: url({{=it.cover}})"></div>
+                    <div class="markdown-cover" style="background-image: url(${host}/{{=it.cover}})"></div>
                     <!-- 文章内容 -->
                     <div class="markdown-content">{{=it.markdownHtml}}</div>
                     <!-- 评论 -->
@@ -457,7 +350,7 @@ export const ajax = function (url, data = {}) {
                 alert(data.m)
             }
         }).catch(err => {
-            alert('请求超时！');
+            alert('请求超时！服务器发生异常！');
         });
     });
 }
@@ -592,5 +485,42 @@ export const tmp = {
                 </span>
             </a>
         </li>
-    {{~}}`
+    {{~}}`,
+    articleTmp() {
+        return `{{~it:atc}}
+            <article class="article-item">
+                <div class="art-pretty">
+                    <b class="art-dotts"></b>
+                    <time class="art-time">
+                        {{=atc.date}}
+                    </time>
+                </div>
+                <div class="art-main">
+                    <a href="#article?aid={{=atc.aid}}" class="art-wrap">
+                        <div class="art-info">
+                            <h2 class="art-title">{{=atc.title}}</h2>
+                            <h3 class="art-note" title="{{=atc.preface}}">
+                                <span>{{=atc.preface}}</span>
+                            </h3>
+                        </div>
+                        <div class="art-img" style="background-image: url(${host}/{{=atc.cover}})"></div>
+                    </a>
+                    <div class="art-meta">
+                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                            <i class="heart-icon__pic"></i>
+                            <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
+                        </a>
+                        <a href="javascript:;" class="com-icon art-comment art-icon mr20">
+                            <i class="com-icon__pic eye-icon"></i>
+                            <span class="com-icon__text">阅读({{=atc.read_count}})</span>
+                        </a>
+                        <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
+                            <i class="com-icon__pic tag-icon" style="background-image: url(${host}/{{=atc.tag_url}}"></i>
+                            <span class="com-icon__text">{{=atc.tag_name}}</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {{~}}`
+    }
 }

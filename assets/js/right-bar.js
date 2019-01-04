@@ -1,4 +1,4 @@
-import { toZero, ajax, app } from './blog-public';
+import { host, toZero, ajax, app } from './blog-public';
 // 右边栏固定定位
 const rightBarFixed = () => {
     const side_bar = $('#side-bar');
@@ -54,7 +54,7 @@ const rightBarFixed = () => {
         let tag_str = '';
         tagList.forEach(tag_item => {
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
-                <i class="com-icon__pic eye-icon" style="background-image: url(http://192.168.1.34:1111/tag-icon/${tag_item.tag_name})"></i>
+                <i class="com-icon__pic eye-icon" style="background-image: url(${host}/tag-icon/${tag_item.tag_name})"></i>
                 <span class="com-icon__text">${tag_item.tag_name}</span>
             </a>`;
         });
