@@ -1,5 +1,5 @@
 import { Page } from '../com/js/com';
-export const host = 'http://localhost:1111';
+export const host = 'http://blog.caodj.cn';
 // app
 export const app = $('#app');
 // 路由
@@ -515,7 +515,7 @@ export const tmp = {
                             <span class="com-icon__text">阅读({{=atc.read_count}})</span>
                         </a>
                         <a href="#article?tag={{=atc.tag_name}}&page=1" class="com-icon art-tag art-icon mr20">
-                            <i class="com-icon__pic tag-icon" style="background-image: url(${host}/{{=atc.tag_url}}"></i>
+                            <i class="com-icon__pic tag-icon" style="background-image: url(${host}/{{=atc.tag_url}})"></i>
                             <span class="com-icon__text">{{=atc.tag_name}}</span>
                         </a>
                     </div>
