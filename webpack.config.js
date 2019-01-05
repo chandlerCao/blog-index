@@ -11,12 +11,14 @@ const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const lessExtract = new extractTextWebpackPlugin({
     filename: 'css/[name]-[hash:8].css',
 });
+// 拷贝插件
+const copyWebpackPlugin = require('copy-webpack-plugin');
 const config = {
     entry: {
         blog: path.join(__dirname, 'app.js')
     },
     output: {
-        path: path.join(__dirname, 'blog'),
+        path: path.join(__dirname, '../koa-blog/index/view'),
         filename: 'js/[name]-[hash:8].js'
     },
     module: {
@@ -66,7 +68,21 @@ const config = {
             },
             // chunks: ['blog'],
             hash: true
-        })
+        }),
+        new copyWebpackPlugin([
+            {
+                from: path.join(__dirname, 'assets/img/WeChat-qr-code.jpg'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            },
+            {
+                from: path.join(__dirname, 'assets/img/QQ-qr-code.jpg'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            },
+            {
+                from: path.join(__dirname, 'assets/img/snow.png'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            }
+        ])
     ],
     resolve: {
         alias: {
@@ -92,6 +108,6 @@ if (isDev) {
     );
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, 'blog')]));
+    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
 }
 module.exports = config;

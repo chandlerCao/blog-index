@@ -1,4 +1,4 @@
-import { host, toZero, ajax, app } from './blog-public';
+import { host, toZero, ajax, app } from './blog-utils';
 // 右边栏固定定位
 const rightBarFixed = () => {
     const side_bar = $('#side-bar');

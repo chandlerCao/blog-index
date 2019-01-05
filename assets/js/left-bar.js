@@ -1,9 +1,9 @@
 import { Tooltip } from "../com/js/com";
-import { imgload } from "./blog-public";
+import { imgload } from "./blog-utils";
 // 联系方式
 ; (function () {
     // 微信二维码
-    imgload('./assets/img/WeChat-qr-code.jpg').then(img => {
+    imgload('./img/WeChat-qr-code.jpg').then(img => {
         const wechatImg = $(img);
         wechatImg.attr({
             width: 100,
@@ -16,7 +16,7 @@ import { imgload } from "./blog-public";
         });
     });
     // qq二维码
-    imgload('./assets/img/QQ-qr-code.jpg').then(img => {
+    imgload('./img/QQ-qr-code.jpg').then(img => {
         const qqImg = $(img);
         qqImg.attr({
             width: 100,

@@ -1,5 +1,6 @@
-import { host, app, banner3d, navData, getParmasByHash, tmp, ajax, storage } from './blog-public';
+import { host, app, banner3d, getParmasByHash, tmp, ajax, storage } from './blog-utils';
 import { Loading, PageUp } from '../com/js/com';
+import Router from './blog-router';
 const mainBox = $('#main-box');
 // 存储当前组件的滚动条位置
 ; (function () {
@@ -44,7 +45,7 @@ const mainBox = $('#main-box');
         /**雪花 */
         cxt.beginPath();
         var img = new Image();
-        img.src = '/assets/img/snow.png';
+        img.src = `./img/snow.png`;
         cxt.drawImage(img, x, y, r, r);
         cxt.closePath();
         /**雪花 */
@@ -127,7 +128,7 @@ const getComponent = function (newHash, oldHash) {
     // 即将出现组件索引
     let [new_index, old_index] = [-1, -1];
     // 如果能找到对应的hash
-    navData.forEach((navdata, i) => {
+    Router.forEach((navdata, i) => {
         if (navdata.reg.test(newHash)) new_index = i;
         if (navdata.reg.test(oldHash)) old_index = i;
     });
@@ -138,13 +139,13 @@ const getComponent = function (newHash, oldHash) {
         load = new Loading(mainBox).show();
         // 关闭上个loading
         // 发送当前组件对应请求
-        navData[new_index].handler.ajax.call(navData[new_index], getParmasByHash()).then(data => {
+        Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
             load.hide();
             // 元素切换
-            if (navData[new_index] !== navData[old_index]) {
+            if (Router[new_index] !== Router[old_index]) {
                 componentSwitch(
-                    navData[new_index].element,
-                    navData[old_index] ? navData[old_index].element : $()
+                    Router[new_index].element,
+                    Router[old_index] ? Router[old_index].element : $()
                 ).then(() => {
                     // 新元素滚动到上一次位置
                     const scrollTop_data = storage.get('scrollTop') || {};
@@ -155,11 +156,11 @@ const getComponent = function (newHash, oldHash) {
                 });
             }
             // 执行当前组件回调函数
-            navData[new_index].handler.callback.call(navData[new_index], data);
+            Router[new_index].handler.callback.call(Router[new_index], data);
         });
     } else {
         // 没有找到对应的hash值，默认跳转到第一个
-        window.location.hash = navData[0].href;
+        window.location.hash = Router[0].href;
     }
 };
 // 首次加载
@@ -172,9 +173,9 @@ const getComponent = function (newHash, oldHash) {
 ; (function () {
     // 获取导航ul
     const navList = $('#nav-list');
-    const navText = doT.template(tmp.navTmp);
+    const navText = doT.template(tmp.navTmp());
     // 过滤出需要展示的导航元素
-    const filterNavData = navData.filter(navdata => {
+    const filterNavData = Router.filter(navdata => {
         return navdata.text;
     });
     navList.html(navText(filterNavData));
