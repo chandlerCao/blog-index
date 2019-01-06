@@ -1,5 +1,5 @@
-import { host, ajax, tmp, getParmasByHash } from './blog-utils';
-import { Page } from '../com/js/com';
+import { app, host, ajax, tmp, getParmasByHash, artLike } from './blog-utils';
+import { Page, Loading } from '../com/js/com';
 export default [
     {
         reg: /^article\?type=technology&page=(\d+)$/,
@@ -11,7 +11,10 @@ export default [
         element: $(`<section id="article-box" class="blog-element"></section>`),
         handler: {
             ajax(data = {}) {
-                return ajax('/index/article/getArticleList', data);
+                return ajax({
+                    url: '/index/article/getArticleList',
+                    data
+                });
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -48,7 +51,10 @@ export default [
         element: $('<section id="live-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
-                return ajax('/index/article/getArticleList', data)
+                return ajax({
+                    url: '/index/article/getArticleList',
+                    data
+                });
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -85,8 +91,12 @@ export default [
         element: $('<section id="comment-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
+                return new Promise((resolve, reject) => {
+                    resolve();
+                });
             },
             callback(data = {}) {
+                this.element.html('留言');
             }
         }
     },
@@ -105,7 +115,10 @@ export default [
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
         handler: {
             ajax(data = {}) {
-                return ajax('/index/article/getArticleListByTag', data)
+                return ajax({
+                    url: '/index/article/getArticleListByTag',
+                    data
+                });
             },
             callback(data = {}) {
                 const articleData = data.articleList;
@@ -171,12 +184,95 @@ export default [
             // 日期格式化
             dateFormatter(date) {
                 return date.split('T')[0];
+            },
+            // 滚动条到评论位置，获取评论列表
+            getCommentList() {
+                // markdown-comment
+                const markdownComment = this.element.find('.markdown-comment:first');
+                // 评论列表父级
+                const commentBox = this.element.find('.comment-box:first');
+                let commentLoad = null;
+                // 自动滑到评论区按钮
+                this.element.find('.comment-trigger-btn:first').on('click', function () {
+                    app.animate({
+                        scrollTop: markdownComment.position().top
+                    }, 300);
+                });
+                // 监听滚动条变化
+                app.off('scroll.comment').on('scroll.comment', () => {
+                    if (markdownComment.offset().top <= $(window).height()) {
+                        app.off('scroll.comment');
+                        commentLoad = new Loading(commentBox).show();
+                        renderCommentList.call(this);
+                    }
+                });
+                // 发送请求，渲染评论
+                function renderCommentList() {
+                    const aid = getParmasByHash().aid;
+                    ajax({
+                        url: '/index/comment/getCommentList',
+                        data: { aid }
+                    }).then(commentList => {
+                        commentLoad.hide();
+                        const commentListStr = this.tmps.commentList(commentList);
+                        commentBox.append(commentListStr);
+                    });
+                }
+            },
+            // 添加评论
+            comment() {
+                const _this = this;
+                this.element.delegate('.publish-btn', 'click', function () {
+                    // 获取评论输入框
+                    const commentInp = $(this).parent().prev().find('.comment-input:first');
+                    const commentVal = $.trim(commentInp.val());
+                    // 如果评论为空，提示
+                    if (!commentVal) { alert('说点啥呗！'); return; }
+                    // 获取用户名输入框
+                    const userInp = $(this).prev();
+                    const userVal = $.trim(userInp.val());
+                    if (!userVal) { alert('请问尊姓大名！'); return; }
+                    // 添加评论
+
+                    // 获取评论列表盒子
+                    const commentBox = $(this).parents('.publish-box:first').siblings('.comment-box:first');
+                    ajax({
+                        type: 'post',
+                        url: '/index/comment/addComment',
+                        data: {
+                            comment_text: commentVal,
+                            comment_user: userVal,
+                            aid: getParmasByHash().aid
+                        }
+                    }).then(data => {
+                        commentBox.prepend(_this.tmps.commentList(data));
+                    });
+                })
+            },
+            // 点赞
+            artLike() {
+                const likeBtn = this.element.find('.art-heart-btn:first');
+                likeBtn.on('click', function () {
+                    const aid = $(this).data('aid');
+                    const likeSub = $(this).find('.com-badge:first');
+                    artLike(aid).then(likeInfo => {
+                        if (likeInfo.likeState === 1) {
+                            $(this).addClass('red');
+                            likeSub.addClass('red');
+                        }
+                        else {
+                            $(this).removeClass('red');
+                            likeSub.removeClass('red');
+                        }
+                        likeSub.text(likeInfo.likeTotal);
+                    })
+                });
             }
         },
         tmps: {
             // 文章模板
             articleMainTmp() {
-                return `<div id="markdown-main" class="markdown-main com-scroll">
+                return `<div id="markdown-main" class="markdown-main com-block">
                     <!-- 文字标题 -->
                     <div class="markdown-title">
                         <h1>{{=it.title}}</h1>
@@ -189,10 +285,10 @@ export default [
                             <span class="com-icon__text">{{=it.date}}</span>
                         </time>
                         <!-- 文章点赞 -->
-                        <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
+                        <!-- <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
                             <i class="com-icon__pic heart-icon__pic"></i>
                             <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
-                        </a>
+                        </a> -->
                         <!-- 文章阅读量 -->
                         <span class="com-icon meta-like">
                             <i class="com-icon__pic eye-icon">&nbsp;</i>
@@ -215,11 +311,24 @@ export default [
                 </div>
                 <!-- 目录 -->
                 <div class="markdown-action com-scroll">
-                    <div class="markdown-catalog">
-                        <div class="markdown-catalog-title">
-                            <span class="markdown-catalog-item">目录</span>
+                    <div class="markdown-action-wrap">
+                        <div class="mb20">
+                            <div class="markdown-catalog com-block">
+                                <div class="markdown-catalog-title">
+                                    <span class="markdown-catalog-item">目录</span>
+                                </div>
+                                {{=it.catalog}}
+                            </div>
                         </div>
-                        {{=it.catalog}}
+                        <!-- 操作 -->
+                        <div class="mb20">
+                            <div class="markdown-handler">
+                            <!-- 评论区 -->
+                            <button class="comment-trigger-btn com-button blue mini"><i class="fa fa-comment"></i> <sup class="com-badge blue">12</sup>评论区</button>
+                            <!-- 点赞 -->
+                            <button class="art-heart-btn com-button mini {{? it.is_like }} red {{?}} ml20" data-aid="{{=it.aid}}"><i class="fa fa-thumbs-up"></i> <sup class="com-badge {{? it.is_like }} red {{?}}">{{=it.like_count}}</sup>喜欢</button>
+                            </div>
+                        </div>
                     </div>
                 </div>`
             },
@@ -243,32 +352,34 @@ export default [
                         <!-- 评论列表项 -->
                         ${this.commentList()}
                     </div>
+                    <div class="comment-more mt20">加载更多</div>
                 </div>`
             },
             // 头像
             userFace() {
-                return `<div class="user-face"></div>`
+                return `<div class="user-face fl"></div>`
             },
             // 公共评论输入框
             pubPublishInput(placeholder = '说点啥呗~') {
                 return `<div class="pub-publish-submit mt10">
                     <div class="publish-input">
-                        <input type="text" class="com-area comment-input" placeholder="${placeholder}">
+                        <input type="text" class="com-text comment-input" placeholder="${placeholder}">
                     </div>
-                    <div class="publish-action clear">
+                    <div class="publish-action">
+                        <input type="text" class="com-text user-input" placeholder="我的大名！">
                         <button type="button" class="publish-btn com-button blue mini"> <i class="fa fa-send"></i> 评论</button>
                     </div>
                 </div>`
             },
             // 公共评论主要内容展示
-            pubPublishContent(type = "comment") {
+            pubPublishContent(commentItem, type = "comment") {
                 return `<div class="pub-publish-content">
-                    <div class="user-name">翠花</div>
-                    <div class="comment-content">我要给你生猴子！</div>
+                    <div class="user-name">${commentItem.comment_user}</div>
+                    <div class="comment-content">${commentItem.comment_text}</div>
                     <div class="comment-bar clear mt10">
                         <div class="com-icon fl">
                             <i class="com-icon__pic calendar-icon"></i>
-                            <span class="com-icon__text">2018-12-31</span>
+                            <span class="com-icon__text">${commentItem.comment_date.split('T')[0]}</span>
                         </div>
                         <div class="${type}-action fr">
                             <a href="javascript:;" class="art-heart art-icon act mr20">
@@ -284,12 +395,13 @@ export default [
                 </div>`
             },
             // 评论列表项
-            commentList(commentData = [1, 2, 3, 4, 5, 6, 7]) {
+            commentList(commentData) {
+                if (!commentData) return '';
                 return commentData.reduce((commentStr, commentItem) => {
-                    return commentStr += `<div class="comment-item mt20">
+                    return commentStr += `<div class="comment-item mt20 enter">
                         ${this.userFace()}
                         <div class="ml50">
-                            ${this.pubPublishContent()}
+                            ${this.pubPublishContent(commentItem)}
                             <!-- 回复block，如果有回复内容 -->
                             <div class="reply-box mt10">
                                 ${this.replyList()}
@@ -299,7 +411,8 @@ export default [
                 }, '')
             },
             // 回复列表
-            replyList(replyData = [1, 2]) {
+            replyList(replyData) {
+                if (!replyData) return '';
                 return replyData.reduce((replyStr, replyItem) => {
                     return replyStr += `<div class="reply-item">
                         <div class="reply-wrap">
@@ -314,7 +427,10 @@ export default [
         },
         handler: {
             ajax(data = {}) {
-                return ajax('/index/article/getArticleCnt', data)
+                return ajax({
+                    url: '/index/article/getArticleCnt',
+                    data
+                });
             },
             callback(data = {}) {
                 // 格式化日期
@@ -328,6 +444,12 @@ export default [
                 $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
                 catalogRes.handler(app);
+                // 评论列表
+                this.fns.getCommentList.call(this);
+                // 添加评论
+                this.fns.comment.call(this);
+                // 点赞
+                this.fns.artLike.call(this);
             }
         }
     }

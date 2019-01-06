@@ -1,6 +1,6 @@
 export const body = $('body:first');
 // loading图
-export const Loading = function () {
+export const Loading = function (par) {
     this.loading_box = $(`<div class="com-loading-box">
         <div class="com-loading-main">
             <div class="com-loading-item"></div>
@@ -9,7 +9,7 @@ export const Loading = function () {
         </div>
     </div>`);
     Loading.prototype.show = function () {
-        this.loading_box.appendTo($(document.body));
+        this.loading_box.appendTo(par);
         return this;
     }
     Loading.prototype.hide = function () {

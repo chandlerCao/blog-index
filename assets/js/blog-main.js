@@ -1,4 +1,6 @@
-import { host, app, banner3d, getParmasByHash, tmp, ajax, storage } from './blog-utils';
+import {
+    host, app, banner3d, getParmasByHash, tmp, ajax, storage, artLike
+} from './blog-utils';
 import { Loading, PageUp } from '../com/js/com';
 import Router from './blog-router';
 const mainBox = $('#main-box');
@@ -112,14 +114,13 @@ const componentSwitch = function (newEl, oldEl) {
     return new Promise(resolve => {
         oldEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', function () {
             $(this).off('animationend webkitAnimationEnd').empty().detach();
-            resolve();
         });
         // 添加即将出现的元素
         mainBox.append(newEl);
         // 旧元素离开
         oldEl.removeClass('enter').addClass('leave');
         // 新元素出现
-        newEl.off('animationend webkitAnimationEnd').removeClass('leave').addClass('enter');
+        newEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', resolve).removeClass('leave').addClass('enter');
     })
 };
 // 通过hash匹配相应的组件
@@ -151,8 +152,8 @@ const getComponent = function (newHash, oldHash) {
                     const scrollTop_data = storage.get('scrollTop') || {};
                     // 如果本地存储了当前的滚动位置，没有就跳转到顶部
                     let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
-                    app.animate({ 'scrollTop': scrollTop }, 300);
-                    // app.scrollTop(scrollTop);
+                    // app.animate({ 'scrollTop': scrollTop }, 300);
+                    app.scrollTop(scrollTop);
                 });
             }
             // 执行当前组件回调函数
@@ -198,9 +199,13 @@ const getComponent = function (newHash, oldHash) {
         if (!like_complete) return;
         like_complete = false;
         const aid = $(this).data('aid');
-        ajax('/index/article/givealike', { aid }).then(likeTotal => {
-            $(this).toggleClass('act');
-            $(this).find('.like-num:first').text(likeTotal);
+        artLike(aid).then(likeInfo => {
+            // 点赞
+            if (likeInfo.likeState === 1) $(this).addClass('act');
+            // 取消赞
+            else $(this).removeClass('act');
+            // 赞个数赋值
+            $(this).find('.like-num:first').text(likeInfo.likeTotal);
             like_complete = true;
         });
     });

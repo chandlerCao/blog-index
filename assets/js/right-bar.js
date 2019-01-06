@@ -50,7 +50,7 @@ const rightBarFixed = () => {
 // 获取标签云
 ; (function () {
     const tag_box = $('#tag-box');
-    ajax('/index/article/getArticleTag').then((tagList = []) => {
+    ajax({ url: '/index/article/getArticleTag' }).then((tagList = []) => {
         let tag_str = '';
         tagList.forEach(tag_item => {
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">

@@ -1,3 +1,5 @@
+@import './config.less';
+@import '../com/less/com.config.less';
 // 右边栏
 #side-bar {
     float: left;
@@ -13,10 +15,9 @@
     .sidebar-block {
         margin-top: 20px;
         background-color: #fff;
-        .com-block();
         .sidebar-block__title {
             position: relative;
-            color: @color;
+            color: @black;
             font-size: 14px;
             padding-left: 16px;
             margin-bottom: 20px;
@@ -60,7 +61,7 @@
     #hour-num .hour-text {
         position: absolute;
         font-size: 16px;
-        color: @color;
+        color: @black;
         left: 50%;
         top: 0;
         margin-left: -0.5px;
@@ -82,12 +83,12 @@
         width: 1px;
         height: 9px;
         opacity: .8;
-        background-color: @color;
+        background-color: @black;
     }
     .anchor-num {
         font-style: normal;
         font-size: 10px;
-        color: @color;
+        color: @black;
     }
     .anchor-num span {
         position: absolute;
@@ -98,7 +99,7 @@
         position: absolute;
         width: 20px;
         height: 20px;
-        background-color: @color;
+        background-color: @black;
         left: 50%;
         top: 50%;
         margin-left: -10px;
@@ -139,13 +140,13 @@
         left: 50%;
         margin-left: -1.5px;
         bottom: 0;
-        background-color: @color;
+        background-color: @black;
     }
     .long-hand {
         position: absolute;
         width: 100%;
         height: 70%;
-        background-color: @color;
+        background-color: @black;
         border-radius: 10px;
         top: 5%;
     }
@@ -153,7 +154,7 @@
         position: absolute;
         width: 14px;
         height: 14px;
-        background-color: @color;
+        background-color: @black;
         box-sizing: border-box;
         border: 4px solid @sec_color;
         left: 50%;

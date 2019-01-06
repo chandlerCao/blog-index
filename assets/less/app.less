@@ -1,4 +1,5 @@
 @import './config.less';
+@import '../com/less/com.config.less';
 // 侧边栏
 @import './left-bar.less';
 // 文章内容
@@ -7,6 +8,42 @@
 @import './right-bar.less';
 body {
     background-color: @bg;
+}
+
+.enter {
+    animation-duration: .3s;
+    animation-name: enter;
+}
+
+.leave {
+    animation-duration: .3s;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    animation-name: leave;
+}
+
+@keyframes enter {
+    0% {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+@keyframes leave {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
 }
 
 // 雪花
@@ -74,16 +111,6 @@ body {
             box-sizing: border-box;
             padding: 20px;
         }
-        .blog-element.enter {
-            animation: enter .3s;
-        }
-        .blog-element.leave {
-            position: absolute;
-            width: 100%;
-            left: 0;
-            top: 0;
-            animation: leave .3s;
-        }
     }
     .article-item {
         position: relative;
@@ -134,11 +161,7 @@ body {
             border: 1px solid @blue;
         }
         .art-main {
-            display: block;
-            background-color: #fff;
             margin-top: 5px;
-            padding: 15px 20px;
-            .com-block();
         }
         .art-wrap {
             display: block;
@@ -171,7 +194,7 @@ body {
             height: 40px;
             line-height: 1.65;
             box-sizing: border-box;
-            color: @color;
+            color: @black;
             overflow: hidden;
             text-align: justify;
         }
@@ -228,26 +251,6 @@ body {
             }
         }
     }
-    @keyframes enter {
-        0% {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0px);
-        }
-    }
-    @keyframes leave {
-        0% {
-            opacity: 1;
-            transform: translateX(0px);
-        }
-        100% {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-    }
 }
 
 /* 附属信息 */
@@ -257,7 +260,7 @@ body {
     align-items: center;
     font-size: 12px;
     white-space: nowrap;
-    color: @color;
+    color: @black;
     margin-top: 14px;
 }
 

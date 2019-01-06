@@ -1,14 +1,13 @@
-import { Page } from '../com/js/com';
 export const host = 'http://192.168.1.34:8080';
 // app
 export const app = $('#app');
 // ajax
-export const ajax = function (url, data = {}) {
+export const ajax = function (opts) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            type: 'get',
-            url: `${host}${url}`,
-            data,
+            type: opts.type || 'get',
+            url: `${host}${opts.url}`,
+            data: opts.data || {},
             dataType: 'json'
         }).done(data => {
             if (data.c === 0) resolve(data.d);
@@ -20,6 +19,9 @@ export const ajax = function (url, data = {}) {
             alert('请求超时！服务器发生异常！');
         });
     });
+}
+export const artLike = function (aid) {
+    return ajax({ url: '/index/article/givealike', data: { aid } });
 }
 // 获取hash动态路径参数
 export const getParmasByHash = function () {
@@ -164,7 +166,7 @@ export const tmp = {
                         {{=atc.date}}
                     </time>
                 </div>
-                <div class="art-main">
+                <div class="art-main com-block">
                     <a href="#article?aid={{=atc.aid}}" class="art-wrap">
                         <div class="art-info">
                             <h2 class="art-title">{{=atc.title}}</h2>
