@@ -225,13 +225,14 @@ export default [
                         data: { aid, page }
                     }).then(commentList => {
                         if (commentList.length) {
-                            commentLoad.hide();
                             const commentListStr = this.tmps.commentList(commentList);
                             commentBox.append(commentListStr);
                         } else {
                             // 移除掉加载更多按钮
                             this.element.find('.comment-more:first').remove();
+                            // commentBox.html(this.tmps.noComment());
                         }
+                        commentLoad.hide();
                     })
                 }
             },
@@ -252,6 +253,7 @@ export default [
 
                     // 获取评论列表盒子
                     const commentBox = $(this).parents('.publish-box:first').siblings('.comment-box:first');
+                    // 添加评论请求
                     ajax({
                         type: 'post',
                         url: '/index/comment/addComment',
@@ -366,7 +368,6 @@ export default [
                     <!-- 评论列表 -->
                     <div class="comment-box">
                         <!-- 评论列表项 -->
-                        ${this.commentList()}
                     </div>
                     <div class="comment-more mt20">加载更多 ></div>
                 </div>`
