@@ -213,9 +213,14 @@ export default [
                         url: '/index/comment/getCommentList',
                         data: { aid }
                     }).then(commentList => {
-                        commentLoad.hide();
-                        const commentListStr = this.tmps.commentList(commentList);
-                        commentBox.append(commentListStr);
+                        if (commentList.__proto__ === Array.prototype) {
+                            commentLoad.hide();
+                            const commentListStr = this.tmps.commentList(commentList);
+                            commentBox.append(commentListStr);
+                        } else {
+                            // 暂无评论！
+                            commentBox.html(commentList);
+                        }
                     });
                 }
             },
