@@ -187,41 +187,52 @@ export default [
             },
             // 滚动条到评论位置，获取评论列表
             getCommentList() {
+                const _this = this;
                 // markdown-comment
-                const markdownComment = this.element.find('.markdown-comment:first');
+                const markdownComment = _this.element.find('.markdown-comment:first');
                 // 评论列表父级
-                const commentBox = this.element.find('.comment-box:first');
+                const commentBox = _this.element.find('.comment-box:first');
                 let commentLoad = null;
                 // 自动滑到评论区按钮
-                this.element.find('.comment-trigger-btn:first').on('click', function () {
+                _this.element.find('.comment-trigger-btn:first').on('click', function () {
                     app.animate({
                         scrollTop: markdownComment.position().top
                     }, 300);
                 });
-                // 监听滚动条变化
+                // 监听滚动条变化，是否到达评论区域
                 app.off('scroll.comment').on('scroll.comment', () => {
                     if (markdownComment.offset().top <= $(window).height()) {
                         app.off('scroll.comment');
                         commentLoad = new Loading(commentBox).show();
-                        renderCommentList.call(this);
+                        renderCommentList.call(_this);
                     }
                 });
+                // 加载更多评论点击
+                _this.element.find('.comment-more:first').on('click', function () {
+                    // 获取当前页码
+                    if (!$(this).data('page')) {
+                        $(this).data('page', 1);
+                    } else {
+                        $(this).data('page', $(this).data('page') + 1);
+                    }
+                    renderCommentList.call(_this, $(this).data('page'));
+                });
                 // 发送请求，渲染评论
-                function renderCommentList() {
+                function renderCommentList(page = 0) {
                     const aid = getParmasByHash().aid;
                     ajax({
                         url: '/index/comment/getCommentList',
-                        data: { aid }
+                        data: { aid, page }
                     }).then(commentList => {
-                        if (commentList.__proto__ === Array.prototype) {
+                        if (commentList.length) {
                             commentLoad.hide();
                             const commentListStr = this.tmps.commentList(commentList);
                             commentBox.append(commentListStr);
                         } else {
-                            // 暂无评论！
-                            commentBox.html(commentList);
+                            // 移除掉加载更多按钮
+                            this.element.find('.comment-more:first').remove();
                         }
-                    });
+                    })
                 }
             },
             // 添加评论
@@ -232,11 +243,11 @@ export default [
                     const commentInp = $(this).parent().prev().find('.comment-input:first');
                     const commentVal = $.trim(commentInp.val());
                     // 如果评论为空，提示
-                    if (!commentVal) { alert('说点啥呗！'); return; }
+                    if (!commentVal) { alert('说点啥呗~'); return; }
                     // 获取用户名输入框
                     const userInp = $(this).prev();
                     const userVal = $.trim(userInp.val());
-                    if (!userVal) { alert('请问尊姓大名！'); return; }
+                    if (!userVal) { alert('尊姓大名！'); return; }
                     // 添加评论
 
                     // 获取评论列表盒子
@@ -329,7 +340,7 @@ export default [
                         <div class="mb20">
                             <div class="markdown-handler">
                             <!-- 评论区 -->
-                            <button class="comment-trigger-btn com-button blue mini"><i class="fa fa-comment"></i> <sup class="com-badge blue">12</sup>评论区</button>
+                            <button class="comment-trigger-btn com-button blue mini"><i class="fa fa-comment"></i> <sup class="com-badge blue">{{=it.commentCount}}</sup>评论区</button>
                             <!-- 点赞 -->
                             <button class="art-heart-btn com-button mini {{? it.is_like }} red {{?}} ml20" data-aid="{{=it.aid}}"><i class="fa fa-thumbs-up"></i> <sup class="com-badge {{? it.is_like }} red {{?}}">{{=it.like_count}}</sup>喜欢</button>
                             </div>
@@ -357,7 +368,7 @@ export default [
                         <!-- 评论列表项 -->
                         ${this.commentList()}
                     </div>
-                    <div class="comment-more mt20">加载更多</div>
+                    <div class="comment-more mt20">加载更多 ></div>
                 </div>`
             },
             // 头像
@@ -368,10 +379,10 @@ export default [
             pubPublishInput(placeholder = '说点啥呗~') {
                 return `<div class="pub-publish-submit mt10">
                     <div class="publish-input">
-                        <input type="text" class="com-text comment-input" placeholder="${placeholder}">
+                        <input type="text" class="com-text comment-input animated" placeholder="${placeholder}">
                     </div>
                     <div class="publish-action">
-                        <input type="text" class="com-text user-input" placeholder="我的大名！">
+                        <input type="text" class="com-text user-input animated" placeholder="我的大名！">
                         <button type="button" class="publish-btn com-button blue mini"> <i class="fa fa-send"></i> 评论</button>
                     </div>
                 </div>`
@@ -403,7 +414,7 @@ export default [
             commentList(commentData) {
                 if (!commentData) return '';
                 return commentData.reduce((commentStr, commentItem) => {
-                    return commentStr += `<div class="comment-item mt20 enter">
+                    return commentStr += `<div class="comment-item mt20 flipInX animated">
                         ${this.userFace()}
                         <div class="ml50">
                             ${this.pubPublishContent(commentItem)}
@@ -428,6 +439,10 @@ export default [
                         </div>
                     </div>`
                 }, '')
+            },
+            // noComment
+            noComment(tip = '暂无评论！') {
+                return `<div class="no-comment com-plain">${tip}</div>`;
             }
         },
         handler: {
