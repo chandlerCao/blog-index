@@ -108,6 +108,6 @@ if (isDev) {
     );
 } else {
     config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
+    // config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
 }
 module.exports = config;

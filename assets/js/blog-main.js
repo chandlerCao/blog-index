@@ -228,6 +228,6 @@ const getComponent = function (newHash, oldHash) {
             scrollTop_data[hash] = app.scrollTop();
             // 存储到本地存储
             storage.set('scrollTop', scrollTop_data);
-        }, 200);
+        }, 50);
     })
 })();

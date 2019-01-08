@@ -208,7 +208,8 @@ export default [
                     }
                 });
                 // 加载更多评论点击
-                _this.element.find('.comment-more:first').on('click', function () {
+                const commentMore = _this.element.find('.comment-more:first');
+                commentMore.on('click', function () {
                     // 获取当前页码
                     if (!$(this).data('page')) {
                         $(this).data('page', 1);
@@ -227,10 +228,11 @@ export default [
                         if (commentList.length) {
                             const commentListStr = this.tmps.commentList(commentList);
                             commentBox.append(commentListStr);
+                            if (commentList.length < 6) commentMore.remove();
                         } else {
                             // 移除掉加载更多按钮
                             this.element.find('.comment-more:first').remove();
-                            // commentBox.html(this.tmps.noComment());
+                            if (page === 0) commentBox.html(this.tmps.noComment('空空如也！'));
                         }
                         commentLoad.hide();
                     })
@@ -239,7 +241,7 @@ export default [
             // 添加评论
             comment() {
                 const _this = this;
-                this.element.delegate('.publish-btn', 'click', function () {
+                this.element.find('.publish-btn:first').on('click', function () {
                     // 获取评论输入框
                     const commentInp = $(this).parent().prev().find('.comment-input:first');
                     const commentVal = $.trim(commentInp.val());
@@ -249,8 +251,8 @@ export default [
                     const userInp = $(this).prev();
                     const userVal = $.trim(userInp.val());
                     if (!userVal) { alert('尊姓大名！'); return; }
-                    // 添加评论
-
+                    // 清空输入框值
+                    commentInp.val('');
                     // 获取评论列表盒子
                     const commentBox = $(this).parents('.publish-box:first').siblings('.comment-box:first');
                     // 添加评论请求
@@ -269,8 +271,11 @@ export default [
             },
             // 点赞
             artLike() {
+                let likeReq = false;
                 const likeBtn = this.element.find('.art-heart-btn:first');
                 likeBtn.on('click', function () {
+                    if (likeReq) return;
+                    likeReq = true;
                     const aid = $(this).data('aid');
                     const likeSub = $(this).find('.com-badge:first');
                     artLike(aid).then(likeInfo => {
@@ -283,6 +288,7 @@ export default [
                             likeSub.removeClass('red');
                         }
                         likeSub.text(likeInfo.likeTotal);
+                        likeReq = false;
                     })
                 });
             }
