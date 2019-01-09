@@ -1,7 +1,8 @@
 export const body = $('body:first');
+export const $win = $(window);
 // loading图
-export const Loading = function () {
-    this.loading_box = $(`<div class="com-loading-box">
+export const Loading = function (par) {
+    this.loading_box = $(`<div class="com-loading-box" style="top: ${par.scrollTop()}px;">
         <div class="com-loading-main">
             <div class="com-loading-item"></div>
             <div class="com-loading-item"></div>
@@ -9,14 +10,16 @@ export const Loading = function () {
         </div>
     </div>`);
     Loading.prototype.show = function () {
-        this.loading_box.appendTo($(document.body));
+        this.loading_box.appendTo(par);
         return this;
     }
     Loading.prototype.hide = function () {
-        this.loading_box.remove();
+        this.loading_box.fadeOut(100, function () {
+            $(this).remove();
+        });
         return this;
     }
-};
+}
 // 分页
 export const Page = function (opts) {
     /**
@@ -34,7 +37,7 @@ export const Page = function (opts) {
     this.page_size = opts.page_size || 0;
     this.now_page = opts.now_page || 1;
     this.url = opts.url || 'javascript:;';
-    this.theme = opts.theme || '#3b8cff';
+    this.theme = opts.theme || '#424e67';
     this.on_change = opts.on_change || function () { };
     this.page_len = Math.ceil(this.total / this.page_size);
     // 初始化
@@ -99,32 +102,31 @@ export const Page = function (opts) {
     // 分页事件监听
     Page.prototype.page_listener = function () {
         const _this = this;
-        // num鼠标移入
         this.el.find('.com-page-num').on('click', function () {
-            _this.on_change($(this).data('page'));
+            _this.on_change();
         }).on('mouseover', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_add_active($(this));
         }).on('mouseout', function () {
             if (_this.now_page !== $(this).data('page')) _this.Page_remove_active($(this));
         });
 
-        // 上页鼠标移入
-        this.el.find('.com-page-prev:first').on('mouseover', function () {
+        // 上页鼠标移入移出
+        this.el.find('.com-page-prev:first').hover(function () {
             if (_this.now_page !== 1) _this.Page_add_active($(this));
-        });
-        // 上页鼠标移出
-        this.el.find('.com-page-prev:first').on('mouseout', function () {
+        }, function () {
             if (_this.now_page !== 1) _this.Page_remove_active($(this));
-        });
+        }).on('click', function () {
+            _this.on_change();
+        })
 
         // 下页鼠标移入
-        this.el.find('.com-page-next').on('mouseover', function () {
+        this.el.find('.com-page-next:first').hover(function () {
             if (_this.now_page !== _this.page_len) _this.Page_add_active($(this));
-        });
-        // 下页鼠标移出
-        this.el.find('.com-page-next').on('mouseout', function () {
+        }, function () {
             if (_this.now_page !== _this.page_len) _this.Page_remove_active($(this));
-        });
+        }).on('click', function () {
+            _this.on_change();
+        })
     }
     Page.prototype.Page_add_active = function (page_el) {
         page_el.css({
@@ -192,16 +194,20 @@ export const PageUp = function (opts) {
         <i class="fa fa-caret-up"></i>
     </div>`);
     this.parent_el.append(this.pageup_btn);
-    PageUp.prototype.handler = function () {
-        // 鼠标移入动画效果
-        // 点击按钮回到顶部
-        this.pageup_btn.click(() => {
-            this.scroll_el.animate({ 'scrollTop': 0 }, 300);
-        }).hover(function () {
-            $(this).addClass('rubberBand animated');
-        }, function () {
+
+    // top按钮动画
+    PageUp.prototype.animateEnd = function () {
+        this.pageup_btn.on('animationEnd webkitAnimationEnd', function () {
             $(this).removeClass('rubberBand animated');
-        })
+        });
+    }
+    // 回到顶部
+    PageUp.prototype.handler = function () {
+        this.pageup_btn.click(() => {
+            this.pageup_btn.addClass('rubberBand animated');
+            this.scroll_el.stop().animate({ 'scrollTop': 0 }, 300);
+        });
     }
     this.handler();
+    this.animateEnd();
 }

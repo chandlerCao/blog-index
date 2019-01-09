@@ -1,11 +1,52 @@
 @import './config.less';
+@import '../com/less/com.config.less';
 // 侧边栏
 @import './left-bar.less';
 // 文章内容
 @import './md.less';
 // 右边栏
 @import './right-bar.less';
-// 五角星
+body {
+    background-color: @bg;
+}
+
+.enter {
+    animation-duration: .3s;
+    animation-name: enter;
+}
+
+.leave {
+    animation-duration: .3s;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    animation-name: leave;
+}
+
+@keyframes enter {
+    0% {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+@keyframes leave {
+    0% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+}
+
+// 雪花
 #canvas-box {
     position: fixed;
     width: 100%;
@@ -13,10 +54,12 @@
     left: 0;
     top: 0;
     pointer-events: none;
+    z-index: 500;
 }
 
 #app {
     height: 100%;
+    position: relative;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -30,7 +73,9 @@
         vertical-align: middle;
         width: @size;
         height: @size;
-        background-size: cover;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
     .com-icon__text {
         display: inline-block;
@@ -44,35 +89,24 @@
     .calendar-icon {
         background-image: url(../img/calendar.png);
     }
-    .heart-icon {
-        background-image: url(../img/heart.png);
+    .reply-icon {
+        background-image: url(../img/reply.png);
+        position: relative;
+        top: 2px;
     }
 }
 
 /* 主板块 */
 
 #main-wrap {
-    float: left;
-    width: 100%;
-    box-sizing: border-box;
+    margin-left: @intrudeW;
+    margin-right: @sideW;
     #main-box {
         position: relative;
-        margin-left: @intrudeW;
-        margin-right: @sideW;
         .blog-element {
             width: 100%;
             box-sizing: border-box;
             padding: 20px;
-        }
-        .blog-element.enter {
-            animation: enter .35s linear forwards;
-        }
-        .blog-element.leave {
-            position: absolute;
-            width: 100%;
-            left: 0;
-            top: 0;
-            animation: leave .35s linear forwards;
         }
     }
     .article-item {
@@ -80,7 +114,7 @@
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
         padding-top: 50px;
-        border-left: 1.5px solid @blue;
+        border-left: .1rem solid @blue;
         &:nth-of-type(1) {
             padding-top: 0;
         }
@@ -111,7 +145,7 @@
             border-style: solid;
             border-color: transparent;
             border-right-color: @blue;
-            left: -19px;
+            left: -20px;
             top: 0;
         }
         .art-dotts {
@@ -124,11 +158,7 @@
             border: 1px solid @blue;
         }
         .art-main {
-            display: block;
-            background-color: #fff;
             margin-top: 5px;
-            padding: 15px 20px;
-            .box-shadow();
         }
         .art-wrap {
             display: block;
@@ -161,7 +191,7 @@
             height: 40px;
             line-height: 1.65;
             box-sizing: border-box;
-            color: @color;
+            color: @black;
             overflow: hidden;
             text-align: justify;
         }
@@ -175,50 +205,6 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
-        }
-        /* 附属信息 */
-        .art-meta {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            white-space: nowrap;
-            color: @color;
-            margin-top: 14px;
-            .art-icon {
-                margin-right: 30px;
-            }
-            /* 点赞 */
-            .art-heart {
-                position: relative;
-                .art-icon__text {
-                    padding-left: 15px;
-                }
-            }
-            .heart-icon__pic {
-                position: absolute;
-                width: 30px;
-                height: 35px;
-                left: -8px;
-                top: -10px;
-                background-image: url(../img/zan.png);
-                background-repeat: no-repeat;
-                cursor: pointer;
-                z-index: 1000;
-                background-size: 3900%;
-                background-position-x: -6px;
-                background-position-y: -1px;
-            }
-            .heart-icon__text {
-                padding-left: 15px;
-            }
-        }
-        .art-heart.act .heart-icon__pic {
-            display: inline-block;
-            animation-name: heartBlast;
-            animation-duration: .8s;
-            animation-iteration-count: 1;
-            animation-timing-function: steps(28);
-            background-position-x: -1136px;
         }
         @keyframes heartBlast {
             0% {
@@ -262,38 +248,66 @@
             }
         }
     }
-    @keyframes enter {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    @keyframes leave {
-        0% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-        }
+}
+
+/* 附属信息 */
+
+.art-meta {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    white-space: nowrap;
+    color: @black;
+    margin-top: 14px;
+}
+
+/* 点赞 */
+
+.art-heart {
+    position: relative;
+    .art-icon__text {
+        padding-left: 15px;
     }
 }
 
-@media all and (max-width: 1200px) {
-    #main-wrap #main-box {
-        float: none;
+.heart-icon__pic {
+    position: absolute;
+    width: 30px !important;
+    height: 35px !important;
+    left: -8px;
+    top: -11px;
+    background-image: url(../img/zan.png);
+    background-repeat: no-repeat;
+    cursor: pointer;
+    z-index: 1000;
+    background-size: 3900% !important;
+    background-position-x: -6px !important;
+    background-position-y: -1px !important;
+}
+
+.heart-icon__text {
+    padding-left: 15px !important;
+}
+
+.art-heart.act .heart-icon__pic {
+    display: inline-block;
+    animation-name: heartBlast;
+    animation-duration: .8s;
+    animation-iteration-count: 1;
+    animation-timing-function: steps(28);
+    background-position-x: -1136px !important;
+}
+
+// 右边栏消失，mr变为0
+@media all and (max-width: 1300px) {
+    #main-wrap {
         margin-right: 0;
     }
 }
 
-@media all and (max-width: 1000px) {
-    #main-wrap #main-box {
-        position: relative;
-        width: 100%;
+// 垂直模式
+@media all and (max-width: 800px) {
+    #main-wrap {
         margin-left: 0;
-        .blog-element {
-            position: static;
-        }
     }
 }

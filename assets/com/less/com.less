@@ -1,7 +1,24 @@
 @import './com.config.less';
+// 公共block
+.com-block {
+    background-color: #fff;
+    border-radius: 6px;
+    box-sizing: border-box;
+    padding: 15px 18px;
+    box-shadow: 0px 0px 8px #dfe3f2;
+}
+
+// 文本
+.com-plain {
+    font-size: 14px;
+    font-weight: bold;
+    color: @black;
+}
+
 // 按钮
 .com-button {
     display: inline-block;
+    position: relative;
     cursor: pointer;
     text-align: center;
     transition: .1s;
@@ -11,7 +28,7 @@
     font-size: 14px;
     border: 1px solid @grey;
     background-color: #fff;
-    color: @grey;
+    color: @black;
     border-radius: 4px;
     &.blue {
         background-color: @blue;
@@ -19,10 +36,12 @@
         color: #fff;
     }
     &.blue:hover {
-        background-color: lighten(@blue, 3%);
+        background-color: lighten(@blue, 10%);
+        border: 1px solid lighten(@blue, 10%);
     }
     &.blue:active {
-        background-color: darken(@blue, 3%);
+        background-color: darken(@blue, 10%);
+        border: 1px solid darken(@blue, 10%);
     }
     &.red {
         background-color: @red;
@@ -30,10 +49,12 @@
         color: #fff;
     }
     &.red:hover {
-        background-color: lighten(@red, 3%);
+        background-color: lighten(@red, 10%);
+        border: 1px solid lighten(@red, 10%);
     }
     &.red:active {
-        background-color: darken(@red, 3%);
+        background-color: darken(@red, 10%);
+        border: 1px solid darken(@red, 10%);
     }
     &.yellow {
         background-color: @yellow;
@@ -41,10 +62,12 @@
         color: #fff;
     }
     &.yellow:hover {
-        background-color: lighten(@yellow, 3%);
+        background-color: lighten(@yellow, 10%);
+        border: 1px solid lighten(@yellow, 10%);
     }
     &.yellow:active {
-        background-color: darken(@yellow, 3%);
+        background-color: darken(@yellow, 10%);
+        border: 1px solid darken(@yellow, 10%);
     }
     &.green {
         background-color: @green;
@@ -52,10 +75,12 @@
         color: #fff;
     }
     &.green:hover {
-        background-color: lighten(@green, 3%);
+        background-color: lighten(@green, 10%);
+        border: 1px solid lighten(@green, 10%);
     }
     &.green:active {
-        background-color: darken(@green, 3%);
+        background-color: darken(@green, 10%);
+        border: 1px solid darken(@green, 10%);
     }
     &.medium {
         padding: 10px 20px;
@@ -72,22 +97,42 @@
         border-radius: 3px;
         font-size: 12px;
     }
-    &+.com-button {
-        margin-left: 8px;
-    }
+}
+
+// 输入框
+.com-text,
+.com-area {
+    display: inline-block;
+    line-height: 2;
+    box-sizing: border-box;
+    border: 1px solid @grey;
+    border-radius: 4px;
+    color: @black;
+    font-size: inherit;
+    padding: 0 15px;
+    -webkit-appearance: none;
+}
+
+.com-area {
+    line-height: 24px;
+}
+
+.com-text:focus,
+.com-area:focus {
+    border: 1px solid @blue;
 }
 
 // loading
 .com-loading-box {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
     z-index: 999;
-    background-color: rgba(0, 0, 0, .005);
+    background-color: rgba(255, 255, 255, .3);
     .com-loading-main {
-        position: fixed;
+        position: absolute;
         width: 50px;
         height: 50px;
         left: 50%;
@@ -251,6 +296,7 @@
     &.light {
         background-color: @white;
         border: 1px solid @grey;
+        color: @black;
         &:after {
             border-top-color: @white;
         }
@@ -271,17 +317,90 @@
 
 // 回到顶部
 .com-page-up {
+    @size: 50px;
     position: fixed;
-    width: 60px;
-    height: 60px;
-    line-height: 2;
-    right: 20px;
-    bottom: 20px;
+    width: @size;
+    height: @size;
+    font-size: @size / 2;
+    line-height: @size;
+    right: @size / 5;
+    bottom: @size / 5;
     text-align: center;
-    font-size: 30px;
     background-color: #fff;
     color: @blue;
     border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .25);
     cursor: pointer;
-    box-shadow: 1px 1px 0 #d3e6fc;
 }
+
+// 标记
+.com-badge {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    right: 10px;
+    border-radius: 10px;
+    color: @black;
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 6px;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #fff;
+    border: 1px solid @grey;
+    transform: translateY(-50%) translateX(100%);
+    &.blue {
+        background-color: @blue;
+        border: 1px solid @blue;
+        color: #fff;
+    }
+    &.red {
+        background-color: @red;
+        border: 1px solid @red;
+        color: #fff;
+    }
+    &.yellow {
+        border: 1px solid @yellow;
+        background-color: @yellow;
+        color: #fff;
+    }
+    &.green {
+        background-color: @green;
+        border: 1px solid @green;
+        color: #fff;
+    }
+}
+
+.ml(@i) when (@i > 0) {
+    .ml(@i - 10);
+    .ml@{i} {
+        margin-left: @i * 1px;
+    }
+}
+
+.ml(100);
+.mr(@i) when (@i > 0) {
+    .mr(@i - 10);
+    .mr@{i} {
+        margin-right: @i * 1px;
+    }
+}
+
+.mr(100);
+.mt(@i) when (@i > 0) {
+    .mt(@i - 10);
+    .mt@{i} {
+        margin-top: @i * 1px;
+    }
+}
+
+.mt(100);
+.mb(@i) when (@i > 0) {
+    .mb(@i - 10);
+    .mb@{i} {
+        margin-bottom: @i * 1px;
+    }
+}
+
+.mb(100);

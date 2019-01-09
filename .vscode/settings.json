@@ -3,5 +3,9 @@
         "compress": true,
         "out": false,
         "autoprefixer": "> 5%, last 50 Chrome versions, ff <= 15, opera <= 20"
-    }
+    },
+    "emmet.includeLanguages": {
+        "javascript": "html"
+    },
+    "emmet.triggerExpansionOnTab": true
 }

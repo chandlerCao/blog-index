@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>web前端工程师个人博客</title>
     <meta property="og:title" content="web前端博客">
@@ -12,7 +12,7 @@
     <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.9.0/github-markdown.min.css"> -->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.13.1/styles/atom-one-light.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.13.1/styles/github-gist.min.css">
     <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/dot/2.0.0-beta.0/doT.min.js"></script>
 </head>
@@ -44,8 +44,8 @@
                         <!-- 联系方式 -->
                         <div id="contact-box">
                             <i id="wechat__icon" class="contact-icon"></i>
-                            <a href="tencent://message/?uin=597649635&amp;Site=&amp;Menu=yes" id="qq__icon" class="contact-icon"></a>
-                            <i id="github__icon" class="contact-icon"></i>
+                            <i id="qq__icon" class="contact-icon"></i>
+                            <a href="https://github.com/chandlerCao" target="_blank" id="github__icon" class="contact-icon"></a>
                             <i id="email__icon" class="contact-icon"></i>
                         </div>
                     </div>
@@ -57,35 +57,37 @@
             <section id="main-box"></section>
         </main>
         <!-- 侧边栏 -->
-        <aside id="side-bar">
-            <!-- 时钟 -->
-            <section class="sidebar-block">
-                <div class="sidebar-block__title">时钟</div>
-                <div class="sidebar-block__content">
-                    <div id="clock">
-                        <div id="anchor-box"></div>
-                        <div id="hour-num"></div>
-                        <div id="center-point"></div>
-                        <div id="hour-hand" class="hand">
-                            <div class="short-hand"></div>
-                            <div class="long-hand"></div>
+        <aside class="side-bar">
+            <div class="side-bar-wrap">
+                <!-- 时钟 -->
+                <section class="sidebar-block com-block mt20">
+                    <div class="sidebar-block__title">时钟</div>
+                    <div class="sidebar-block__content">
+                        <div id="clock">
+                            <div id="anchor-box"></div>
+                            <div id="hour-num"></div>
+                            <div id="center-point"></div>
+                            <div id="hour-hand" class="hand">
+                                <div class="short-hand"></div>
+                                <div class="long-hand"></div>
+                            </div>
+                            <div id="min-hand" class="hand">
+                                <div class="short-hand"></div>
+                                <div class="long-hand"></div>
+                            </div>
+                            <div id="sec-hand"></div>
+                            <div id="sec-center"></div>
                         </div>
-                        <div id="min-hand" class="hand">
-                            <div class="short-hand"></div>
-                            <div class="long-hand"></div>
-                        </div>
-                        <div id="sec-hand"></div>
-                        <div id="sec-center"></div>
                     </div>
-                </div>
-            </section>
-            <!-- 标签 -->
-            <section class="sidebar-block">
-                <div class="sidebar-block__title">标签</div>
-                <div class="sidebar-block__content">
-                    <div id="tag-box"></div>
-                </div>
-            </section>
+                </section>
+                <!-- 标签 -->
+                <section class="sidebar-block com-block mt20">
+                    <div class="sidebar-block__title">标签</div>
+                    <div class="sidebar-block__content">
+                        <div id="tag-box"></div>
+                    </div>
+                </section>
+            </div>
         </aside>
     </div>
     <!-- 雪花 -->

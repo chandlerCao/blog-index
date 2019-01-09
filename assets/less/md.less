@@ -1,28 +1,19 @@
-#markdown-box {
-    height: 100vh;
-    overflow: hidden;
-}
+@import '../com/less/com.config.less';
+#markdown-box {}
 
 #markdown-wrap {
-    height: 100%;
-    overflow: hidden;
+    position: relative;
 }
 
 @catalogW: 200px;
-// 文章主要内容
+/* 文章主要内容 */
+
 #markdown-main {
-    float: left;
     position: relative;
     width: calc(100% - @catalogW);
-    height: 100%;
     overflow: auto;
-    box-sizing: border-box;
-    .box-shadow();
-    padding: 18px 20px;
-    border-radius: 6px;
-    background-color: #fff;
     text-align: justify;
-    /* 标题*/
+    /* 标题 */
     .markdown-title {
         margin-bottom: 16px;
         font-size: 22px;
@@ -31,18 +22,15 @@
             font-weight: bold;
         }
     }
-    /* 附属信息*/
+    /* 附属信息 */
     .markdown-meta {
-        display: block;
+        width: 320px;
+        display: flex;
+        justify-content: space-around;
         font-size: 12px;
-        text-align: center;
-        margin: 16px 0;
+        margin: 16px auto;
     }
-    .meta-like,
-    .meta-comment {
-        margin-left: 10px;
-    }
-    /* 前言*/
+    /* 前言 */
     .markdown-preface {
         font-size: 14px;
         line-height: 30px;
@@ -53,7 +41,7 @@
         border-radius: 10px;
         font-weight: bold;
     }
-    /* 封面*/
+    /* 封面 */
     .markdown-cover {
         position: relative;
         background-size: 100%;
@@ -63,7 +51,7 @@
         background-repeat: no-repeat;
         margin-top: 20px;
     }
-    /* 封面填充*/
+    /* 封面填充 */
     .markdown-cover:before {
         content: "";
         position: absolute;
@@ -78,7 +66,92 @@
         padding-top: 50%;
         width: 100%;
     }
-    /* 覆盖markdown*/
+    /* 评论 */
+    .markdown-comment {
+        font-size: 12px;
+        .comment-line {
+            margin-top: 30px;
+            border-top: 1px solid lighten(@black, 60%);
+            text-align: center;
+            span {
+                position: relative;
+                top: -12px;
+                font-size: 14px;
+                padding: 0 20px;
+                background-color: #fff;
+            }
+        }
+        .comment-box {
+            position: relative;
+            min-height: 80px;
+            color: @black;
+            /*  没有评论展示 */
+            .no-comment {
+                line-height: 80px;
+                text-align: center;
+            }
+        }
+        /* 发布输入框 */
+        .user-face {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: lighten(@black, 40%);
+        }
+        .publish-input {
+            font-size: 14px;
+            height: 40px;
+        }
+        .comment-input {
+            width: 100%;
+            height: 100%;
+        }
+        /* 评论操作 */
+        .publish-action {
+            display: flex;
+            margin-top: 8px;
+            justify-content: space-between;
+        }
+        /* 评论人 */
+        .user-input {
+            width: 50%;
+        }
+        /* 发布按钮 */
+        .publish-btn {}
+        /* 评论列表 */
+        .comment-item {
+            border-bottom: 1px solid @grey; // margin-top: 10px;
+        }
+        .user-name {
+            color: darken(@black, 30%);
+        }
+        .comment-content {
+            padding-top: 4px;
+        }
+        .comment-more {
+            padding: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        /* 回复列表 */
+        .reply-box {
+            background-color: @bg;
+            .reply-item {
+                padding: 10px 14px 0 14px;
+            }
+            .reply-wrap {
+                border-bottom: 1px solid darken(#fff, 8%);
+                padding-bottom: 10px;
+            }
+        }
+        @media all and (max-width: 400px) {
+            .reply-action {
+                display: none;
+            }
+        }
+    }
+    /* 覆盖markdown */
     .markdown-content {
         font-size: 14px;
         ul {
@@ -95,7 +168,7 @@
         li {
             margin-top: 5px;
         }
-        /* 引用*/
+        /* 引用 */
         blockquote {
             padding: 1px 23px;
             margin: 22px 0;
@@ -136,28 +209,45 @@
         }
         .hljs {
             line-height: 1.5;
+            background-color: #fafbfc;
         }
     }
 }
 
-// 目录
+/* 目录 */
+
+.markdown-action {
+    position: absolute;
+    width: @catalogW;
+    min-height: 100%;
+    right: 0;
+    top: 0;
+    box-sizing: border-box;
+    padding-left: 18px;
+}
+
+.markdown-action-wrap {
+    position: fixed;
+    width: @catalogW - 20;
+}
+
 .markdown-catalog {
-    float: right;
-    width: @catalogW - 10;
-    height: 100%;
-    background-color: #fff;
-    .box-shadow();
-    border-radius: 6px;
+    width: 100%;
     .markdown-catalog-title {
-        font-size: 18px;
+        font-size: 15px;
         font-weight: bold;
-        color: @color;
+        color: @black;
         text-align: center;
-        padding: 10px 0;
+        margin-bottom: 16px;
         letter-spacing: 2px;
+        .markdown-catalog-item {
+            padding: 3px 8px;
+            border-bottom: 2px solid @blue;
+            color: @blue;
+        }
     }
     .catalog-item {
-        color: @color;
+        color: @black;
         margin-bottom: 5px;
     }
     .catalog-item.act {
@@ -165,6 +255,7 @@
         color: @blue;
     }
     .catalog-link {
+        width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -177,9 +268,8 @@
         }
     }
     .catalog-h1 {
-        font-size: 15px;
-        line-height: 1.5;
-        padding-left: 10px;
+        font-size: 13px;
+        padding-left: 5px;
         .catalog-link:before {
             width: 6px;
             height: 6px;
@@ -188,9 +278,8 @@
         }
     }
     .catalog-h2 {
-        font-size: 13px;
-        line-height: 1.5;
-        padding-left: 35px;
+        font-size: 12px;
+        padding-left: 25px;
         .catalog-link:before {
             width: 5px;
             height: 5px;
@@ -200,7 +289,11 @@
     }
 }
 
-@media screen and (max-width: 1200px) {
+.markdown-handler {
+    width: 100%;
+}
+
+@media screen and (max-width: 1100px) {
     #markdown-box {
         height: auto;
         padding: 0 !important;
@@ -208,7 +301,7 @@
     #markdown-main {
         width: 100%;
     }
-    .markdown-catalog {
+    .markdown-action {
         display: none;
     }
 }

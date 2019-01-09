@@ -1,24 +1,21 @@
+@import './config.less';
+@import '../com/less/com.config.less';
 // 右边栏
-#side-bar {
-    float: left;
+.side-bar {
+    position: absolute;
     width: @sideW;
-    margin-left: -@sideW;
-    box-sizing: border-box;
-    padding-right: 20px;
-    &.fixed {
+    height: 100%;
+    right: 0;
+    top: 0;
+    .side-bar-wrap {
         position: fixed;
-        top: 0;
-        right: 0;
+        width: @sideW - 20;
     }
     .sidebar-block {
-        border-radius: 6px;
-        margin-top: 20px;
-        padding: 15px 10px;
         background-color: #fff;
-        .box-shadow();
         .sidebar-block__title {
             position: relative;
-            color: @color;
+            color: @black;
             font-size: 14px;
             padding-left: 16px;
             margin-bottom: 20px;
@@ -62,7 +59,7 @@
     #hour-num .hour-text {
         position: absolute;
         font-size: 16px;
-        color: @color;
+        color: @black;
         left: 50%;
         top: 0;
         margin-left: -0.5px;
@@ -84,12 +81,12 @@
         width: 1px;
         height: 9px;
         opacity: .8;
-        background-color: @color;
+        background-color: @black;
     }
     .anchor-num {
         font-style: normal;
         font-size: 10px;
-        color: @color;
+        color: @black;
     }
     .anchor-num span {
         position: absolute;
@@ -100,7 +97,7 @@
         position: absolute;
         width: 20px;
         height: 20px;
-        background-color: @color;
+        background-color: @black;
         left: 50%;
         top: 50%;
         margin-left: -10px;
@@ -141,13 +138,13 @@
         left: 50%;
         margin-left: -1.5px;
         bottom: 0;
-        background-color: @color;
+        background-color: @black;
     }
     .long-hand {
         position: absolute;
         width: 100%;
         height: 70%;
-        background-color: @color;
+        background-color: @black;
         border-radius: 10px;
         top: 5%;
     }
@@ -155,7 +152,7 @@
         position: absolute;
         width: 14px;
         height: 14px;
-        background-color: @color;
+        background-color: @black;
         box-sizing: border-box;
         border: 4px solid @sec_color;
         left: 50%;
@@ -170,26 +167,34 @@
 #tag-box {
     margin-top: -12px;
     .tag-item {
-        display: inline-block;
-        margin-right: 5px;
-        margin-top: 12px;
-        padding: 4px 8px;
-        background-color: lighten(@blue, 36%);
-        border: 1px solid lighten(@blue, 28%);
-        border-radius: 4px;
+        position: relative;
+        padding: 4px;
+        margin-right: 13px;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
         font-size: 12px;
         color: @blue;
-        transition: .1s;
-        &:hover {
+        font-weight: bold;
+        transition: .3s;
+        &:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            left: 0;
+            bottom: 0;
             background-color: @blue;
-            border: 1px solid @blue;
-            color: #fff;
+            transition: .2s;
+            transform: scale(0);
+        }
+        &:hover:after {
+            transform: scale(1);
         }
     }
 }
 
-@media all and (max-width: 1200px) {
-    #side-bar {
+@media all and (max-width: 1300px) {
+    .side-bar {
         display: none;
     }
 }

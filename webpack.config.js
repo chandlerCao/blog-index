@@ -5,39 +5,44 @@ const cleanWebpackPlugin = require('clean-webpack-plugin');
 // html
 const htmlWebpackPlugin = require('html-webpack-plugin');
 // 当前的模式
-const isDev = process.env.mode === 'development';
+const mode = process.env.mode ? process.env.mode : 'production';
+const isDev = mode === 'development';
 // 抽离css
-const extractTextWebpackPlugin = require('extract-text-webpack-plugin');
-const lessExtract = new extractTextWebpackPlugin({
-    filename: 'css/[name]-[hash:8].css',
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+
+const hash = process.env.test || isDev ? '' : '-[hash]';
+
+const lessExtract = new MiniCssExtractPlugin({
+    filename: `css/[name]${hash}.css`
 });
+// 拷贝插件
+const copyWebpackPlugin = require('copy-webpack-plugin');
 const config = {
+    mode,
     entry: {
         blog: path.join(__dirname, 'app.js')
     },
     output: {
         path: path.join(__dirname, '../koa-blog/index/view'),
-        filename: 'js/[name]-[hash:8].js'
+        filename: `js/[name]${hash}.js`
     },
     module: {
         rules: [
             {
                 test: /\.js$/i,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader'
-                }
+                use: ['babel-loader']
             },
             {
                 test: /\.less$/i,
-                use: lessExtract.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        { loader: 'css-loader' },
-                        { loader: 'postcss-loader' },
-                        { loader: 'less-loader' }
-                    ]
-                })
+                use: [
+                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    'less-loader'
+                ]
             },
             {
                 test: /\.(jpg|png)$/i,
@@ -46,12 +51,22 @@ const config = {
                         loader: 'url-loader',
                         options: {
                             publicPath: '../',
-                            name: 'img/[name]-[hash:8].[ext]', // 将要打包的哪个文件夹下
+                            name: `img/[name]${hash}.[ext]`, // 将要打包的哪个文件夹下
                             limit: 1024
                         }
                     }
                 ]
             }
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
+                sourceMap: true
+            }),
+            new OptimizeCSSAssetsPlugin({})
         ]
     },
     plugins: [
@@ -66,7 +81,21 @@ const config = {
             },
             // chunks: ['blog'],
             hash: true
-        })
+        }),
+        new copyWebpackPlugin([
+            {
+                from: path.join(__dirname, 'assets/img/WeChat-qr-code.jpg'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            },
+            {
+                from: path.join(__dirname, 'assets/img/QQ-qr-code.jpg'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            },
+            {
+                from: path.join(__dirname, 'assets/img/snow.png'),
+                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+            }
+        ])
     ],
     resolve: {
         alias: {
@@ -77,9 +106,8 @@ const config = {
 };
 // 如果当前模式为开发模式
 if (isDev) {
-    config.mode = 'development';
     config.devServer = {
-        port: 3333,
+        port: 8090,
         host: '0.0.0.0',
         overlay: true,
         compress: true,
@@ -91,7 +119,6 @@ if (isDev) {
         new webpack.NoEmitOnErrorsPlugin()
     );
 } else {
-    config.mode = 'production';
-    config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
+    // config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
 }
 module.exports = config;
