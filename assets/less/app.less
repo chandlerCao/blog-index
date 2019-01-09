@@ -99,13 +99,10 @@ body {
 /* 主板块 */
 
 #main-wrap {
-    float: left;
-    width: 100%;
-    box-sizing: border-box;
+    margin-left: @intrudeW;
+    margin-right: @sideW;
     #main-box {
         position: relative;
-        margin-left: @intrudeW;
-        margin-right: @sideW;
         .blog-element {
             width: 100%;
             box-sizing: border-box;
@@ -117,7 +114,7 @@ body {
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
         padding-top: 50px;
-        border-left: 1.5px solid @blue;
+        border-left: .1rem solid @blue;
         &:nth-of-type(1) {
             padding-top: 0;
         }

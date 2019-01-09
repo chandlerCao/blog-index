@@ -266,6 +266,7 @@ export default [
                         }
                     }).then(data => {
                         commentBox.prepend(_this.tmps.commentList(data));
+                        commentBox.find('.no-comment:first').remove();
                     });
                 })
             },
@@ -421,7 +422,7 @@ export default [
             commentList(commentData) {
                 if (!commentData) return '';
                 return commentData.reduce((commentStr, commentItem) => {
-                    return commentStr += `<div class="comment-item mt20 flipInX animated">
+                    return commentStr += `<div class="comment-item mt20 flipInX enter">
                         ${this.userFace()}
                         <div class="ml50">
                             ${this.pubPublishContent(commentItem)}

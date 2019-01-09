@@ -1,19 +1,18 @@
 @import './config.less';
 @import '../com/less/com.config.less';
 // 右边栏
-#side-bar {
-    float: left;
+.side-bar {
+    position: absolute;
     width: @sideW;
-    margin-left: -@sideW;
+    min-height: 100%;
     box-sizing: border-box;
-    padding-right: 20px;
-    &.fixed {
+    right: 0;
+    top: 0;
+    .side-bar-wrap {
         position: fixed;
-        top: 0;
-        right: 0;
+        width: @sideW - 20;
     }
     .sidebar-block {
-        margin-top: 20px;
         background-color: #fff;
         .sidebar-block__title {
             position: relative;
