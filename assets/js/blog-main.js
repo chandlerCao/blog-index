@@ -1,7 +1,5 @@
-import {
-    host, app, banner3d, getParmasByHash, tmp, ajax, storage, artLike
-} from './blog-utils';
-import { Loading, PageUp } from '../com/js/com';
+import { host, app, banner3d, getParmasByHash, tmp, storage, artLike } from './blog-utils';
+import { Loading, PageUp, $win } from '../com/js/com';
 import Router from './blog-router';
 const mainBox = $('#main-box');
 // 存储当前组件的滚动条位置
@@ -16,17 +14,20 @@ const mainBox = $('#main-box');
 })();
 // 侧边栏3d图片切换
 ; (function () {
+    let bannerTimer = null;
     // 引入服务器上的地址
-    $(window).on('resize.initBg', () => {
+    $win.on('resize.initBg', function () {
+        clearTimeout(bannerTimer);
+        bannerTimer = setTimeout(startBanner, 50);
+    });
+    function startBanner() {
         let bg_dir;
-        if ($(window).width() > 800) bg_dir = 'large';
-        else if ($(window).width() > 600) bg_dir = 'medium';
+        if ($win.width() > 800) bg_dir = 'large';
+        else if ($win.width() > 600) bg_dir = 'medium';
         else bg_dir = 'small';
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
-    });
-    setTimeout(() => {
-        $(window).trigger('resize.initBg');
-    }, 0);
+
+    }
 })();
 // canvas雪花
 ; (function () {
@@ -58,16 +59,14 @@ const mainBox = $('#main-box');
     const color = '#6eaaff';
     let snowArr = [];
     let timer = null;
-    let initTimer = null;
-    const win = $(window);
-    let starLen = Math.floor(win.width() / 60);
+    let starLen = Math.floor($win.width() * $win.height() / 50000);
     starLen = starLen < 10 ? 10 : starLen;
     function random() {
         return Math.random();
     };
     c.attr({
-        width: win.width(),
-        height: win.height()
+        width: $win.width(),
+        height: $win.height()
     });
     initStar();
     function initStar() {
@@ -93,7 +92,7 @@ const mainBox = $('#main-box');
         for (let i = 0; i < starLen; i++) {
             // y轴加
             snowArr[i].y += snowArr[i].speedY;
-            if (snowArr[i].y >= win.height()) snowArr[i].y = -snowArr[i].r;
+            if (snowArr[i].y >= $win.height()) snowArr[i].y = -snowArr[i].r;
 
             snowArr[i].xNum--;
             if (snowArr[i].xNum === -360) snowArr[i].xNum = 0;
@@ -154,6 +153,8 @@ const getComponent = function (newHash, oldHash) {
                     let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
                     // app.animate({ 'scrollTop': scrollTop }, 300);
                     app.scrollTop(scrollTop);
+                    // 重新加载3d切换
+                    $win.trigger('resize.initBg');
                 });
             }
             // 执行当前组件回调函数

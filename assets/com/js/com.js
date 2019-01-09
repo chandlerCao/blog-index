@@ -1,4 +1,5 @@
 export const body = $('body:first');
+export const $win = $(window);
 // loading图
 export const Loading = function (par) {
     this.loading_box = $(`<div class="com-loading-box" style="top: ${par.scrollTop()}px;">

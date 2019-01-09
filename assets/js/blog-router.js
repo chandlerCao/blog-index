@@ -403,7 +403,7 @@ export default [
                     <div class="comment-bar clear mt10">
                         <div class="com-icon fl">
                             <i class="com-icon__pic calendar-icon"></i>
-                            <span class="com-icon__text">${commentItem.comment_date.split('T')[0]}</span>
+                            <span class="com-icon__text">${commentItem.date.split('T')[0]}</span>
                         </div>
                         <div class="${type}-action fr">
                             <a href="javascript:;" class="art-heart art-icon act mr20">
