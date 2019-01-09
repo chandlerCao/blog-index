@@ -1,7 +1,7 @@
 export const body = $('body:first');
 // loading图
 export const Loading = function (par) {
-    this.loading_box = $(`<div class="com-loading-box">
+    this.loading_box = $(`<div class="com-loading-box" style="top: ${par.scrollTop()}px;">
         <div class="com-loading-main">
             <div class="com-loading-item"></div>
             <div class="com-loading-item"></div>
