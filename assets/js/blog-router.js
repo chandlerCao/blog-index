@@ -271,7 +271,7 @@ export default [
                     });
                 })
             },
-            // 点赞
+            // 文章点赞
             artLike() {
                 let likeReq = false;
                 const likeBtn = this.element.find('.art-heart-btn:first');
@@ -407,9 +407,9 @@ export default [
                             <span class="com-icon__text">${commentItem.date.split('T')[0]}</span>
                         </div>
                         <div class="${type}-action fr">
-                            <a href="javascript:;" class="art-heart art-icon act mr20">
+                            <a href="javascript:;" class="art-heart art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}">
                                 <i class="heart-icon__pic"></i>
-                                <span class="heart-icon__text">喜欢(<span class="like-num">5</span>)</span>
+                                <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
                             </a>
                             <a href="javascript:;" class="com-icon">
                                 <i class="com-icon__pic reply-icon">&nbsp;</i>
