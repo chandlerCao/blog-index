@@ -207,6 +207,7 @@ export default [
                         renderCommentList.call(_this);
                     }
                 });
+                app.trigger('scroll.comment');
                 // 加载更多评论点击
                 const commentMore = _this.element.find('.comment-more:first');
                 commentMore.on('click', function () {
