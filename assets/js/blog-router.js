@@ -30,7 +30,6 @@ export default [
                     total: data.total,
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
-                    theme: '#2e97ff',
                     url: '#article?type=technology&page=',
                     on_change() {
                         app.animate({
@@ -71,7 +70,6 @@ export default [
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
                     url: '#article?type=live&page=',
-                    theme: '#2e97ff',
                     on_change() {
                         app.animate({
                             'scrollTop': 0
@@ -135,7 +133,6 @@ export default [
                     page_size: data.page_size,
                     now_page: parseInt(getParmasByHash().page),
                     url: `#article?tag=${getParmasByHash().tag}&page=`,
-                    theme: '#2e97ff',
                     on_change() {
                         app.animate({
                             scrollTop: 0
@@ -203,7 +200,10 @@ export default [
                 app.off('scroll.comment').on('scroll.comment', () => {
                     if (markdownComment.offset().top <= $(window).height()) {
                         app.off('scroll.comment');
-                        commentLoad = new Loading(commentBox).show();
+                        commentLoad = new Loading({
+                            par: commentBox,
+                            text: '正在加载评论，请稍后！'
+                        }).show();
                         renderCommentList.call(_this);
                     }
                 });
@@ -235,6 +235,7 @@ export default [
                             this.element.find('.comment-more:first').remove();
                             if (page === 0) commentBox.html(this.tmps.noComment('空空如也！'));
                         }
+                        // 关闭评论loading
                         commentLoad.hide();
                     })
                 }

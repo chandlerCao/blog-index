@@ -1,16 +1,24 @@
 export const body = $('body:first');
 export const $win = $(window);
 // loading图
-export const Loading = function (par) {
-    this.loading_box = $(`<div class="com-loading-box" style="top: ${par.scrollTop()}px;">
+export const Loading = function (opts) {
+    this.default = {
+        par: body,
+        text: '正在加载，请稍后...'
+    };
+    this.config = Object.assign(this.default, opts);
+    this.loading_box = $(`<div class="com-loading-box" style="top: ${this.config.par.scrollTop()}px;">
         <div class="com-loading-main">
-            <div class="com-loading-item"></div>
-            <div class="com-loading-item"></div>
-            <div class="com-loading-item"></div>
+            <div class="com-loading-icon">
+                <div class="com-loading-item"></div>
+                <div class="com-loading-item"></div>
+                <div class="com-loading-item"></div>
+            </div>
+            <strong class="com-loading-text">${this.config.text}</strong>
         </div>
     </div>`);
     Loading.prototype.show = function () {
-        this.loading_box.appendTo(par);
+        this.loading_box.appendTo(this.config.par);
         return this;
     }
     Loading.prototype.hide = function () {

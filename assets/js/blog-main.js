@@ -136,7 +136,7 @@ const getComponent = function (newHash, oldHash) {
     if (new_index > -1) {
         // 关闭上次load，显示loading图
         if (load) load.hide();
-        load = new Loading(app).show();
+        load = new Loading({ par: app }).show();
         // 关闭上个loading
         // 发送当前组件对应请求
         Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
