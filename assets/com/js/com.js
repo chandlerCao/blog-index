@@ -37,7 +37,7 @@ export const Page = function (opts) {
     this.page_size = opts.page_size || 0;
     this.now_page = opts.now_page || 1;
     this.url = opts.url || 'javascript:;';
-    this.theme = opts.theme || '#424e67';
+    this.theme = opts.theme || '#2e97ff';
     this.on_change = opts.on_change || function () { };
     this.page_len = Math.ceil(this.total / this.page_size);
     // 初始化
