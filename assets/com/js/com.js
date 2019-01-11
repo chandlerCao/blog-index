@@ -18,10 +18,13 @@ export const Loading = function (opts) {
         </div>
     </div>`);
     Loading.prototype.show = function () {
+        // 父节点移除滚动条
+        this.config.par.css('overflow', 'hidden');
         this.loading_box.appendTo(this.config.par);
         return this;
     }
     Loading.prototype.hide = function () {
+        this.config.par.css('overflow', '');
         this.loading_box.fadeOut(100, function () {
             $(this).remove();
         });
