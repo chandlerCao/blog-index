@@ -1,4 +1,4 @@
-import { host, app, banner3d, getParmasByHash, tmp, storage, artLike } from './blog-utils';
+import { host, app, banner3d, getParmasByHash, tmp, storage, artLike, ajax } from './blog-utils';
 import { Loading, PageUp, $win } from '../com/js/com';
 import Router from './blog-router';
 const mainBox = $('#main-box');
@@ -151,8 +151,8 @@ const getComponent = function (newHash, oldHash) {
                     const scrollTop_data = storage.get('scrollTop') || {};
                     // 如果本地存储了当前的滚动位置，没有就跳转到顶部
                     let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
-                    // app.animate({ 'scrollTop': scrollTop }, 300);
-                    app.scrollTop(scrollTop);
+                    app.animate({ 'scrollTop': scrollTop }, 300);
+                    // app.scrollTop(scrollTop);
                     // 重新加载3d切换
                     $win.trigger('resize.initBg');
                 });
@@ -193,7 +193,7 @@ const getComponent = function (newHash, oldHash) {
         $(this).addClass('act').siblings().removeClass('act');
     });
 })();
-// 点赞
+// 文章点赞
 ; (function () {
     let like_complete = true;
     mainBox.delegate('.art-heart', 'click', function () {
@@ -207,6 +207,25 @@ const getComponent = function (newHash, oldHash) {
             else $(this).removeClass('act');
             // 赞个数赋值
             $(this).find('.like-num:first').text(likeInfo.likeTotal);
+            like_complete = true;
+        });
+    });
+})();
+// 评论点赞
+; (function () {
+    let like_complete = true;
+    mainBox.delegate('.comment-like', 'click', function () {
+        if (!like_complete) return;
+        like_complete = false;
+        const cid = $(this).data('cid');
+        ajax({
+            type: 'post',
+            url: '/index/comment/commentLike',
+            data: { cid }
+        }).then(commentLikeInfo => {
+            if (commentLikeInfo.likeState) $(this).addClass('act');
+            else $(this).removeClass('act');
+            $(this).find('.like-num:first').text(commentLikeInfo.likeTotal);
             like_complete = true;
         });
     });

@@ -312,7 +312,7 @@ export default [
                             <span class="com-icon__text">{{=it.date}}</span>
                         </time>
                         <!-- 文章点赞 -->
-                        <!-- <a href="javascript:;" class="com-icon art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
+                        <!-- <a href="javascript:;" class="com-icon heart-box art-heart art-icon {{? it.is_like }} act {{?}}" data-aid="{{=it.aid}}">
                             <i class="com-icon__pic heart-icon__pic"></i>
                             <span class="com-icon__text heart-icon__text">喜欢(<span class="like-num">{{=it.like_count}}</span>)</span>
                         </a> -->
@@ -408,7 +408,7 @@ export default [
                             <span class="com-icon__text">${commentItem.date.split('T')[0]}</span>
                         </div>
                         <div class="${type}-action fr">
-                            <a href="javascript:;" class="art-heart art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}">
+                            <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}">
                                 <i class="heart-icon__pic"></i>
                                 <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
                             </a>

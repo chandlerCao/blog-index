@@ -177,7 +177,7 @@ export const tmp = {
                         <div class="art-img" style="background-image: url(${host}/{{=atc.cover}})"></div>
                     </a>
                     <div class="art-meta">
-                        <a href="javascript:;" class="art-heart art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
+                        <a href="javascript:;" class="art-heart heart-box art-icon{{? atc.is_like }} act {{?}} mr20" data-aid="{{=atc.aid}}">
                             <i class="heart-icon__pic"></i>
                             <span class="heart-icon__text">喜欢(<span class="like-num">{{=atc.like_count}}</span>)</span>
                         </a>
