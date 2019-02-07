@@ -233,7 +233,7 @@ export default [
                         } else {
                             // 移除掉加载更多按钮
                             this.element.find('.comment-more:first').remove();
-                            if (page === 0) commentBox.html(this.tmps.noComment('空空如也！'));
+                            if (page === 0) commentBox.html(this.tmps.noComment('评论区空空如也！'));
                         }
                         // 关闭评论loading
                         commentLoad.hide();

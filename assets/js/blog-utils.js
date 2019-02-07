@@ -12,8 +12,8 @@ export const ajax = function (opts) {
         }).done(data => {
             if (data.c === 0) resolve(data.d);
             else {
-                reject()
-                alert(data.m)
+                reject();
+                alert(data.m);
             }
         }).catch(err => {
             alert('请求超时！服务器发生异常！');
