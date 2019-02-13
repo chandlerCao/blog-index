@@ -211,25 +211,6 @@ const getComponent = function (newHash, oldHash) {
         });
     });
 })();
-// 评论点赞
-; (function () {
-    let like_complete = true;
-    mainBox.delegate('.comment-like', 'click', function () {
-        if (!like_complete) return;
-        like_complete = false;
-        const cid = $(this).data('cid');
-        ajax({
-            type: 'post',
-            url: '/index/comment/commentLike',
-            data: { cid }
-        }).then(commentLikeInfo => {
-            if (commentLikeInfo.likeState) $(this).addClass('act');
-            else $(this).removeClass('act');
-            $(this).find('.like-num:first').text(commentLikeInfo.likeTotal);
-            like_complete = true;
-        });
-    });
-})();
 // 回到顶部
 ; (function () {
     new PageUp({
