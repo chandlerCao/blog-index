@@ -1,5 +1,5 @@
 import { app, host, ajax, tmp, getParmasByHash, artLike } from './blog-utils';
-import { Page, Loading } from '../com/js/com';
+import { Page } from '../com/js/com';
 export default [
     {
         reg: /^article\?type=technology&page=(\d+)$/,
