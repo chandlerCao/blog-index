@@ -220,23 +220,19 @@ export default [
                     ajax({
                         url: '/index/comment/getCommentList',
                         data: { aid, page }
-                    }).then(commentList => {
-                        if (commentList.length) {
+                    }).then(data => {
+                        const { commentList, isMore } = data;
+                        if (commentList && commentList.length) {
                             const commentListStr = this.tmps.commentList(commentList);
                             commentBox.append(commentListStr);
-                            if (commentList.length < 6) commentMore.remove();
-                        } else {
-                            // 移除掉加载更多按钮
-                            this.element.find('.comment-more:first').remove();
-                            if (page === 0) commentBox.html(this.tmps.noComment('评论区空空如也！'));
                         }
+                        if (isMore === 0) commentMore.remove();
                     })
                 }
             },
-            // 添加评论
-            addComment(type) {
+            // 添加评论（回复）
+            addComment() {
                 const _this = this;
-                // 添加评论
                 _this.element.off('click.publish').delegate('.publish-btn', 'click.publish', function () {
                     const $this = $(this);
                     // 获取评论输入框
@@ -259,7 +255,7 @@ export default [
                         aid: getParmasByHash().aid,
                     };
                     if (type === 'reply') {
-                        const { cid, cuser } = $this.parents('.reply-box:first').prev().data();
+                        const { cid, cuser } = $this.parents('.pub-publish-content:first').data();
                         reqData.cid = cid;
                         reqData.toUser = cuser;
                     }
@@ -269,16 +265,16 @@ export default [
                         url: '/index/comment/addComment',
                         data: reqData,
                     }).then(data => {
-                        console.log(data);
                         if (type === 'comment') {
                             // 获取评论列表盒子
                             const commentBox = $this.parents('.publish-box:first').siblings('.comment-box:first');
                             commentBox.prepend(_this.tmps.commentList(data));
                             commentBox.find('.no-comment:first').remove();
                         } else {
-                            $this.parents('.reply-box:last').append(_this.tmps.commentList(data));
+                            const commentMainCnt = $this.parents('.pub-publish-submit:first');
+                            commentMainCnt.next().append(_this.tmps.commentList(data, type));
                             // 关闭回复输入框
-                            $this.parents('.pub-publish-submit:first').hide();
+                            commentMainCnt.hide();
                         }
                     });
                 });
@@ -286,21 +282,33 @@ export default [
             // 触发回复
             replyAction() {
                 const _this = this;
-                this.element.off('click.replyAction').delegate('.reply-action', 'click.replyAction', function () {
+                // 上个回复框
+                let prevReplyInput = $();
+                this.element.off('click.replyAction').delegate('.reply-action', 'click.replyAction', function (e) {
+                    e.stopPropagation();
                     // 当前回复的评论条目
                     const commentMainCnt = $(this).parents('.pub-publish-content:first');
                     // 当前回复的评论信息
                     const commentInfo = commentMainCnt.data();
                     // 判断是否生成了回复输入框
-                    const replyInput = commentMainCnt.next().find('.pub-publish-submit:first');
+                    const replyInput = commentMainCnt.find('>.pub-publish-submit:first');
+                    // 隐藏上个回复框
                     if (replyInput.length) {
-                        replyInput.toggle();
+                        if (prevReplyInput[0] === replyInput[0]) replyInput.toggle();
+                        else {
+                            prevReplyInput.hide();
+                            replyInput.show();
+                        }
+                        prevReplyInput = replyInput;
                     } else {
-                        commentMainCnt.next().append(_this.tmps.pubPublishInput({
+                        prevReplyInput.hide();
+                        commentMainCnt.find('.comment-bar:first').after(_this.tmps.pubPublishInput({
                             type: 'reply',
                             plh: `回复${commentInfo.cuser}`,
-                            subText: '回复'
+                            subText: '回复',
+                            bgColor: commentInfo.type === 'comment' ? '#f8fafc' : '#fff'
                         }));
+                        prevReplyInput = commentMainCnt.find('>.pub-publish-submit:first');
                     }
                 });
             },
@@ -429,7 +437,7 @@ export default [
                     <div class="comment-box">
                         <!-- 评论列表项 -->
                     </div>
-                    <div class="comment-more mt20">加载更多 ></div>
+                    <div class="comment-more mt10">加载更多 ></div>
                 </div>`
             },
             // 头像
@@ -438,7 +446,7 @@ export default [
             },
             // 公共评论（回复）输入框
             pubPublishInput(obj = {}) {
-                return `<div class="pub-publish-submit mt10">
+                return `<div class="pub-publish-submit mt10" style="background-color: ${obj.bgColor};">
                     <div class="publish-input">
                         <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}">
                     </div>
@@ -450,7 +458,7 @@ export default [
             },
             // 公共评论主要内容展示
             pubPublishContent(commentItem, type = "comment") {
-                return `<div class="pub-publish-content" data-cid="${commentItem.cid}" data-cuser="${commentItem.user}" data-aid="${commentItem.aid}">
+                return `<div class="pub-publish-content ${type}-publish-content" data-cid="${commentItem.cid}" data-cuser="${commentItem.user}" data-aid="${commentItem.aid}" data-type="${type}">
                     <div class="user-name">${commentItem.user}</div>
                     <div class="comment-content">${commentItem.toUser ? `回复 <span style="color: #2e97ff;">${commentItem.toUser}</span>：` : ''}${commentItem.content}</div>
                     <div class="comment-bar clear mt10">
@@ -469,18 +477,18 @@ export default [
                             </a>
                         </div>
                     </div>
+                    <!-- 回复block，如果有回复内容 -->
+                    <div class="reply-box mt10">${commentItem.replyList && commentItem.replyList.length ? this.commentList(commentItem.replyList, 'reply') : ''}</div>
                 </div>`
             },
             // 评论列表项
-            commentList(commentData) {
+            commentList(commentData, type = "comment") {
                 if (!commentData || !commentData.length) return '';
                 return commentData.reduce((commentStr, commentItem) => {
-                    return commentStr += `<div class="comment-item mt20 flipInX enter">
+                    return commentStr += `<div class="${type}-item item flipInX enter">
                         ${this.userFace(commentItem.user[0])}
                         <div class="ml50">
-                            ${this.pubPublishContent(commentItem)}
-                            <!-- 回复block，如果有回复内容 -->
-                            <div class="reply-box mt10 mb10">${commentItem.replyList && commentItem.replyList.length ? this.commentList(commentItem.replyList) : ''}</div>
+                            ${this.pubPublishContent(commentItem, type)}
                         </div>
                     </div>`
                 }, '')
