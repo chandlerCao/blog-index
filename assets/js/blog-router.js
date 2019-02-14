@@ -1,5 +1,5 @@
 import { app, host, ajax, tmp, getParmasByHash, artLike } from './blog-utils';
-import { Page } from '../com/js/com';
+import { Page, TimestampFormat } from '../com/js/com';
 export default [
     {
         reg: /^article\?type=technology&page=(\d+)$/,
@@ -20,7 +20,7 @@ export default [
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+                    articleItem.date = TimestampFormat(articleItem.date);
                 });
                 const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
@@ -59,7 +59,7 @@ export default [
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+                    articleItem.date = TimestampFormat(articleItem.date);
                 });
                 const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
@@ -122,7 +122,7 @@ export default [
                 const articleData = data.articleList;
                 articleData.map(function (articleItem) {
                     // 格式化日期
-                    articleItem.date = articleItem.date.split('T')[0];
+                    articleItem.date = TimestampFormat(articleItem.date);
                 });
                 const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
@@ -177,10 +177,6 @@ export default [
                         });
                     }
                 }
-            },
-            // 日期格式化
-            dateFormatter(date) {
-                return date.split('T')[0];
             },
             // 滚动条到评论位置，获取评论列表
             getCommentList() {
@@ -464,7 +460,7 @@ export default [
                     <div class="comment-bar clear mt10">
                         <div class="com-icon fl">
                             <i class="com-icon__pic calendar-icon"></i>
-                            <span class="com-icon__text">${commentItem.date.split('T')[0]}</span>
+                            <span class="com-icon__text">${TimestampFormat(commentItem.date)}</span>
                         </div>
                         <div class="${type}-action fr">
                             <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}">
@@ -507,7 +503,7 @@ export default [
             },
             callback(data = {}) {
                 // 格式化日期
-                data.date = this.fns.dateFormatter(data.date);
+                data.date = TimestampFormat(data.date);
                 // 生成文章目录
                 const catalogRes = this.fns.createCatalog(data.markdownHtml);
                 data.catalog = catalogRes.catalogStr;
