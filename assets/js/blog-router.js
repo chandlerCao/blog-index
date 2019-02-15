@@ -473,8 +473,10 @@ export default [
                             </a>
                         </div>
                     </div>
-                    <!-- 回复block，如果有回复内容 -->
-                    <div class="reply-box mt10">${commentItem.replyList && commentItem.replyList.length ? this.commentList(commentItem.replyList, 'reply') : ''}</div>
+                    ${commentItem.replyList && commentItem.replyList.length ? `
+                        <!-- 回复block，如果有回复内容 -->
+                        <div class="reply-box mt10">${this.commentList(commentItem.replyList, 'reply')}</div>
+                    ` : ``}
                 </div>`
             },
             // 评论列表项
