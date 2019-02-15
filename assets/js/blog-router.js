@@ -223,6 +223,7 @@ export default [
                             commentBox.append(commentListStr);
                         }
                         if (isMore === 0) commentMore.remove();
+                        if (page === 0 && !commentList.length) commentBox.append(_this.tmps.noComment('暂无评论，快来抢沙发吧！'));
                     })
                 }
             },
@@ -242,7 +243,7 @@ export default [
                     // 清空输入框值
                     commentInp.val('');
 
-                    // 获取当前按钮类型
+                    // 获取当前操作类型
                     const type = $this.data('type');
                     // 请求参数
                     const reqData = {
@@ -267,12 +268,24 @@ export default [
                             commentBox.prepend(_this.tmps.commentList(data));
                             commentBox.find('.no-comment:first').remove();
                         } else {
-                            const commentMainCnt = $this.parents('.pub-publish-submit:first');
-                            commentMainCnt.next().append(_this.tmps.commentList(data, type));
+                            const commentMainCnt = $this.parents('.pub-publish-content:last');
+                            let replyBox = commentMainCnt.find('.reply-box:first');
+
+                            if (!replyBox.length) {
+                                replyBox = $('<div class="reply-box">');
+                                commentMainCnt.append(replyBox);
+                            }
+                            replyBox.append(_this.tmps.commentList(data, 'reply'));
                             // 关闭回复输入框
-                            commentMainCnt.hide();
+                            $this.parents('.pub-publish-submit:first').hide();
                         }
                     });
+                });
+                _this.element.off('keydown.commentInp').delegate('.comment-input', 'keydown.commentInp', function (e) {
+                    if (e.keyCode === 13) $(this).parent().next().find('.publish-btn:first').trigger('click.publish');
+                });
+                _this.element.off('keydown.userInp').delegate('.user-input', 'keydown.userInp', function (e) {
+                    if (e.keyCode === 13) $(this).next().trigger('click.publish');
                 });
             },
             // 触发回复
@@ -455,7 +468,7 @@ export default [
             // 公共评论主要内容展示
             pubPublishContent(commentItem, type = "comment") {
                 return `<div class="pub-publish-content ${type}-publish-content" data-cid="${commentItem.cid}" data-cuser="${commentItem.user}" data-aid="${commentItem.aid}" data-type="${type}">
-                    <div class="user-name">${commentItem.user}</div>
+                    <div class="user-name">${commentItem.user} <span class="user-city">${commentItem.city}的大佬</span></div>
                     <div class="comment-content">${commentItem.toUser ? `回复 <span style="color: #2e97ff;">${commentItem.toUser}</span>：` : ''}${commentItem.content}</div>
                     <div class="comment-bar clear mt10">
                         <div class="com-icon fl">
@@ -475,7 +488,7 @@ export default [
                     </div>
                     ${commentItem.replyList && commentItem.replyList.length ? `
                         <!-- 回复block，如果有回复内容 -->
-                        <div class="reply-box mt10">${this.commentList(commentItem.replyList, 'reply')}</div>
+                        <div class="reply-box">${this.commentList(commentItem.replyList, 'reply')}</div>
                     ` : ``}
                 </div>`
             },

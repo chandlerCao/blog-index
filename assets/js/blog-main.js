@@ -140,7 +140,6 @@ const getComponent = function (newHash, oldHash) {
         // 关闭上个loading
         // 发送当前组件对应请求
         Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
-            load.hide();
             // 元素切换
             if (Router[new_index] !== Router[old_index]) {
                 componentSwitch(
@@ -159,6 +158,8 @@ const getComponent = function (newHash, oldHash) {
             }
             // 执行当前组件回调函数
             Router[new_index].handler.callback.call(Router[new_index], data);
+        }).finally(function () {
+            load.hide();
         });
     } else {
         // 没有找到对应的hash值，默认跳转到第一个
