@@ -15,7 +15,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const hash = process.env.test || isDev ? '' : '-[hash]';
 
 const lessExtract = new MiniCssExtractPlugin({
-    filename: `css/[name]${hash}.css`
+    filename: `css/[name].css`
 });
 // 拷贝插件
 const copyWebpackPlugin = require('copy-webpack-plugin');
@@ -26,7 +26,7 @@ const config = {
     },
     output: {
         path: path.join(__dirname, '../koa-blog/index/view'),
-        filename: `js/[name]${hash}.js`
+        filename: `js/[name].js`
     },
     module: {
         rules: [
@@ -51,7 +51,7 @@ const config = {
                         loader: 'url-loader',
                         options: {
                             publicPath: '../',
-                            name: `img/[name]${hash}.[ext]`, // 将要打包的哪个文件夹下
+                            name: `img/[name].[ext]`, // 将要打包的哪个文件夹下
                             limit: 1024
                         }
                     }

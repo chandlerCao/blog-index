@@ -31,24 +31,24 @@ const mainBox = $('#main-box');
 })();
 // canvas雪花
 ; (function () {
+    var img = new Image();
+    img.src = `./img/snow.png`;
     function drawObj(cxt, x, y, r, color) {
         /**星星 */
-        /* let r2 = r / 2.5;
-        cxt.beginPath();
-        for (let i = 0; i < 5; i++) {
-            cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
-            cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
-        }
-        cxt.closePath();
-        //设置边框样式以及填充颜色
-        cxt.fillStyle = color;
-        cxt.fill(); */
+        // let r2 = r / 2.5;
+        // cxt.beginPath();
+        // for (let i = 0; i < 5; i++) {
+        //     cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
+        //     cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
+        // }
+        // cxt.closePath();
+        // //设置边框样式以及填充颜色
+        // cxt.fillStyle = color;
+        // cxt.fill();
         /**星星 */
 
         /**雪花 */
         cxt.beginPath();
-        var img = new Image();
-        img.src = `./img/snow.png`;
         cxt.drawImage(img, x, y, r, r);
         cxt.closePath();
         /**雪花 */
@@ -63,7 +63,7 @@ const mainBox = $('#main-box');
     starLen = starLen < 10 ? 10 : starLen;
     function random() {
         return Math.random();
-    };
+    }
     c.attr({
         width: $win.width(),
         height: $win.height()

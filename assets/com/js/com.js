@@ -224,9 +224,10 @@ export const PageUp = function (opts) {
 }
 // 格式化日期
 export const TimestampFormat = function (timestamp) {
-    timestamp = Date.parse(timestamp) / 1000;
+    var timeArr = timestamp.match(/(\d+)\-(\d+)\-(\d+)\s(\d+)\:(\d+)\:(\d+)/);
+    timestamp = new Date(timeArr[1], parseInt(timeArr[2]) - 1, timeArr[3], timeArr[4], timeArr[5], timeArr[6]).getTime() / 1000;
     function zeroize(num) {
-        return (String(num).length == 1 ? '0' : '') + num;
+        return (String(num).length === 1 ? '0' : '') + num;
     }
 
     var curTimestamp = parseInt(new Date().getTime() / 1000); //当前时间戳
@@ -234,7 +235,6 @@ export const TimestampFormat = function (timestamp) {
 
     var curDate = new Date(curTimestamp * 1000); // 当前时间日期对象
     var tmDate = new Date(timestamp * 1000);  // 参数时间戳转换成的日期对象
-
     var Y = tmDate.getFullYear(), m = tmDate.getMonth() + 1, d = tmDate.getDate();
     var H = tmDate.getHours(), i = tmDate.getMinutes(), s = tmDate.getSeconds();
 
