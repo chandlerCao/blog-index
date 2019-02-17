@@ -217,13 +217,13 @@ export default [
                         url: '/index/comment/getCommentList',
                         data: { aid, page }
                     }).then(data => {
-                        const { commentList, isMore } = data;
-                        if (commentList && commentList.length) {
-                            const commentListStr = this.tmps.commentList(commentList);
+                        const { CommentList, isMore } = data;
+                        if (CommentList && CommentList.length) {
+                            const commentListStr = _this.tmps.commentList(CommentList);
                             commentBox.append(commentListStr);
                         }
                         if (isMore === 0) commentMore.remove();
-                        if (page === 0 && !commentList.length) commentBox.append(_this.tmps.noComment('暂无评论，快来抢沙发吧！'));
+                        if (page === 0 && !CommentList.length) commentBox.append(_this.tmps.noComment('暂无评论，快来抢沙发吧！'));
                     })
                 }
             },
@@ -350,11 +350,11 @@ export default [
                 this.element.off('click.commentLike').delegate('.comment-like', 'click.commentLike', function () {
                     if (!like_complete) return;
                     like_complete = false;
-                    const cid = $(this).data('cid');
+                    const data = $(this).data();
                     ajax({
                         type: 'post',
                         url: '/index/comment/commentLike',
-                        data: { cid }
+                        data
                     }).then(commentLikeInfo => {
                         if (commentLikeInfo.likeState) $(this).addClass('act');
                         else $(this).removeClass('act');
@@ -362,6 +362,26 @@ export default [
                         like_complete = true;
                     });
                 });
+            },
+            // 加载更多回复
+            replyMore() {
+                const that = this;
+                that.element.off('click.replyMore').delegate('.reply-more', 'click.replyMore', function () {
+                    const $this = $(this);
+                    const replyList = $this.prev();
+                    let { cid, page } = $this.data();
+                    page = page || 0;
+                    page++;
+                    $this.data('page', page);
+                    ajax({
+                        url: '/index/comment/getReplyList',
+                        data: { cid, page }
+                    }).then(commentData => {
+                        const { ReplyList, isMore } = commentData;
+                        replyList.append(that.tmps.commentList(ReplyList, 'reply'));
+                        if (isMore === 0) $this.remove();
+                    })
+                })
             }
         },
         tmps: {
@@ -457,7 +477,7 @@ export default [
             pubPublishInput(obj = {}) {
                 return `<div class="pub-publish-submit mt10" style="background-color: ${obj.bgColor};">
                     <div class="publish-input">
-                        <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}">
+                        <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}" autofocus="autofocus">
                     </div>
                     <div class="publish-action">
                         <input type="text" class="com-text user-input animated" placeholder="我的大名！">
@@ -475,8 +495,8 @@ export default [
                             <i class="com-icon__pic calendar-icon"></i>
                             <span class="com-icon__text">${TimestampFormat(commentItem.date)}</span>
                         </div>
-                        <div class="${type}-action fr">
-                            <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}">
+                        <div class="action-box fr">
+                            <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}"${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
                                 <i class="heart-icon__pic"></i>
                                 <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
                             </a>
@@ -486,10 +506,7 @@ export default [
                             </a>
                         </div>
                     </div>
-                    ${commentItem.replyList && commentItem.replyList.length ? `
-                        <!-- 回复block，如果有回复内容 -->
-                        <div class="reply-box">${this.commentList(commentItem.replyList, 'reply')}</div>
-                    ` : ``}
+                    ${commentItem.replyData ? this.replyBox({ ReplyList: commentItem.replyData.ReplyList, isMore: commentItem.replyData.isMore, cid: commentItem.cid }) : ``}
                 </div>`
             },
             // 评论列表项
@@ -503,6 +520,16 @@ export default [
                         </div>
                     </div>`
                 }, '')
+            },
+            // 回复盒子
+            replyBox(obj = {}) {
+                return `<!-- 回复block，如果有回复内容 -->
+                    <div class="reply-box">
+                        <div class="reply-list">
+                            ${this.commentList(obj.ReplyList, 'reply')}
+                        </div>
+                        ${obj.isMore ? `<div class="reply-more" data-cid="${obj.cid}">加载更多 ></div>` : ''}
+                    </div>`
             },
             // noComment
             noComment(tip = '暂无评论！') {
@@ -536,8 +563,10 @@ export default [
                 this.fns.artLike.call(this);
                 // 评论点赞
                 this.fns.commentLike.call(this);
-                // 回复
+                // 触发回复
                 this.fns.replyAction.call(this);
+                // 加载更多回复
+                this.fns.replyMore.call(this);
             }
         }
     }

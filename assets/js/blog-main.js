@@ -133,38 +133,38 @@ const getComponent = function (newHash, oldHash) {
         if (navdata.reg.test(oldHash)) old_index = i;
     });
     // 如果找到对应的索引
-    if (new_index > -1) {
-        // 关闭上次load，显示loading图
-        if (load) load.hide();
-        load = new Loading({ par: app }).show();
-        // 关闭上个loading
-        // 发送当前组件对应请求
-        Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
-            // 元素切换
-            if (Router[new_index] !== Router[old_index]) {
-                componentSwitch(
-                    Router[new_index].element,
-                    Router[old_index] ? Router[old_index].element : $()
-                ).then(() => {
-                    // 新元素滚动到上一次位置
-                    const scrollTop_data = storage.get('scrollTop') || {};
-                    // 如果本地存储了当前的滚动位置，没有就跳转到顶部
-                    let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
-                    app.animate({ 'scrollTop': scrollTop }, 300);
-                    // app.scrollTop(scrollTop);
-                    // 重新加载3d切换
-                    $win.trigger('resize.initBg');
-                });
-            }
-            // 执行当前组件回调函数
-            Router[new_index].handler.callback.call(Router[new_index], data);
-        }).finally(function () {
-            load.hide();
-        });
-    } else {
+    if (new_index === -1) {
         // 没有找到对应的hash值，默认跳转到第一个
         window.location.hash = Router[0].href;
+        return;
     }
+    // 关闭上次load，显示loading图
+    if (load) load.hide();
+    load = new Loading({ par: app }).show();
+    // 关闭上个loading
+    // 发送当前组件对应请求
+    Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
+        // 元素切换
+        if (Router[new_index] !== Router[old_index]) {
+            componentSwitch(
+                Router[new_index].element,
+                Router[old_index] ? Router[old_index].element : $()
+            ).then(() => {
+                // 新元素滚动到上一次位置
+                const scrollTop_data = storage.get('scrollTop') || {};
+                // 如果本地存储了当前的滚动位置，没有就跳转到顶部
+                let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
+                app.animate({ 'scrollTop': scrollTop }, 300);
+                // app.scrollTop(scrollTop);
+                // 重新加载3d切换
+                $win.trigger('resize.initBg');
+            });
+        }
+        // 执行当前组件回调函数
+        Router[new_index].handler.callback.call(Router[new_index], data);
+    }).finally(function () {
+        load.hide();
+    });
 };
 // 首次加载
 ; (function () {
