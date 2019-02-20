@@ -269,13 +269,13 @@ export default [
                             commentBox.find('.no-comment:first').remove();
                         } else {
                             const commentMainCnt = $this.parents('.pub-publish-content:last');
-                            let replyBox = commentMainCnt.find('.reply-box:first');
+                            let replyList = commentMainCnt.find('.reply-list:first');
 
-                            if (!replyBox.length) {
-                                replyBox = $('<div class="reply-box">');
-                                commentMainCnt.append(replyBox);
+                            if (!replyList.length) {
+                                replyList = $('<div class="reply-box"><div class="reply-list"></div></div>');
+                                commentMainCnt.append(replyList);
                             }
-                            replyBox.append(_this.tmps.commentList(data, 'reply'));
+                            replyList.append(_this.tmps.commentList(data, 'reply'));
                             // 关闭回复输入框
                             $this.parents('.pub-publish-submit:first').hide();
                         }
@@ -506,7 +506,7 @@ export default [
                             </a>
                         </div>
                     </div>
-                    ${commentItem.replyData ? this.replyBox({ ReplyList: commentItem.replyData.ReplyList, isMore: commentItem.replyData.isMore, cid: commentItem.cid }) : ``}
+                    ${commentItem.replyData && commentItem.replyData.ReplyList.length ? this.replyBox({ ReplyList: commentItem.replyData.ReplyList, isMore: commentItem.replyData.isMore, cid: commentItem.cid }) : ``}
                 </div>`
             },
             // 评论列表项
