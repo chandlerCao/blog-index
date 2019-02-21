@@ -1,4 +1,4 @@
-export const host = 'http://192.168.1.34:8080';
+export const host = 'http://192.168.1.34:7070';
 // app
 export const app = $('#app');
 // ajax
