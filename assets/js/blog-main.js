@@ -86,7 +86,7 @@ const mainBox = $('#main-box');
         }
     };
     // 重绘
-    starFlash();
+    requestAnimationFrame(starFlash);
     function starFlash() {
         g.clearRect(0, 0, c.attr('width'), c.attr('height'));
         for (let i = 0; i < starLen; i++) {

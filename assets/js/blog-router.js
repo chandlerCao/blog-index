@@ -1,4 +1,4 @@
-import { app, host, ajax, tmp, getParmasByHash, artLike } from './blog-utils';
+import { app, host, ajax, tmp, getParmasByHash, artLike, Comment } from './blog-utils';
 import { Page, TimestampFormat } from '../com/js/com';
 export default [
     {
@@ -87,20 +87,10 @@ export default [
         target: '',
         icon: 'fa fa-comment',
         element: $('<section id="comment-box" class="blog-element"></section>'),
-        handler: {
-            ajax(data = {}) {
-                return new Promise((resolve, reject) => {
-                    resolve();
-                });
-            },
-            callback(data = {}) {
-                this.element.html('留言');
-            }
-        }
     },
     {
         reg: /^aboutMe$/,
-        href: 'http://resume.caodj.cn',
+        href: 'https://resume.caodj.cn',
         text: '简历',
         target: 'target="_blank"',
         icon: 'fa fa-book',
@@ -183,8 +173,6 @@ export default [
                 const _this = this;
                 // markdown-comment
                 const markdownComment = _this.element.find('.markdown-comment:first');
-                // 评论列表父级
-                const commentBox = _this.element.find('.comment-box:first');
                 // 自动滑到评论区按钮
                 _this.element.find('.comment-trigger-btn:first').on('click', function () {
                     app.animate({
@@ -195,194 +183,50 @@ export default [
                 app.off('scroll.comment').on('scroll.comment', () => {
                     if (markdownComment.offset().top <= $(window).height()) {
                         app.off('scroll.comment');
-                        renderCommentList.call(_this);
+                        // 评论
+                        new Comment(markdownComment, {
+                            methods: {
+                                commentMore(page, callBack) {
+                                    const aid = getParmasByHash().aid;
+                                    ajax({
+                                        url: '/index/comment/getCommentList',
+                                        data: { aid, page }
+                                    }).then(resData => {
+                                        callBack && callBack(resData);
+                                    })
+                                },
+                                add(reqData, callBack) {
+                                    ajax({
+                                        type: 'post',
+                                        url: '/index/comment/addComment',
+                                        data: reqData,
+                                    }).then(resData => {
+                                        callBack && callBack(resData);
+                                    });
+                                },
+                                like(reqData, callBack) {
+                                    ajax({
+                                        type: 'post',
+                                        url: '/index/comment/commentLike',
+                                        data: reqData
+                                    }).then(resData => {
+                                        callBack && callBack(resData);
+                                    });
+                                },
+                                replyMore(reqData, callBack) {
+                                    ajax({
+                                        url: '/index/comment/getReplyList',
+                                        data: reqData
+                                    }).then(resData => {
+                                        callBack && callBack(resData);
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
                 app.trigger('scroll.comment');
-                // 加载更多评论点击
-                const commentMore = _this.element.find('.comment-more:first');
-                commentMore.on('click', function () {
-                    // 获取当前页码
-                    if (!$(this).data('page')) {
-                        $(this).data('page', 1);
-                    } else {
-                        $(this).data('page', $(this).data('page') + 1);
-                    }
-                    renderCommentList.call(_this, $(this).data('page'));
-                });
-                // 发送请求，渲染评论
-                function renderCommentList(page = 0) {
-                    const aid = getParmasByHash().aid;
-                    ajax({
-                        url: '/index/comment/getCommentList',
-                        data: { aid, page }
-                    }).then(data => {
-                        const { CommentList, isMore } = data;
-                        if (CommentList && CommentList.length) {
-                            const commentListStr = _this.tmps.commentList(CommentList);
-                            commentBox.append(commentListStr);
-                        }
-                        if (isMore === 0) commentMore.remove();
-                        if (page === 0 && !CommentList.length) commentBox.append(_this.tmps.noComment('暂无评论，快来抢沙发吧！'));
-                    })
-                }
             },
-            // 添加评论（回复）
-            addComment() {
-                const _this = this;
-                _this.element.off('click.publish').delegate('.publish-btn', 'click.publish', function () {
-                    const $this = $(this);
-                    // 获取评论输入框
-                    const commentInp = $this.parent().prev().find('.comment-input:first');
-                    const commentVal = $.trim(commentInp.val());
-                    // 如果评论为空，提示
-                    if (!commentVal) { alert('说点啥呗~'); return; }
-                    // 获取用户名输入框
-                    const userVal = $.trim($this.prev().val());
-                    if (!userVal) { alert('尊姓大名！'); return; }
-                    // 清空输入框值
-                    commentInp.val('');
-
-                    // 获取当前操作类型
-                    const type = $this.data('type');
-                    // 请求参数
-                    const reqData = {
-                        content: commentVal,
-                        user: userVal,
-                        aid: getParmasByHash().aid,
-                    };
-                    if (type === 'reply') {
-                        const { cid, cuser } = $this.parents('.pub-publish-content:first').data();
-                        reqData.cid = cid;
-                        reqData.toUser = cuser;
-                    }
-                    // 添加评论请求
-                    ajax({
-                        type: 'post',
-                        url: '/index/comment/addComment',
-                        data: reqData,
-                    }).then(data => {
-                        if (type === 'comment') {
-                            // 获取评论列表盒子
-                            const commentBox = $this.parents('.publish-box:first').siblings('.comment-box:first');
-                            commentBox.prepend(_this.tmps.commentList(data));
-                            commentBox.find('.no-comment:first').remove();
-                        } else {
-                            const commentMainCnt = $this.parents('.pub-publish-content:last');
-                            let replyList = commentMainCnt.find('.reply-list:first');
-
-                            if (!replyList.length) {
-                                replyList = $('<div class="reply-box"><div class="reply-list"></div></div>');
-                                commentMainCnt.append(replyList);
-                            }
-                            replyList.append(_this.tmps.commentList(data, 'reply'));
-                            // 关闭回复输入框
-                            $this.parents('.pub-publish-submit:first').hide();
-                        }
-                    });
-                });
-                _this.element.off('keydown.commentInp').delegate('.comment-input', 'keydown.commentInp', function (e) {
-                    if (e.keyCode === 13) $(this).parent().next().find('.publish-btn:first').trigger('click.publish');
-                });
-                _this.element.off('keydown.userInp').delegate('.user-input', 'keydown.userInp', function (e) {
-                    if (e.keyCode === 13) $(this).next().trigger('click.publish');
-                });
-            },
-            // 触发回复
-            replyAction() {
-                const _this = this;
-                // 上个回复框
-                let prevReplyInput = $();
-                this.element.off('click.replyAction').delegate('.reply-action', 'click.replyAction', function (e) {
-                    e.stopPropagation();
-                    // 当前回复的评论条目
-                    const commentMainCnt = $(this).parents('.pub-publish-content:first');
-                    // 当前回复的评论信息
-                    const commentInfo = commentMainCnt.data();
-                    // 判断是否生成了回复输入框
-                    const replyInput = commentMainCnt.find('>.pub-publish-submit:first');
-                    // 隐藏上个回复框
-                    if (replyInput.length) {
-                        if (prevReplyInput[0] === replyInput[0]) replyInput.toggle();
-                        else {
-                            prevReplyInput.hide();
-                            replyInput.show();
-                        }
-                        prevReplyInput = replyInput;
-                    } else {
-                        prevReplyInput.hide();
-                        commentMainCnt.find('.comment-bar:first').after(_this.tmps.pubPublishInput({
-                            type: 'reply',
-                            plh: `回复${commentInfo.cuser}`,
-                            subText: '回复',
-                            bgColor: commentInfo.type === 'comment' ? '#f8fafc' : '#fff'
-                        }));
-                        prevReplyInput = commentMainCnt.find('>.pub-publish-submit:first');
-                    }
-                });
-            },
-            // 文章点赞
-            artLike() {
-                let likeReq = false;
-                const likeBtn = this.element.find('.art-heart-btn:first');
-                likeBtn.on('click', function () {
-                    if (likeReq) return;
-                    likeReq = true;
-                    const aid = $(this).data('aid');
-                    const likeSub = $(this).find('.com-badge:first');
-                    artLike(aid).then(likeInfo => {
-                        if (likeInfo.likeState === 1) {
-                            $(this).addClass('red');
-                            likeSub.addClass('red');
-                        }
-                        else {
-                            $(this).removeClass('red');
-                            likeSub.removeClass('red');
-                        }
-                        likeSub.text(likeInfo.likeTotal);
-                        likeReq = false;
-                    })
-                });
-            },
-            // 评论点赞
-            commentLike() {
-                let like_complete = true;
-                this.element.off('click.commentLike').delegate('.comment-like', 'click.commentLike', function () {
-                    if (!like_complete) return;
-                    like_complete = false;
-                    const data = $(this).data();
-                    ajax({
-                        type: 'post',
-                        url: '/index/comment/commentLike',
-                        data
-                    }).then(commentLikeInfo => {
-                        if (commentLikeInfo.likeState) $(this).addClass('act');
-                        else $(this).removeClass('act');
-                        $(this).find('.like-num:first').text(commentLikeInfo.likeTotal);
-                        like_complete = true;
-                    });
-                });
-            },
-            // 加载更多回复
-            replyMore() {
-                const that = this;
-                that.element.off('click.replyMore').delegate('.reply-more', 'click.replyMore', function () {
-                    const $this = $(this);
-                    const replyList = $this.prev();
-                    let { cid, page } = $this.data();
-                    page = page || 0;
-                    page++;
-                    $this.data('page', page);
-                    ajax({
-                        url: '/index/comment/getReplyList',
-                        data: { cid, page }
-                    }).then(commentData => {
-                        const { ReplyList, isMore } = commentData;
-                        replyList.append(that.tmps.commentList(ReplyList, 'reply'));
-                        if (isMore === 0) $this.remove();
-                    })
-                })
-            }
         },
         tmps: {
             // 文章模板
@@ -421,8 +265,8 @@ export default [
                     <div class="markdown-cover" style="background-image: url(${host}/{{=it.cover}})"></div>
                     <!-- 文章内容 -->
                     <div class="markdown-content">{{=it.markdownHtml}}</div>
-                    <!-- 评论 -->
-                    ${this.commentBox()}
+                    <!-- 文章评论 -->
+                    <div class="markdown-comment"></div>
                 </div>
                 <!-- 目录 -->
                 <div class="markdown-action com-scroll">
@@ -446,94 +290,6 @@ export default [
                         </div>
                     </div>
                 </div>`
-            },
-            // 评论父级block
-            commentBox() {
-                return `<div class="markdown-comment">
-                    <div class="comment-line">
-                        <span>评论</span>
-                    </div>
-                    <!-- 发布评论框 -->
-                    <div class="publish-box">
-                        <!-- 用户头像 -->
-                        ${this.userFace()}
-                        <div class="ml50">
-                            <!-- 公共评论输入框 -->
-                            ${this.pubPublishInput({ type: 'comment' })}
-                        </div>
-                    </div>
-                    <!-- 评论列表 -->
-                    <div class="comment-box">
-                        <!-- 评论列表项 -->
-                    </div>
-                    <div class="comment-more mt10">加载更多 ></div>
-                </div>`
-            },
-            // 头像
-            userFace(str) {
-                return `<div class="user-face fl">${str || ''}</div>`
-            },
-            // 公共评论（回复）输入框
-            pubPublishInput(obj = {}) {
-                return `<div class="pub-publish-submit mt10" style="background-color: ${obj.bgColor};">
-                    <div class="publish-input">
-                        <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}" autofocus="autofocus">
-                    </div>
-                    <div class="publish-action">
-                        <input type="text" class="com-text user-input animated" placeholder="我的大名！">
-                        <button type="button" data-type="${obj.type}" class="${obj.type}-btn publish-btn com-button blue mini"> <i class="fa fa-send"></i> ${obj.subText || '评论'}</button>
-                    </div>
-                </div>`
-            },
-            // 公共评论主要内容展示
-            pubPublishContent(commentItem, type = "comment") {
-                return `<div class="pub-publish-content ${type}-publish-content" data-cid="${commentItem.cid}" data-cuser="${commentItem.user}" data-aid="${commentItem.aid}" data-type="${type}">
-                    <div class="user-name">${commentItem.user} <span class="user-city">${commentItem.city}的大佬</span></div>
-                    <div class="comment-content">${commentItem.toUser ? `回复 <span style="color: #2e97ff;">${commentItem.toUser}</span>：` : ''}${commentItem.content}</div>
-                    <div class="comment-bar clear mt10">
-                        <div class="com-icon fl">
-                            <i class="com-icon__pic calendar-icon"></i>
-                            <span class="com-icon__text">${TimestampFormat(commentItem.date)}</span>
-                        </div>
-                        <div class="action-box fr">
-                            <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}"${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
-                                <i class="heart-icon__pic"></i>
-                                <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
-                            </a>
-                            <a href="javascript:;" class="com-icon reply-action">
-                                <i class="com-icon__pic reply-icon">&nbsp;</i>
-                                <span class="com-icon__text">回复</span>
-                            </a>
-                        </div>
-                    </div>
-                    ${commentItem.replyData && commentItem.replyData.ReplyList.length ? this.replyBox({ ReplyList: commentItem.replyData.ReplyList, isMore: commentItem.replyData.isMore, cid: commentItem.cid }) : ``}
-                </div>`
-            },
-            // 评论列表项
-            commentList(commentData, type = "comment") {
-                if (!commentData || !commentData.length) return '';
-                return commentData.reduce((commentStr, commentItem) => {
-                    return commentStr += `<div class="${type}-item item flipInX enter">
-                        ${this.userFace(commentItem.user[0])}
-                        <div class="ml50">
-                            ${this.pubPublishContent(commentItem, type)}
-                        </div>
-                    </div>`
-                }, '')
-            },
-            // 回复盒子
-            replyBox(obj = {}) {
-                return `<!-- 回复block，如果有回复内容 -->
-                    <div class="reply-box">
-                        <div class="reply-list">
-                            ${this.commentList(obj.ReplyList, 'reply')}
-                        </div>
-                        ${obj.isMore ? `<div class="reply-more" data-cid="${obj.cid}">加载更多 ></div>` : ''}
-                    </div>`
-            },
-            // noComment
-            noComment(tip = '暂无评论！') {
-                return `<div class="no-comment com-plain">${tip}</div>`;
             }
         },
         handler: {
@@ -555,18 +311,8 @@ export default [
                 $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
                 catalogRes.handler(app);
-                // 评论列表
+                // 触发评论
                 this.fns.getCommentList.call(this);
-                // 添加评论
-                this.fns.addComment.call(this);
-                // 点赞
-                this.fns.artLike.call(this);
-                // 评论点赞
-                this.fns.commentLike.call(this);
-                // 触发回复
-                this.fns.replyAction.call(this);
-                // 加载更多回复
-                this.fns.replyMore.call(this);
             }
         }
     }
