@@ -6,6 +6,8 @@
 @import './md.less';
 // 右边栏
 @import './right-bar.less';
+// 评论
+@import './comment.less';
 body {
     background-color: @bg;
 }
@@ -323,5 +325,8 @@ body {
 @media all and (max-width: 800px) {
     #main-wrap {
         margin-left: 0;
+    }
+    #message-box {
+        padding: 0 !important;
     }
 }

@@ -49,25 +49,44 @@ export const banner3d = function (box, imgArr) {
     const box_width = box.width();
     const box_height = box.height();
 
-    let img_width, img_height;
-    getImageSizeByUrl(imgArr[0]).then(imgSize => {
-        img_width = imgSize.w;
-        img_height = imgSize.h;
 
-        let new_width, new_height;
-        if (img_width < box_width) {
-            new_width = box_width;
-            new_height = box_height * box_width / img_width;
-        } else if (img_height < box_height) {
-            new_height = box_height;
-            new_width = box_width * box_height / img_height;
-        }
-
-        init(new_width, new_height)
-    }).catch(e => {
+    // 获取图片宽高
+    function getImageSizeByUrl(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function () {
+                resolve({ w: img.width, h: img.height });
+            }
+            img.onerror = function (e) {
+                reject(e);
+            }
+            img.src = src;
+        })
+    }
+    // 计算应该展示的图片尺寸
+    function calDisplaySize() {
+        const imgPromise = [];
+        imgArr.forEach((src, i) => {
+            imgPromise.push(new Promise((resolve, reject) => {
+                getImageSizeByUrl(src).then(imgSize => {
+                    let img_width = imgSize.w, img_height = imgSize.h;
+                    let new_width, new_height;
+                    new_height = box_height;
+                    if (img_height < box_height) new_width = img_width * (img_height / new_height);
+                    else new_width = img_width * (new_height / img_height);
+                    resolve({ w: new_width, h: new_height })
+                });
+            }));
+        });
+        return imgPromise;
+    }
+    // 初始化图片宽高
+    const imgPromise = calDisplaySize();
+    Promise.all(imgPromise).then(imgSizeArr => {
+        init(imgSizeArr);
     });
 
-    function init(new_width, new_height) {
+    function init(imgSizeArr) {
         let rowLen = 3, colLen = 5;
 
         // 单元宽高
@@ -87,25 +106,11 @@ export const banner3d = function (box, imgArr) {
                 if (j === 3) transform = `transform: rotateY(270deg)`;
                 const bpx = i % rowLen * cell_w;
                 const bpy = Math.floor(i / rowLen) * cell_h;
-                str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${new_width}px ${new_height}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 20s ${0.04 * i + 2}s infinite"></div>`;
+                str += `<div style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-image: url(${url}); background-size: ${imgSizeArr[j].w}px ${imgSizeArr[j].h}px; background-position: ${-bpx}px ${-bpy}px; transform-origin: center center -${cell_w / 2}px; ${transform}; animation: picture3DSwitch${j + 1} 20s ${0.04 * i + 2}s infinite"></div>`;
             });
             html += `<div style="transform-style: preserve-3d; float: left; position: relative; width: ${cell_w}px; height: ${cell_h}px;">${str}</div>`;
         });
         box.html(html);
-    }
-
-    // 获取图片宽高
-    function getImageSizeByUrl(src) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = function () {
-                resolve({ w: img.width, h: img.height });
-            }
-            img.onerror = function (e) {
-                reject(e);
-            }
-            img.src = src;
-        })
     }
 }
 // 日期格式化
@@ -247,7 +252,7 @@ export class Comment {
             },
             // 公共评论主要内容展示
             pubPublishContent(commentItem, type = "comment") {
-                return `<div class="pub-publish-content ${type}-publish-content" data-cid="${commentItem.cid}" data-cuser="${commentItem.user}" data-aid="${commentItem.aid}" data-type="${type}">
+                return `<div class="pub-publish-content ${type}-publish-content" ${commentItem.cid ? `data-cid="${commentItem.cid}"` : ``} ${commentItem.mid ? `data-mid="${commentItem.mid}"` : ''} data-cuser="${commentItem.user}" ${commentItem.aid ? `data-aid="${commentItem.aid}"` : ``} data-type="${type}">
                             <div class="user-name">${commentItem.user} <span class="user-city">${commentItem.city}的大佬</span></div>
                             <div class="comment-content">${commentItem.toUser ? `回复 <span style="color: #2e97ff;">${commentItem.toUser}</span>：` : ''}${commentItem.content}</div>
                             <div class="comment-bar clear mt10">
@@ -256,7 +261,7 @@ export class Comment {
                                     <span class="com-icon__text">${TimestampFormat(commentItem.date)}</span>
                                 </div>
                                 <div class="action-box fr">
-                                    <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" data-cid="${commentItem.cid}"${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
+                                    <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" ${commentItem.cid ? `data-cid="${commentItem.cid}"` : ``} ${commentItem.mid ? `data-mid="${commentItem.mid}"` : ''}${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
                                         <i class="heart-icon__pic"></i>
                                         <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
                                     </a>
@@ -266,7 +271,7 @@ export class Comment {
                                     </a>
                                 </div>
                             </div>
-                            ${commentItem.replyData && commentItem.replyData.list.length ? this.replyBox({ list: commentItem.replyData.list, isMore: commentItem.replyData.isMore, cid: commentItem.cid }) : ``}
+                            ${commentItem.replyData && commentItem.replyData.list.length ? this.replyBox({ list: commentItem.replyData.list, isMore: commentItem.replyData.isMore, cid: commentItem.cid, mid: commentItem.mid }) : ``}
                         </div>`
             },
             // 评论列表项
@@ -288,7 +293,7 @@ export class Comment {
                     <div class="reply-list">
                         ${this.commentList(obj.list, 'reply')}
                     </div>
-                    ${obj.isMore ? `<div class="reply-more" data-cid="${obj.cid}">加载更多 ></div>` : ''}
+                    ${obj.isMore ? `<div class="reply-more" ${obj.cid ? `data-cid="${obj.cid}"` : ``} ${obj.mid ? `data-mid="${obj.mid}"` : ''}>加载更多 ></div>` : ''}
                 </div>`
             },
             // noComment
@@ -386,12 +391,13 @@ export class Comment {
             commentInp.val('');
 
             // 请求参数
-            const { cid, cuser } = $this.parents('.pub-publish-content:first').data() || {};
+            const { mid, cid, cuser } = $this.parents('.pub-publish-content:first').data() || {};
             const reqData = {
                 content: commentVal,
                 user: userVal,
+                mid,
+                cid,
                 aid: getParmasByHash().aid,
-                cid: cid,
                 toUser: cuser
             };
             that.add && that.add(reqData, data => {
@@ -405,10 +411,7 @@ export class Comment {
                     const commentMainCnt = $this.parents('.pub-publish-content:last');
                     let replyList = commentMainCnt.find('.reply-list:first');
 
-                    if (!replyList.length) {
-                        replyList = $('<div class="reply-box"><div class="reply-list"></div></div>');
-                        commentMainCnt.append(replyList);
-                    }
+                    if (!replyList.length) replyList = $('<div class="reply-list"></div>').appendTo($(`<div class="reply-box"></div>`).appendTo(commentMainCnt));
                     replyList.append(that.temps.commentList(data.list, 'reply'));
                     // 关闭回复输入框
                     $this.parents('.pub-publish-submit:first').hide();
@@ -447,12 +450,13 @@ export class Comment {
         that.el.off('click.replyMore').delegate('.reply-more', 'click.replyMore', function () {
             const $this = $(this);
             const replyList = $this.prev();
-            let { cid, page } = $this.data();
+            let { mid, cid, page } = $this.data();
+            console.log(mid);
             page = page || 0;
             page++;
             $this.data('page', page);
             // 加载更多回复
-            that.replyMore && that.replyMore({ cid, page }, commentData => {
+            that.replyMore && that.replyMore({ mid, cid, page }, commentData => {
                 const { list, isMore } = commentData;
                 replyList.append(that.temps.commentList(list, 'reply'));
                 if (isMore === 0) $this.remove();

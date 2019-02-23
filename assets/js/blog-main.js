@@ -20,6 +20,9 @@ const mainBox = $('#main-box');
         clearTimeout(bannerTimer);
         bannerTimer = setTimeout(startBanner, 50);
     });
+    // app.on('scroll', () => {
+    //     $win.trigger('resize.initBg');
+    // });
     function startBanner() {
         let bg_dir;
         if ($win.width() > 800) bg_dir = 'large';
@@ -28,6 +31,7 @@ const mainBox = $('#main-box');
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
 
     }
+    $win.trigger('resize.initBg');
 })();
 // canvas雪花
 ; (function () {
@@ -155,9 +159,6 @@ const getComponent = function (newHash, oldHash) {
                 // 如果本地存储了当前的滚动位置，没有就跳转到顶部
                 let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
                 app.animate({ 'scrollTop': scrollTop }, 300);
-                // app.scrollTop(scrollTop);
-                // 重新加载3d切换
-                $win.trigger('resize.initBg');
             });
         }
         // 执行当前组件回调函数

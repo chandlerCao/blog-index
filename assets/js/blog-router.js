@@ -86,7 +86,54 @@ export default [
         text: '留言',
         target: '',
         icon: 'fa fa-comment',
-        element: $('<section id="comment-box" class="blog-element"></section>'),
+        element: $('<section id="message-box" class="blog-element"></section>'),
+        handler: {
+            ajax() {
+                return new Promise(r => r());
+            },
+            callback(data = {}) {
+                new Comment(this.element, {
+                    title: '留言板',
+                    methods: {
+                        commentMore(page, callBack) {
+                            const aid = getParmasByHash().aid;
+                            ajax({
+                                url: '/index/message/getMessageList',
+                                data: { page }
+                            }).then(resData => {
+                                callBack && callBack(resData);
+                            })
+                        },
+                        add(reqData, callBack) {
+                            ajax({
+                                type: 'post',
+                                url: '/index/message/addMessage',
+                                data: reqData,
+                            }).then(resData => {
+                                callBack && callBack(resData);
+                            });
+                        },
+                        like(reqData, callBack) {
+                            ajax({
+                                type: 'post',
+                                url: '/index/message/messageLike',
+                                data: reqData
+                            }).then(resData => {
+                                callBack && callBack(resData);
+                            });
+                        },
+                        replyMore(reqData, callBack) {
+                            ajax({
+                                url: '/index/message/getMReplyList',
+                                data: reqData
+                            }).then(resData => {
+                                callBack && callBack(resData);
+                            });
+                        }
+                    }
+                });
+            }
+        }
     },
     {
         reg: /^aboutMe$/,
@@ -227,6 +274,29 @@ export default [
                 });
                 app.trigger('scroll.comment');
             },
+            // 文章点赞
+            artLike() {
+                let likeReq = false;
+                const likeBtn = this.element.find('.art-heart-btn:first');
+                likeBtn.on('click', function () {
+                    if (likeReq) return;
+                    likeReq = true;
+                    const aid = $(this).data('aid');
+                    const likeSub = $(this).find('.com-badge:first');
+                    artLike(aid).then(likeInfo => {
+                        if (likeInfo.likeState === 1) {
+                            $(this).addClass('red');
+                            likeSub.addClass('red');
+                        }
+                        else {
+                            $(this).removeClass('red');
+                            likeSub.removeClass('red');
+                        }
+                        likeSub.text(likeInfo.likeTotal);
+                        likeReq = false;
+                    })
+                });
+            }
         },
         tmps: {
             // 文章模板
@@ -311,6 +381,8 @@ export default [
                 $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
                 catalogRes.handler(app);
+                // 文章评论
+                this.fns.artLike.call(this);
                 // 触发评论
                 this.fns.getCommentList.call(this);
             }
