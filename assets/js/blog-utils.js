@@ -316,12 +316,15 @@ export class Comment {
     // 获取列表
     getCommentList() {
         const that = this;
+        let end = true;
         // 评论列表父级
         const commentBox = that.el.find('.comment-box:first');
         // 加载更多评论点击
         const commentMoreBtn = that.el.find('.comment-more:first');
         // 获取更多评论
         commentMoreBtn.on('click', function () {
+            if (!end) return false;
+            end = false;
             // 获取当前页码
             if ($(this).data('page') === undefined) {
                 $(this).data('page', 0);
@@ -337,6 +340,7 @@ export class Comment {
                 }
                 if (!isMore) commentMoreBtn.remove();
                 if (!list.length) commentBox.append(that.temps.noComment('暂无评论，快来抢沙发吧！'));
+                end = true;
             });
         });
         commentMoreBtn.trigger('click');
@@ -447,7 +451,10 @@ export class Comment {
     // 加载更多回复
     getReplyList() {
         const that = this;
+        let end = true;
         that.el.off('click.replyMore').delegate('.reply-more', 'click.replyMore', function () {
+            if (!end) return false;
+            end = false;
             const $this = $(this);
             const replyList = $this.prev();
             let { mid, cid, page } = $this.data();
@@ -460,6 +467,7 @@ export class Comment {
                 const { list, isMore } = commentData;
                 replyList.append(that.temps.commentList(list, 'reply'));
                 if (isMore === 0) $this.remove();
+                end = true;
             });
         })
     }
