@@ -57,8 +57,10 @@ export default [
                         }, 'fast');
                     }
                 });
-                // 文章点赞
-                this.fns.artLike.call(this);
+                // 执行当前组件所有函数
+                for (const fn in this.fns) {
+                    this.fns[fn].call(this);
+                }
             }
         }
     },
@@ -170,6 +172,26 @@ export default [
         reg: /^article\?tag=(\w+)&page=(\d+)$/,
         name: 'articleTagList',
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
+        fns: {
+            // 文章点赞
+            artLike() {
+                let like_complete = true;
+                this.element.off('click.artLike').delegate('.art-heart', 'click.artLike', function () {
+                    if (!like_complete) return;
+                    like_complete = false;
+                    const aid = $(this).data('aid');
+                    ajax({ url: '/index/article/givealike', data: { aid } }).then(likeInfo => {
+                        // 点赞
+                        if (likeInfo.likeState === 1) $(this).addClass('act');
+                        // 取消赞
+                        else $(this).removeClass('act');
+                        // 赞个数赋值
+                        $(this).find('.like-num:first').text(likeInfo.likeTotal);
+                        like_complete = true;
+                    });
+                });
+            }
+        },
         handler: {
             ajax(data = {}) {
                 return ajax({
@@ -186,6 +208,7 @@ export default [
                 const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
                 this.element.html(arrText(articleData));
+                // 分页
                 new Page({
                     par: this.element,
                     total: data.total,
@@ -198,6 +221,10 @@ export default [
                         }, 'fast');
                     }
                 });
+                // 执行当前组件所有函数
+                for (const fn in this.fns) {
+                    this.fns[fn].call(this);
+                }
             }
         }
     },
@@ -403,10 +430,10 @@ export default [
                 $(markdown_cnt).appendTo($(`<div id="markdown-wrap" class="clear"></div>`).appendTo(this.element));
                 // 执行目录点击事件
                 catalogRes.handler(app);
-                // 文章评论
-                this.fns.artLike.call(this);
-                // 触发评论
-                this.fns.getCommentList.call(this);
+                // 执行当前组件所有函数
+                for (const fn in this.fns) {
+                    this.fns[fn].call(this);
+                }
             }
         }
     }
