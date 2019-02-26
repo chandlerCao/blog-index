@@ -195,24 +195,6 @@ const getComponent = function (newHash, oldHash) {
         $(this).addClass('act').siblings().removeClass('act');
     });
 })();
-// 文章点赞
-; (function () {
-    let like_complete = true;
-    mainBox.delegate('.art-heart', 'click', function () {
-        if (!like_complete) return;
-        like_complete = false;
-        const aid = $(this).data('aid');
-        artLike(aid).then(likeInfo => {
-            // 点赞
-            if (likeInfo.likeState === 1) $(this).addClass('act');
-            // 取消赞
-            else $(this).removeClass('act');
-            // 赞个数赋值
-            $(this).find('.like-num:first').text(likeInfo.likeTotal);
-            like_complete = true;
-        });
-    });
-})();
 // 回到顶部
 ; (function () {
     new PageUp({

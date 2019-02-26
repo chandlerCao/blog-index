@@ -21,9 +21,6 @@ export const ajax = function (opts) {
         });
     });
 }
-export const artLike = function (aid) {
-    return ajax({ url: '/index/article/givealike', data: { aid } });
-}
 // 获取hash动态路径参数
 export const getParmasByHash = function () {
     const hash = window.location.hash;
@@ -112,15 +109,6 @@ export const banner3d = function (box, imgArr) {
         });
         box.html(html);
     }
-}
-// 日期格式化
-export const formateDate = function (date) {
-    const new_date = date.slice(0, date.length - 5).replace('T', ' ');
-    // 获取时间日期
-    const hour = parseInt(new_date.match(/\s(\d+)/));
-    // 增加八个小时
-    const new_hour = toZero(hour + 8);
-    return new_date.replace(/\s(\d+)/, ' ' + new_hour);
 }
 // 转为0
 export const toZero = function (num) {

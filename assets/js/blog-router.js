@@ -1,4 +1,4 @@
-import { app, host, ajax, tmp, getParmasByHash, artLike, Comment } from './blog-utils';
+import { app, host, ajax, tmp, getParmasByHash, Comment } from './blog-utils';
 import { Page, TimestampFormat } from '../com/js/com';
 export default [
     {
@@ -9,6 +9,26 @@ export default [
         target: '',
         icon: 'fa fa-html5',
         element: $(`<section id="article-box" class="blog-element"></section>`),
+        fns: {
+            // 文章点赞
+            artLike() {
+                let like_complete = true;
+                this.element.off('click.artLike').delegate('.art-heart', 'click.artLike', function () {
+                    if (!like_complete) return;
+                    like_complete = false;
+                    const aid = $(this).data('aid');
+                    ajax({ url: '/index/article/givealike', data: { aid } }).then(likeInfo => {
+                        // 点赞
+                        if (likeInfo.likeState === 1) $(this).addClass('act');
+                        // 取消赞
+                        else $(this).removeClass('act');
+                        // 赞个数赋值
+                        $(this).find('.like-num:first').text(likeInfo.likeTotal);
+                        like_complete = true;
+                    });
+                });
+            }
+        },
         handler: {
             ajax(data = {}) {
                 return ajax({
@@ -37,6 +57,8 @@ export default [
                         }, 'fast');
                     }
                 });
+                // 文章点赞
+                this.fns.artLike.call(this);
             }
         }
     },
@@ -89,9 +111,9 @@ export default [
         element: $('<section id="message-box" class="blog-element"></section>'),
         handler: {
             ajax() {
-                return new Promise(r => r());
+                return new Promise(r => { r() });
             },
-            callback(data = {}) {
+            callback() {
                 new Comment(this.element, {
                     title: '留言板',
                     methods: {
@@ -283,7 +305,7 @@ export default [
                     likeReq = true;
                     const aid = $(this).data('aid');
                     const likeSub = $(this).find('.com-badge:first');
-                    artLike(aid).then(likeInfo => {
+                    ajax({ url: '/index/article/givealike', data: { aid } }).then(likeInfo => {
                         if (likeInfo.likeState === 1) {
                             $(this).addClass('red');
                             likeSub.addClass('red');
