@@ -1,4 +1,4 @@
-import { host, app, banner3d, getParmasByHash, tmp, storage, artLike, ajax } from './blog-utils';
+import { host, app, banner3d, getParmasByHash, tmp, storage } from './blog-utils';
 import { Loading, PageUp, $win } from '../com/js/com';
 import Router from './blog-router';
 const mainBox = $('#main-box');
@@ -112,7 +112,6 @@ const mainBox = $('#main-box');
     };
 })();
 // 切换动画效果
-let componentTimer = null;
 const componentSwitch = function (newEl, oldEl) {
     return new Promise(resolve => {
         oldEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', function () {
