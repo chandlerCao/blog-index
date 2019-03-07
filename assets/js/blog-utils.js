@@ -1,4 +1,4 @@
-export const host = 'http://192.168.1.34:7070';
+export const host = 'http://192.168.1.35:7070';
 import { TimestampFormat } from '../com/js/com';
 // app
 export const app = $('#app');
