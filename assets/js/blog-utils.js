@@ -66,10 +66,10 @@ export const banner3d = function (box, imgArr) {
         imgArr.forEach((src, i) => {
             imgPromise.push(new Promise((resolve, reject) => {
                 getImageSizeByUrl(src).then(imgSize => {
+                    // 获取图片原始宽高
                     let img_width = imgSize.w, img_height = imgSize.h;
-                    let new_width, new_height;
-                    new_height = box_height;
-                    if (img_height < box_height) new_width = img_width * (img_height / new_height);
+                    let new_width, new_height = box_height;
+                    if (img_height < box_height) new_width = img_width * (new_height / img_height);
                     else new_width = img_width * (new_height / img_height);
                     resolve({ w: new_width, h: new_height })
                 });
