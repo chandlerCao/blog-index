@@ -404,7 +404,7 @@ export default [
                             <!-- 评论区 -->
                             <button class="comment-trigger-btn com-button blue mini"><i class="fa fa-comment"></i> <sup class="com-badge blue">{{=it.commentCount}}</sup>评论区</button>
                             <!-- 点赞 -->
-                            <button class="art-heart-btn com-button mini {{? it.is_like }} red {{?}} ml20" data-aid="{{=it.aid}}"><i class="fa fa-thumbs-up"></i> <sup class="com-badge {{? it.is_like }} red {{?}}">{{=it.like_count}}</sup>喜欢</button>
+                            <button class="art-heart-btn com-button mini {{? it.is_like }} red {{?}} ml10" data-aid="{{=it.aid}}"><i class="fa fa-thumbs-up"></i> <sup class="com-badge {{? it.is_like }} red {{?}}">{{=it.like_count}}</sup>喜欢</button>
                             </div>
                         </div>
                     </div>

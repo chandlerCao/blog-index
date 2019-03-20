@@ -5,7 +5,7 @@
         "autoprefixer": "> 5%, last 50 Chrome versions, ff <= 15, opera <= 20"
     },
     "emmet.includeLanguages": {
-        "javascript": "html"
+        "javascript": "html, jsx",
     },
     "emmet.triggerExpansionOnTab": true
 }

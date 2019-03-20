@@ -8,8 +8,14 @@
 @import './right-bar.less';
 // 评论
 @import './comment.less';
+@font-face {
+    font-family: warn;
+    src: url('../font/warn.ttf')
+}
+
 body {
     background-color: @bg;
+    font-family: warn;
 }
 
 .enter {
@@ -128,7 +134,7 @@ body {
         position: relative;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
-        padding-top: 50px;
+        padding-top: 30px;
         border-left: .1rem solid @blue;
         &:nth-of-type(1) {
             padding-top: 0;
@@ -176,6 +182,7 @@ body {
         }
         .art-main {
             margin-top: 5px;
+            color: @black;
         }
         .art-wrap {
             display: block;
@@ -187,7 +194,7 @@ body {
             display: flex;
             flex-wrap: wrap;
             position: absolute;
-            align-content: space-around;
+            align-content: initial;
             width: 80%;
             height: 100%;
             text-align: left;
@@ -200,11 +207,14 @@ body {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            &:hover {
+                color: @blue;
+            }
         }
         /* 前言 */
         .art-note {
             position: relative;
-            font-size: 13px;
+            font-size: 14px;
             height: 40px;
             line-height: 1.65;
             box-sizing: border-box;
@@ -275,7 +285,6 @@ body {
     font-size: 12px;
     white-space: nowrap;
     color: @black;
-    margin-top: 14px;
 }
 
 /* 点赞 */

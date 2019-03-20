@@ -1,4 +1,14 @@
 import { Tooltip } from "../com/js/com";
+// 头像动画
+; (function () {
+    $('#head-portrait').on('webkitAnimationEnd animationend', function () {
+        $(this).removeClass();
+    }).hover(function () {
+        $(this).addClass('tada animated');
+    }, function () {
+        $(this).removeClass('tada animated');
+    });
+})();
 // 联系方式
 ; (function () {
     // 微信二维码
