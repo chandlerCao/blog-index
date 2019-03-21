@@ -6,6 +6,8 @@ export const Loading = function (opts) {
         par: body,
         text: '正在加载，请稍后...'
     };
+    this.timer = null;
+    this.isShowLoading = false;
     this.config = Object.assign(this.default, opts);
     this.loading_box = $(`<div class="com-loading-box" style="top: ${this.config.par.scrollTop()}px;">
         <div class="com-loading-main">
@@ -18,12 +20,19 @@ export const Loading = function (opts) {
         </div>
     </div>`);
     Loading.prototype.show = function () {
-        // 父节点移除滚动条
-        this.config.par.css('overflow', 'hidden');
-        this.loading_box.appendTo(this.config.par);
+        this.timer = setTimeout(() => {
+            this.isShowLoading = true;
+            // 父节点移除滚动条
+            this.config.par.css('overflow', 'hidden');
+            this.loading_box.appendTo(this.config.par);
+        }, 100);
         return this;
     }
     Loading.prototype.hide = function () {
+        if (!this.isShowLoading) {
+            clearTimeout(this.timer);
+            return;
+        }
         this.config.par.css('overflow', '');
         this.loading_box.fadeOut(100, function () {
             $(this).remove();

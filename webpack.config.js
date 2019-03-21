@@ -45,13 +45,26 @@ const config = {
                 ]
             },
             {
-                test: /\.(jpg|png|ttf)$/i,
+                test: /\.(jpg|png)$/i,
                 use: [
                     {
                         loader: 'url-loader',
                         options: {
                             publicPath: '../',
                             name: `img/[name].[ext]`, // 将要打包的哪个文件夹下
+                            limit: 1024
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(ttf)$/i,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            publicPath: '../',
+                            name: `font/[name].[ext]`, // 将要打包的哪个文件夹下
                             limit: 1024
                         }
                     }
@@ -121,4 +134,4 @@ if (isDev) {
 } else {
     // config.plugins.push(new cleanWebpackPlugin([path.join(__dirname, '../koa-blog/index/view')]));
 }
-module.exports = config;
+module.exports = config

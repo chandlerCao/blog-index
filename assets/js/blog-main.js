@@ -142,7 +142,7 @@ const getComponent = function (newHash, oldHash) {
         return;
     }
     // 关闭上次load，显示loading图
-    if (load) load.hide();
+    load && load.hide();
     load = new Loading({ par: app }).show();
     // 关闭上个loading
     // 发送当前组件对应请求

@@ -1,5 +1,5 @@
 export const host = 'http://192.168.1.35:7070';
-import { TimestampFormat } from '../com/js/com';
+import { TimestampFormat, $win } from '../com/js/com';
 // app
 export const app = $('#app');
 // ajax
@@ -34,7 +34,7 @@ export const getParmasByHash = function () {
         return data;
     } else return {};
 }
-// 侧边栏背景切换
+// 侧边栏背景3D切换
 export const banner3d = function (box, imgArr) {
     /**
      * box: 父级
@@ -42,10 +42,9 @@ export const banner3d = function (box, imgArr) {
      * rowLen 横排个数
      * colLen 竖排个数
      */
-    // 盒子宽高
+    // 父级宽高
     const box_width = box.width();
     const box_height = box.height();
-
 
     // 获取图片宽高
     function getImageSizeByUrl(src) {
@@ -68,7 +67,9 @@ export const banner3d = function (box, imgArr) {
                 getImageSizeByUrl(src).then(imgSize => {
                     // 获取图片原始宽高
                     let img_width = imgSize.w, img_height = imgSize.h;
-                    let new_width, new_height = box_height;
+                    let new_width, new_height;
+                    if ($win.width() > 800) new_height = box_height;
+                    else new_width = box_width;
                     if (img_height < box_height) new_width = img_width * (new_height / img_height);
                     else new_width = img_width * (new_height / img_height);
                     resolve({ w: new_width, h: new_height })

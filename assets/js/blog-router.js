@@ -254,7 +254,7 @@ export default [
                         const catalogItem = $('.catalog-item');
                         catalogItem.each(function (i, catalog) {
                             const id = $(this).data('id');
-                            $(catalog).data('top', $('#' + id).position().top - 30);
+                            $(catalog).data('top', $('#' + id).position().top - 20);
                             $(catalog).click(function () {
                                 catalogItem.removeClass('act');
                                 $(this).addClass('act');
