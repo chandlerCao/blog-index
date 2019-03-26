@@ -87,7 +87,7 @@ export default [
                 });
                 const arrText = doT.template(tmp.articleTmp());
                 // 博客盒子
-                this.element.html(arrText(articleData));
+                this.element.html(arrText(articleData) || '暂无文章！');
                 new Page({
                     par: this.element,
                     total: data.total,
@@ -244,7 +244,7 @@ export default [
                     const tag = catalogCache[1];
                     const id = catalogCache[2];
                     const html = catalogCache[3];
-                    catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}">
+                    catalogStr += `<div class="catalog-item catalog-${tag}" data-id="${id}" title="${html}">
                     <a href="javascript:;" class="catalog-link">${html}</a></div>`;
                 }
                 return {

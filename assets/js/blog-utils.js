@@ -250,7 +250,7 @@ export class Comment {
                                     <span class="com-icon__text">${TimestampFormat(commentItem.date)}</span>
                                 </div>
                                 <div class="action-box fr">
-                                    <a href="javascript:;" class="comment-like heart-box art-icon mr20 ${commentItem.isLike ? 'act' : ''}" ${commentItem.cid ? `data-cid="${commentItem.cid}"` : ``} ${commentItem.mid ? `data-mid="${commentItem.mid}"` : ''}${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
+                                    <a href="javascript:;" class="comment-like heart-box art-icon mr10 ${commentItem.isLike ? 'act' : ''}" ${commentItem.cid ? `data-cid="${commentItem.cid}"` : ``} ${commentItem.mid ? `data-mid="${commentItem.mid}"` : ''}${commentItem.rid ? ` data-rid="${commentItem.rid}"` : ''}>
                                         <i class="heart-icon__pic"></i>
                                         <span class="heart-icon__text">喜欢(<span class="like-num">${commentItem.likeCount}</span>)</span>
                                     </a>

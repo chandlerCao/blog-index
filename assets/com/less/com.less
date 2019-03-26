@@ -1,4 +1,5 @@
 @import './com.config.less';
+
 // 公共block
 .com-block {
     .com-block();
@@ -26,68 +27,83 @@
     background-color: #fff;
     color: @black;
     border-radius: 4px;
+
     &.blue {
         background-color: @blue;
         border: 1px solid @blue;
         color: #fff;
     }
+
     &.blue:hover {
         background-color: lighten(@blue, 10%);
         border: 1px solid lighten(@blue, 10%);
     }
+
     &.blue:active {
         background-color: darken(@blue, 10%);
         border: 1px solid darken(@blue, 10%);
     }
+
     &.red {
         background-color: @red;
         border: 1px solid @red;
         color: #fff;
     }
+
     &.red:hover {
         background-color: lighten(@red, 10%);
         border: 1px solid lighten(@red, 10%);
     }
+
     &.red:active {
         background-color: darken(@red, 10%);
         border: 1px solid darken(@red, 10%);
     }
+
     &.yellow {
         background-color: @yellow;
         border: 1px solid @yellow;
         color: #fff;
     }
+
     &.yellow:hover {
         background-color: lighten(@yellow, 10%);
         border: 1px solid lighten(@yellow, 10%);
     }
+
     &.yellow:active {
         background-color: darken(@yellow, 10%);
         border: 1px solid darken(@yellow, 10%);
     }
+
     &.green {
         background-color: @green;
         border: 1px solid @green;
         color: #fff;
     }
+
     &.green:hover {
         background-color: lighten(@green, 10%);
         border: 1px solid lighten(@green, 10%);
     }
+
     &.green:active {
         background-color: darken(@green, 10%);
         border: 1px solid darken(@green, 10%);
     }
+
     &.medium {
         padding: 10px 20px;
         font-size: 14px;
         border-radius: 4px;
     }
+
     &.small {
         padding: 9px 15px;
         font-size: 12px;
         border-radius: 3px;
     }
+
     &.mini {
         padding: 7px 15px;
         border-radius: 3px;
@@ -98,16 +114,27 @@
 // 输入框
 .com-text,
 .com-area {
+    position: relative;
     display: inline-block;
     line-height: 2;
     box-sizing: border-box;
-    border: 1px solid @grey;
-    border-radius: 4px;
+    border: none;
     color: @black;
     font-size: inherit;
     padding: 0 15px;
     background-color: #fff;
     -webkit-appearance: none;
+
+    &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 1px;
+        background-color: @blue;
+        left: 0;
+        bottom: 0;
+        transition: .3s;
+    }
 }
 
 .com-area {
@@ -116,7 +143,9 @@
 
 .com-text:focus,
 .com-area:focus {
-    border: 1px solid @blue;
+    &:after {
+        width: 100%;
+    }
 }
 
 // loading
@@ -127,16 +156,20 @@
     height: 100%;
     left: 0;
     z-index: 999;
+    background-color: rgba(255, 255, 255, .3);
+
     .com-loading-main {
         text-align: center;
         display: table-cell;
         vertical-align: middle;
     }
+
     .com-loading-icon {
         display: inline-block;
         width: 50px;
         height: 50px;
     }
+
     .com-loading-item {
         float: left;
         width: 20px;
@@ -146,59 +179,75 @@
         margin-top: 5px;
         border-radius: 4px;
     }
+
     .com-loading-item:nth-of-type(1) {
         animation: loading1 2s .1s infinite;
     }
+
     .com-loading-item:nth-of-type(2) {
         animation: loading2 2s infinite;
     }
+
     .com-loading-item:nth-of-type(3) {
         animation: loading3 2s .2s infinite;
     }
+
     .com-loading-text {
         display: block;
         font-size: 14px;
         color: @blue;
         padding-top: 8px;
     }
+
     @keyframes loading1 {
         25% {
             transform: translate3D(25px, 0, 0);
         }
+
         50% {
             transform: translate3D(25px, 25px, 0);
         }
+
         75% {
             transform: translate3D(0, 25px, 0);
         }
+
         100% {
             transform: translate3D(0, 0, 0);
         }
     }
+
     @keyframes loading2 {
         25% {
             transform: translate3D(0, 25px, 0);
         }
+
         50% {
             transform: translate3D(-25px, 25px, 0);
         }
+
         75% {
             transform: translate3D(-25px, 0, 0);
         }
+
         100% {
             transform: translate3D(0, 0, 0);
         }
     }
+
     @keyframes loading3 {
         25% {
             transform: translate3D(0, -25px, 0);
         }
+
         50% {
             transform: translate3D(25px, -25px, 0);
         }
+
         75% {
             transform: translate3D(25px, 0, 0);
         }
+
         100% {
             transform: translate3D(0, 0, 0);
         }
@@ -209,15 +258,18 @@
 .com-page-box {
     margin-top: 30px;
     text-align: center;
+
     .com-page-total,
     .com-page-ul {
         display: inline-block;
         vertical-align: middle;
     }
+
     .com-page-total {
         margin-right: 5px;
         font-size: 12px;
     }
+
     .com-page-num,
     .com-page-prev,
     .com-page-next {
@@ -236,24 +288,30 @@
         margin-right: 4px;
         font-size: 13px;
     }
+
     .com-page-prev,
     .com-page-next {
         &.disabled {
             color: @disable;
             cursor: not-allowed;
         }
+
         &:hover {
             border: 1px solid @grey;
         }
-    } // 跳页码
+    }
+
+    // 跳页码
     .com-page-li-jump__prev,
     .com-page-li-jump__next {
         display: inline-block;
         width: 32px;
         margin: 0 5px;
         font-size: 12px;
+
         .page-ellipsis {
             display: inline-block;
+
             &:after {
                 content: "•••";
                 letter-spacing: 1px;
@@ -261,14 +319,17 @@
                 text-align: center;
             }
         }
+
         .page-arrow {
             display: none;
             font-size: 14px;
         }
+
         &:hover {
             .page-ellipsis {
                 display: none;
             }
+
             .page-arrow {
                 display: inline-block;
             }
@@ -289,21 +350,26 @@
     min-width: 10px;
     word-wrap: break-word;
     opacity: 0;
+
     &.dark {
         background-color: @black;
         border: 1px solid @black;
+
         &:after {
             border-top-color: @black;
         }
     }
+
     &.light {
         background-color: @white;
         border: 1px solid @grey;
         color: @black;
+
         &:after {
             border-top-color: @white;
         }
     }
+
     &:after {
         content: '';
         position: absolute;
@@ -353,21 +419,25 @@
     background-color: #fff;
     border: 1px solid @grey;
     transform: translateY(-50%) translateX(100%);
+
     &.blue {
         background-color: @blue;
         border: 1px solid @blue;
         color: #fff;
     }
+
     &.red {
         background-color: @red;
         border: 1px solid @red;
         color: #fff;
     }
+
     &.yellow {
         border: 1px solid @yellow;
         background-color: @yellow;
         color: #fff;
     }
+
     &.green {
         background-color: @green;
         border: 1px solid @green;
@@ -377,30 +447,37 @@
 
 .ml(@i) when (@i > 0) {
     .ml(@i - 10);
+
     .ml@{i} {
         margin-left: @i * 1px;
     }
 }
 
 .ml(100);
+
 .mr(@i) when (@i > 0) {
     .mr(@i - 10);
+
     .mr@{i} {
         margin-right: @i * 1px;
     }
 }
 
 .mr(100);
+
 .mt(@i) when (@i > 0) {
     .mt(@i - 10);
+
     .mt@{i} {
         margin-top: @i * 1px;
     }
 }
 
 .mt(100);
+
 .mb(@i) when (@i > 0) {
     .mb(@i - 10);
+
     .mb@{i} {
         margin-bottom: @i * 1px;
     }

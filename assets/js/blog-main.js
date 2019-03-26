@@ -20,9 +20,6 @@ const mainBox = $('#main-box');
         clearTimeout(bannerTimer);
         bannerTimer = setTimeout(startBanner, 50);
     });
-    // app.on('scroll', () => {
-    //     $win.trigger('resize.initBg');
-    // });
     function startBanner() {
         let bg_dir;
         if ($win.width() > 800) bg_dir = 'large';
@@ -31,7 +28,9 @@ const mainBox = $('#main-box');
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
 
     }
-    $win.trigger('resize.initBg');
+    app.one('scroll.initBg', () => {
+        $win.trigger('resize.initBg');
+    });
 })();
 // canvas雪花
 ; (function () {

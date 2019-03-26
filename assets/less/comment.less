@@ -1,6 +1,7 @@
 /* 评论 */
 
 @import '../com/less/com.config.less';
+
 #message-box .com-comment-block {
     .com-block();
     padding-bottom: 0;
@@ -8,10 +9,12 @@
 
 .com-comment-block {
     font-size: 12px;
+
     .comment-line {
         margin-top: 10px;
-        border-top: 1px solid lighten(@black, 75%);
+        border-top: 1px solid lighten(@black, 80%);
         text-align: center;
+
         span {
             position: relative;
             top: -12px;
@@ -20,20 +23,24 @@
             background-color: #fff;
         }
     }
+
     .comment-box {
         position: relative;
         min-height: 70px;
         color: @black;
+
         /*  没有评论展示 */
         .no-comment {
             line-height: 70px;
             text-align: center;
         }
+
         /* 公共输入框 */
         .pub-publish-submit {
             padding: 12px;
         }
     }
+
     /* 发布输入框 */
     .user-face {
         width: 40px;
@@ -46,62 +53,77 @@
         text-align: center;
         color: #fff;
     }
+
     .publish-input {
         font-size: 14px;
         height: 40px;
     }
+
     .comment-input {
         width: 100%;
         height: 100%;
     }
+
     /* 评论操作 */
     .publish-action {
         display: flex;
         margin-top: 8px;
         justify-content: space-between;
     }
+
     /* 评论人 */
     .user-input {
         width: 50%;
     }
+
     /* 评论列表 */
     .comment-item {
         margin-top: 20px;
+
         .comment-publish-content {
             padding-bottom: 12px;
         }
+
         &:not(:last-child) .comment-publish-content {
             border-bottom: 1px solid @grey;
         }
     }
+
     .user-name {
         color: darken(@black, 30%);
     }
+
     .user-city {
         margin-left: 5px;
         color: #8b8b8b;
     }
+
     .comment-content {
         padding-top: 4px;
         word-wrap: break-word;
     }
+
     .comment-more,
     .reply-more {
         padding: 5px;
         text-align: center;
         cursor: pointer;
     }
+
     /* 回复列表 */
     .reply-box {
         margin-top: 10px;
         padding-left: 12px;
         padding-right: 12px;
         background-color: @bg;
+
         .reply-item {
             padding-top: 12px;
+
             .reply-publish-content {
                 padding-bottom: 12px;
             }
+
             &:not(:last-child) .reply-publish-content {
                 border-bottom: 1px solid @grey;
             }

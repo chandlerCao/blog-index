@@ -1,4 +1,5 @@
 @import '../com/less/com.config.less';
+
 #markdown-box {}
 
 #markdown-wrap {
@@ -14,26 +15,30 @@
     overflow: auto;
     text-align: justify;
     padding-bottom: 0;
+
     /* 标题 */
     .markdown-title {
         margin-bottom: 16px;
         font-size: 18px;
         text-align: center;
+
         h1 {
             font-weight: bold;
         }
     }
+
     /* 附属信息 */
     .markdown-meta {
-        width: 320px;
+        max-width: 320px;
         display: flex;
         justify-content: space-around;
         font-size: 12px;
         margin: 16px auto;
     }
+
     /* 前言 */
     .markdown-preface {
-        font-size: 13px;
+        font-size: 13.5px;
         line-height: 30px;
         text-indent: 2em;
         background-color: #f8f8f8;
@@ -42,6 +47,7 @@
         border-radius: 10px;
         font-weight: bolder;
     }
+
     /* 封面 */
     .markdown-cover {
         position: relative;
@@ -52,6 +58,7 @@
         background-repeat: no-repeat;
         margin-top: 20px;
     }
+
     /* 封面填充 */
     .markdown-cover:before {
         content: "";
@@ -61,30 +68,37 @@
         right: 0;
         bottom: 0;
     }
+
     .markdown-cover:after {
         content: '';
         display: block;
         padding-top: 50%;
         width: 100%;
     }
+
     /* 覆盖markdown */
     .markdown-content {
         font-size: 14px;
+
         ul {
             list-style: disc;
             margin: 16px;
         }
+
         ol {
             margin: 16px;
         }
+
         p {
             margin: 16px 0;
-            line-height: 2;
+            line-height: 3;
         }
+
         li {
             margin-top: 5px;
-            line-height: 2;
+            line-height: 3;
         }
+
         /* 引用 */
         blockquote {
             padding: 1px 23px;
@@ -92,31 +106,39 @@
             border-left: 4px solid #cbcbcb;
             background-color: #f8f8f8;
             color: #666;
+
             p {
                 margin: 8px 0;
             }
         }
+
         h1,
         h2,
         h3 {
             font-weight: bold;
             margin: 20px 0;
         }
+
         h1 {
             font-size: 18px;
         }
+
         h2 {
             font-size: 16px;
         }
+
         h3 {
             font-size: 14px;
         }
+
         h4 {
             font-size: 18px;
         }
+
         img {
             width: 100%;
         }
+
         mark {
             background-color: @blue;
             color: #fff;
@@ -124,9 +146,11 @@
             border-radius: 2px;
             margin: 0 2px;
         }
+
         .hljs {
             line-height: 1.5;
         }
+
         a {
             text-decoration: underline;
         }
@@ -157,6 +181,7 @@
 
 .markdown-catalog {
     width: 100%;
+
     .markdown-catalog-title {
         font-size: 16px;
         font-weight: bold;
@@ -164,25 +189,32 @@
         text-align: center;
         margin-bottom: 16px;
         letter-spacing: 2px;
+
         .markdown-catalog-item {
             padding: 3px 8px;
             border-bottom: 2px solid @blue;
             color: @blue;
         }
     }
+
     .catalog-item {
         color: @black;
         margin-bottom: 5px;
     }
+
     .catalog-item.act {
         background-color: @bg;
         color: @blue;
+        font-weight: bold;
     }
+
     .catalog-link {
         width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding: 3px 0;
+
         &:before {
             content: '';
             position: relative;
@@ -191,9 +223,11 @@
             border-radius: 50%;
         }
     }
+
     .catalog-h1 {
         font-size: 13px;
         padding-left: 5px;
+
         .catalog-link:before {
             width: 6px;
             height: 6px;
@@ -201,9 +235,11 @@
             top: -2px;
         }
     }
+
     .catalog-h2 {
         font-size: 12px;
         padding-left: 25px;
+
         .catalog-link:before {
             width: 5px;
             height: 5px;
@@ -222,9 +258,11 @@
         height: auto;
         padding: 0 !important;
     }
+
     #markdown-main {
         width: 100%;
     }
+
     .markdown-action {
         display: none;
     }
