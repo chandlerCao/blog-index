@@ -1,4 +1,4 @@
-import { host, app, banner3d, getParmasByHash, tmp, storage } from './blog-utils';
+import { host, app, banner3d, getParmasByHash, tmp, storage, PreventShaking } from './blog-utils';
 import { Loading, PageUp, $win } from '../com/js/com';
 import Router from './blog-router';
 const mainBox = $('#main-box');
@@ -14,101 +14,17 @@ const mainBox = $('#main-box');
 })();
 // 侧边栏3d图片切换
 ; (function () {
-    let bannerTimer = null;
-    // 引入服务器上的地址
-    $win.on('resize.initBg', function () {
-        clearTimeout(bannerTimer);
-        bannerTimer = setTimeout(startBanner, 50);
-    });
-    function startBanner() {
+    // 背景防抖
+    const bgShaking = PreventShaking(function () {
         let bg_dir;
         if ($win.width() > 800) bg_dir = 'large';
         else if ($win.width() > 600) bg_dir = 'medium';
         else bg_dir = 'small';
         banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
 
-    }
-    app.one('scroll.initBg', () => {
-        $win.trigger('resize.initBg');
-    });
-})();
-// canvas雪花
-; (function () {
-    var img = new Image();
-    img.src = `./img/snow.png`;
-    function drawObj(cxt, x, y, r, color) {
-        /**星星 */
-        // let r2 = r / 2.5;
-        // cxt.beginPath();
-        // for (let i = 0; i < 5; i++) {
-        //     cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
-        //     cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
-        // }
-        // cxt.closePath();
-        // //设置边框样式以及填充颜色
-        // cxt.fillStyle = color;
-        // cxt.fill();
-        /**星星 */
-
-        /**雪花 */
-        cxt.beginPath();
-        cxt.drawImage(img, x, y, r, r);
-        cxt.closePath();
-        /**雪花 */
-
-    }
-    const c = $('#canvasBg');
-    const g = c[0].getContext('2d');
-    const color = '#6eaaff';
-    let snowArr = [];
-    let timer = null;
-    let starLen = Math.floor($win.width() * $win.height() / 50000);
-    starLen = starLen < 10 ? 10 : starLen;
-    function random() {
-        return Math.random();
-    }
-    c.attr({
-        width: $win.width(),
-        height: $win.height()
-    });
-    initStar();
-    function initStar() {
-        g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-        // 初始化每一个雪花
-        for (let i = 0; i < starLen; i++) {
-            const x = random() * c.attr('width');
-            snowArr.push({
-                x: x,
-                startX: x,
-                y: random() * c.attr('height'),
-                speedY: 1,
-                r: random() * 8 + 8,
-                xNum: 0,
-                range: random() * 40,
-            });
-        }
-    };
-    // 重绘
-    requestAnimationFrame(starFlash);
-    function starFlash() {
-        g.clearRect(0, 0, c.attr('width'), c.attr('height'));
-        for (let i = 0; i < starLen; i++) {
-            // y轴加
-            snowArr[i].y += snowArr[i].speedY;
-            if (snowArr[i].y >= $win.height()) snowArr[i].y = -snowArr[i].r;
-
-            snowArr[i].xNum--;
-            if (snowArr[i].xNum === -360) snowArr[i].xNum = 0;
-
-            snowArr[i].x = snowArr[i].startX - snowArr[i].range * Math.sin(Math.PI / 180 * snowArr[i].xNum);
-
-            // g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
-            drawObj(g, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
-        };
-        timer = setTimeout(function () {
-            requestAnimationFrame(starFlash);
-        }, 20);
-    };
+    }, 200);
+    $win.on('resize.initBg', bgShaking);
+    $win.trigger('resize.initBg');
 })();
 // 切换动画效果
 const componentSwitch = function (newEl, oldEl) {
@@ -201,16 +117,13 @@ const getComponent = function (newHash, oldHash) {
 })();
 // 记录滚动条位置
 ; (function () {
-    let timer = null;
-    app.on('scroll', function () {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            const scrollTop_data = storage.get('scrollTop') || {};
-            let hash = window.location.hash;
-            hash = hash.substr(1, hash.length);
-            scrollTop_data[hash] = app.scrollTop();
-            // 存储到本地存储
-            storage.set('scrollTop', scrollTop_data);
-        }, 50);
-    })
+    const scrollPositionShaking = PreventShaking(() => {
+        const scrollTop_data = storage.get('scrollTop') || {};
+        let hash = window.location.hash;
+        hash = hash.substr(1, hash.length);
+        scrollTop_data[hash] = app.scrollTop();
+        // 存储到本地存储
+        storage.set('scrollTop', scrollTop_data);
+    }, 50);
+    app.on('scroll', scrollPositionShaking);
 })();

@@ -124,6 +124,114 @@ export const storage = {
         return JSON.parse(window.localStorage.getItem(key));
     }
 }
+// 防抖
+export const PreventShaking = (fn, delay) => {
+    let timer = null;
+    return function () {
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, [...arguments]);
+        }, delay);
+    }
+}
+// canvas雪花
+export const snow = function (imgArr) {
+
+    const promiseImgArr = [];
+
+    imgArr.forEach(imgSrc => {
+        promiseImgArr.push(new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function () {
+                resolve(img);
+            }
+            img.onerror = function (err) {
+                reject(err);
+            }
+            img.src = imgSrc;
+        }))
+    });
+
+    Promise.all(promiseImgArr).then(function (imgs) {
+        // 初始化
+        initStar(imgs);
+        // 重绘
+        requestAnimationFrame(starFlash);
+    })
+
+    function drawObj(cxt, img, x, y, r, color) {
+        /**星星 */
+        // let r2 = r / 2.5;
+        // cxt.beginPath();
+        // for (let i = 0; i < 5; i++) {
+        //     cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI) * r + x, -Math.sin((18 + i * 72) / 180 * Math.PI) * r + y);
+        //     cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * r2 + x, -Math.sin((54 + i * 72) / 180 * Math.PI) * r2 + y);
+        // }
+        // cxt.closePath();
+        // //设置边框样式以及填充颜色
+        // cxt.fillStyle = color;
+        // cxt.fill();
+        /**星星 */
+
+        /**雪花 */
+        cxt.beginPath();
+        cxt.drawImage(img, x, y, r, r);
+        cxt.closePath();
+        /**雪花 */
+    }
+    const canvas = $('#canvasBg');
+    const ctx = canvas[0].getContext('2d');
+    const color = '#6eaaff';
+    let timer = null;
+    let snowArr = [];
+    let starLen = Math.floor($win.width() * $win.height() / 40000);
+    starLen = starLen < 10 ? 10 : starLen;
+    function random() {
+        return Math.random();
+    }
+    canvas.attr({
+        width: $win.width(),
+        height: $win.height()
+    });
+    function initStar(imgs) {
+        const imgLen = imgs.length;
+        ctx.clearRect(0, 0, canvas.attr('width'), canvas.attr('height'));
+        // 初始化每一个雪花
+        for (let i = 0; i < starLen; i++) {
+            const x = random() * canvas.attr('width');
+            snowArr.push({
+                x: x,
+                startX: x,
+                y: random() * canvas.attr('height'),
+                speedY: 1,
+                r: random() * 8 + 8,
+                xNum: 0,
+                range: random() * 40,
+                img: imgs[Math.floor(Math.random() * imgLen)]
+            });
+        }
+    };
+
+    function starFlash() {
+        ctx.clearRect(0, 0, canvas.attr('width'), canvas.attr('height'));
+        for (let i = 0; i < starLen; i++) {
+            // y轴加
+            snowArr[i].y += snowArr[i].speedY;
+            if (snowArr[i].y >= $win.height()) snowArr[i].y = -snowArr[i].r;
+
+            snowArr[i].xNum--;
+            if (snowArr[i].xNum === -360) snowArr[i].xNum = 0;
+
+            snowArr[i].x = snowArr[i].startX - snowArr[i].range * Math.sin(Math.PI / 180 * snowArr[i].xNum);
+
+            // g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
+            drawObj(ctx, snowArr[i].img, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
+        };
+        timer = setTimeout(function () {
+            requestAnimationFrame(starFlash);
+        }, 20);
+    };
+}
 // 图片加载完成
 export const imgload = function (src) {
     return new Promise((resolve, reject) => {

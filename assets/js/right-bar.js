@@ -1,4 +1,4 @@
-import { host, toZero, ajax, app } from './blog-utils';
+import { host, toZero, ajax, app, snow } from './blog-utils';
 // 右边栏固定定位
 const rightBarFixed = () => {
     const side_bar = $('#side-bar');
@@ -50,15 +50,18 @@ const rightBarFixed = () => {
 // 获取标签云
 ; (function () {
     const tag_box = $('#tag-box');
+    var imgArr = [];
     ajax({ url: '/index/article/getArticleTag' }).then((tagList = []) => {
         let tag_str = '';
         tagList.forEach(tag_item => {
+            imgArr.push(tag_item.img);
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
-                <i class="com-icon__pic eye-icon" style="background-image: url(${host}/tag-icon/${tag_item.tag_name})"></i>
+                <i class="com-icon__pic eye-icon" style="background-image: url(${tag_item.img})"></i>
                 <span class="com-icon__text">${tag_item.tag_name}</span>
             </a>`;
         });
         tag_box.html(tag_str);
+        snow(imgArr);
         // 右边栏自动固定定位
         // rightBarFixed();
     });
