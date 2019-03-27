@@ -9,7 +9,8 @@
     <meta property="og:title" content="web前端博客">
     <meta property="og:site_name" content="web前端博客">
     <meta name="twitter:title" content="web前端博客">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css"
+        type="text/css" />
     <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" type="text/css">
     <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.6/styles/github.min.css">
     <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
@@ -59,6 +60,18 @@
         <!-- 侧边栏 -->
         <aside class="side-bar">
             <div class="side-bar-wrap">
+                <!-- 搜索 -->
+                <section class="sidebar-block com-block mt20">
+                    <div class="sidebar-block__title">文章搜索</div>
+                    <div class="sidebar-block__content">
+                        <div id="article-search-box" class="clear">
+                            <input id="article-search-input" type="com-text" placeholder="根据标题或者内容搜索">
+                            <button id="article-search-btn">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
                 <!-- 时钟 -->
                 <section class="sidebar-block com-block mt20">
                     <div class="sidebar-block__title">时钟</div>

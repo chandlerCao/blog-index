@@ -116,6 +116,7 @@
 .com-area {
     position: relative;
     display: inline-block;
+    min-height: 100%;
     line-height: 2;
     box-sizing: border-box;
     border: none;
@@ -124,28 +125,10 @@
     padding: 0 15px;
     background-color: #fff;
     -webkit-appearance: none;
-
-    &:after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 1px;
-        background-color: @blue;
-        left: 0;
-        bottom: 0;
-        transition: .3s;
-    }
 }
 
 .com-area {
     line-height: 24px;
-}
-
-.com-text:focus,
-.com-area:focus {
-    &:after {
-        width: 100%;
-    }
 }
 
 // loading

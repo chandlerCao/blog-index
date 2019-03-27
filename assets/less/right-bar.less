@@ -1,5 +1,6 @@
 @import './config.less';
 @import '../com/less/com.config.less';
+
 // 右边栏
 .side-bar {
     position: absolute;
@@ -7,12 +8,15 @@
     height: 100%;
     right: 0;
     top: 0;
+
     .side-bar-wrap {
         position: fixed;
         width: @sideW - 20;
     }
+
     .sidebar-block {
         background-color: #fff;
+
         .sidebar-block__title {
             position: relative;
             color: @black;
@@ -21,6 +25,7 @@
             margin-bottom: 20px;
             height: 20px;
             line-height: 20px;
+
             &:before {
                 content: '';
                 position: absolute;
@@ -42,6 +47,7 @@
     width: @w;
     height: @w;
     margin: 0 auto;
+
     #anchor-box {
         position: absolute;
         width: 100%;
@@ -49,6 +55,7 @@
         left: 0;
         top: 0;
     }
+
     #hour-num {
         position: absolute;
         width: @w - 30;
@@ -56,6 +63,7 @@
         left: 15px;
         top: 15px;
     }
+
     #hour-num .hour-text {
         position: absolute;
         font-size: 16px;
@@ -65,11 +73,13 @@
         margin-left: -0.5px;
         transform-origin: 0 (@w - 30) / 2;
     }
+
     #hour-num .hour-text span {
         position: absolute;
         left: -4px;
         top: 0;
     }
+
     .anchor {
         position: absolute;
         left: 50%;
@@ -77,22 +87,26 @@
         margin-left: -0.5px;
         transform-origin: 0 @w / 2;
     }
+
     .anchor-bar {
         width: 1px;
         height: 9px;
         opacity: .8;
         background-color: @black;
     }
+
     .anchor-num {
         font-style: normal;
         font-size: 10px;
         color: @black;
     }
+
     .anchor-num span {
         position: absolute;
         left: -5px;
         top: -2px;
     }
+
     #center-point {
         position: absolute;
         width: 20px;
@@ -104,6 +118,7 @@
         margin-top: -10px;
         border-radius: 50%;
     }
+
     #hour-hand,
     #min-hand {
         position: absolute;
@@ -111,16 +126,19 @@
         left: 50%;
         margin-left: -3px;
     }
+
     #hour-hand {
         height: @w / 3.3;
         top: @w / 2 - @w / 3.3;
         transform-origin: 3px @w / 3.3;
     }
+
     #min-hand {
         height: @w / 2.5;
         top: @w / 2 - @w / 2.5;
         transform-origin: 3px @w / 2.5;
     }
+
     #sec-hand {
         position: absolute;
         width: 4px;
@@ -131,6 +149,7 @@
         top: 0;
         transform-origin: 2px @w / 2;
     }
+
     .short-hand {
         position: absolute;
         width: 3px;
@@ -140,6 +159,7 @@
         bottom: 0;
         background-color: @black;
     }
+
     .long-hand {
         position: absolute;
         width: 100%;
@@ -148,6 +168,7 @@
         border-radius: 10px;
         top: 5%;
     }
+
     #sec-center {
         position: absolute;
         width: 14px;
@@ -166,6 +187,7 @@
 // 标签
 #tag-box {
     margin-top: -12px;
+
     .tag-item {
         position: relative;
         padding: 4px;
@@ -176,6 +198,7 @@
         color: @blue;
         font-weight: bold;
         transition: .3s;
+
         &:after {
             content: '';
             position: absolute;
@@ -187,11 +210,48 @@
             transition: .2s;
             transform: scale(0);
         }
+
         &:hover:after {
             transform: scale(1);
         }
     }
 }
+
+#article-search-box {
+    @searchSize: 30px;
+    height: @searchSize;
+
+    #article-search-input {
+        float: left;
+        width: 184px - @searchSize;
+        height: 100%;
+        border: 1px solid @grey;
+        font-size: 12px;
+        box-sizing: border-box;
+        padding-left: 5px;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        transition: .3s;
+
+        &:focus {
+            border: 1px solid @blue;
+        }
+    }
+
+    #article-search-btn {
+        float: left;
+        width: @searchSize;
+        height: @searchSize;
+        line-height: @searchSize;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        background-color: @blue;
+        color: #fff;
+        font-size: 14px;
+        text-align: center;
+    }
+}
+
 
 @media all and (max-width: 1300px) {
     .side-bar {

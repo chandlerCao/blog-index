@@ -152,7 +152,12 @@
         }
 
         a {
-            text-decoration: underline;
+            color: @blue;
+
+            &:hover {
+                color: lighten(@blue, 10%);
+                text-decoration: underline;
+            }
         }
     }
 }

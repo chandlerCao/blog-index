@@ -118,6 +118,7 @@ export default [
             callback() {
                 new Comment(this.element, {
                     title: '留言板',
+                    noCommentMsg: '当前没有留言，抢个沙发吧！',
                     methods: {
                         commentMore(page, callBack) {
                             const aid = getParmasByHash().aid;
@@ -229,6 +230,66 @@ export default [
         }
     },
     {
+        reg: /^article\?searchText=(.+)&page=(\d+)$/,
+        name: 'articleTagList',
+        element: $('<section id="article-search-box" class="blog-element"></section>'),
+        fns: {
+            // 文章点赞
+            artLike() {
+                let like_complete = true;
+                this.element.off('click.artLike').delegate('.art-heart', 'click.artLike', function () {
+                    if (!like_complete) return;
+                    like_complete = false;
+                    const aid = $(this).data('aid');
+                    ajax({ url: '/index/article/givealike', data: { aid } }).then(likeInfo => {
+                        // 点赞
+                        if (likeInfo.likeState === 1) $(this).addClass('act');
+                        // 取消赞
+                        else $(this).removeClass('act');
+                        // 赞个数赋值
+                        $(this).find('.like-num:first').text(likeInfo.likeTotal);
+                        like_complete = true;
+                    });
+                });
+            }
+        },
+        handler: {
+            ajax(data = {}) {
+                return ajax({
+                    url: '/index/article/getArticleBySearch',
+                    data
+                });
+            },
+            callback(data = {}) {
+                const articleData = data.articleList;
+                articleData.map(function (articleItem) {
+                    // 格式化日期
+                    articleItem.date = TimestampFormat(articleItem.date);
+                });
+                const arrText = doT.template(tmp.articleTmp());
+                // 博客盒子
+                this.element.html(arrText(articleData));
+                // 分页
+                new Page({
+                    par: this.element,
+                    total: data.total,
+                    page_size: data.page_size,
+                    now_page: parseInt(getParmasByHash().page),
+                    url: `#article?tag=${getParmasByHash().tag}&page=`,
+                    on_change() {
+                        app.animate({
+                            scrollTop: 0
+                        }, 'fast');
+                    }
+                });
+                // 执行当前组件所有函数
+                for (const fn in this.fns) {
+                    this.fns[fn].call(this);
+                }
+            }
+        }
+    },
+    {
         reg: /^article\?aid=(\w+)$/,
         name: 'articleContent',
         element: $('<section id="markdown-box" class="blog-element"></section>'),
@@ -281,6 +342,7 @@ export default [
                         app.off('scroll.comment');
                         // 评论
                         new Comment(markdownComment, {
+                            title: '评论区（纯手工，望大佬们手下留情~）',
                             methods: {
                                 commentMore(page, callBack) {
                                     const aid = getParmasByHash().aid;

@@ -24,15 +24,16 @@ export const ajax = function (opts) {
 // 获取hash动态路径参数
 export const getParmasByHash = function () {
     const hash = window.location.hash;
-    const regArr = hash.match(/(\w+)=[^&]+/g);
+    const regArr = hash.match(/(\w+)=([^&])+/g);
     const data = {};
     if (regArr && regArr.length) {
         regArr.forEach(params => {
             const paramsArr = params.split('=');
-            data[paramsArr[0]] = paramsArr[1];
+            // decodeURIComponent 解决中文问题
+            data[paramsArr[0]] = decodeURIComponent(paramsArr[1]);
         });
         return data;
-    } else return {};
+    } return {};
 }
 // 侧边栏背景3D切换
 export const banner3d = function (box, imgArr) {
@@ -135,7 +136,7 @@ export const PreventShaking = (fn, delay) => {
     }
 }
 // canvas雪花
-export const snow = function (imgArr) {
+export const Snow = function (imgArr) {
 
     const promiseImgArr = [];
 
@@ -310,6 +311,8 @@ export class Comment {
         this.like = opts.methods.like;
         // 加载更多回复
         this.replyMore = opts.methods.replyMore;
+        // 无评论时显示的文字
+        this.noCommentMsg = opts.noCommentMsg || '暂无评论，快来抢沙发吧！';
         // 模板
         this.temps = {
             commentBox(title = '评论') {
@@ -337,15 +340,19 @@ export class Comment {
             },
             // 公共评论（回复）输入框
             pubPublishInput(obj = {}) {
-                return `<div class="pub-publish-submit mt10" style="background-color: ${obj.bgColor};">
-                            <div class="publish-input">
-                                <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}" autofocus="autofocus">
-                            </div>
-                            <div class="publish-action">
-                                <input type="text" class="com-text user-input animated" placeholder="我的大名！">
-                                <button type="button" data-type="${obj.type}" class="${obj.type}-btn publish-btn com-button blue mini"> <i class="fa fa-send"></i> ${obj.subText || '评论'}</button>
-                            </div>
-                        </div>`
+                return `<div class="pub-publish-submit mt10">
+                    <div class="publish-input">
+                        <input type="text" class="com-text comment-input animated" placeholder="${obj.plh || '说点啥呗~'}" autofocus="autofocus">
+                        <span class="comment-text-line"></span>
+                    </div>
+                    <div class="publish-action">
+                        <div class="publish-user-text">
+                            <input type="text" class="com-text user-input animated" placeholder="我的大名！">
+                            <span class="comment-text-line"></span>
+                        </div>
+                        <button type="button" data-type="${obj.type}" class="${obj.type}-btn publish-btn com-button blue mini"> <i class="fa fa-send"></i> ${obj.subText || '评论'}</button>
+                    </div>
+                </div>`
             },
             // 公共评论主要内容展示
             pubPublishContent(commentItem, type = "comment") {
@@ -436,7 +443,7 @@ export class Comment {
                     commentBox.append(commentListStr);
                 }
                 if (!isMore) commentMoreBtn.remove();
-                if (!list.length) commentBox.append(that.temps.noComment('暂无评论，快来抢沙发吧！'));
+                if (!list.length) commentBox.append(that.temps.noComment(that.noCommentMsg));
                 end = true;
             });
         });
@@ -468,8 +475,7 @@ export class Comment {
                 commentMainCnt.find('.comment-bar:first').after(that.temps.pubPublishInput({
                     type: 'reply',
                     plh: `回复${commentInfo.cuser}`,
-                    subText: '回复',
-                    bgColor: commentInfo.type === 'comment' ? '#f8fafc' : '#fff'
+                    subText: '回复'
                 }));
                 prevReplyInput = commentMainCnt.find('>.pub-publish-submit:first');
             }
@@ -486,7 +492,7 @@ export class Comment {
             // 如果评论为空，提示
             if (!commentVal) { alert('说点啥呗~'); return; }
             // 获取用户名输入框
-            const userVal = $.trim($this.prev().val());
+            const userVal = $.trim($this.prev().find('.user-input:first').val());
             if (!userVal) { alert('尊姓大名！'); return; }
             // 清空输入框值
             commentInp.val('');
@@ -525,7 +531,7 @@ export class Comment {
         });
         // 输入框回车触发
         that.el.off('keydown.userInp').delegate('.user-input', 'keydown.userInp', function (e) {
-            if (e.keyCode === 13) $(this).next().trigger('click.publish');
+            if (e.keyCode === 13) $(this).parent().next().trigger('click.publish');
         });
     }
     // 评论（回复）点赞

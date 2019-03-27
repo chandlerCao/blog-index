@@ -1,4 +1,4 @@
-import { host, toZero, ajax, app, snow } from './blog-utils';
+import { host, toZero, ajax, app, Snow } from './blog-utils';
 // 右边栏固定定位
 const rightBarFixed = () => {
     const side_bar = $('#side-bar');
@@ -61,7 +61,7 @@ const rightBarFixed = () => {
             </a>`;
         });
         tag_box.html(tag_str);
-        snow(imgArr);
+        Snow(imgArr);
         // 右边栏自动固定定位
         // rightBarFixed();
     });

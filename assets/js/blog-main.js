@@ -56,10 +56,10 @@ const getComponent = function (newHash, oldHash) {
         window.location.hash = Router[0].href;
         return;
     }
-    // 关闭上次load，显示loading图
+    // 关闭上次loading，显示loading图
     load && load.hide();
+    // 加载新的loading
     load = new Loading({ par: app }).show();
-    // 关闭上个loading
     // 发送当前组件对应请求
     Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
         // 元素切换
