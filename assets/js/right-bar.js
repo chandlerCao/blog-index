@@ -1,4 +1,5 @@
-import { host, toZero, ajax, app, Snow } from './blog-utils';
+import { toZero, ajax, app, Snow, PreventShaking } from './blog-utils';
+import Router from './blog-router';
 // 右边栏固定定位
 const rightBarFixed = () => {
     const side_bar = $('#side-bar');
@@ -8,6 +9,27 @@ const rightBarFixed = () => {
         else if ($(this).scrollTop() < side_bar_pos && side_bar.hasClass('fixed')) side_bar.removeClass('fixed');
     });
 };
+// 文字搜索
+; (function () {
+    const searchInput = $('#article-search-input');
+    const searchBtn = $('#article-search-btn');
+
+    // 搜索防抖
+    const searchPreventShaking = PreventShaking(function (searchText) {
+        window.location.hash = `#article?searchText=${searchText}&page=1`;
+    }, 200);
+
+    searchBtn.on('click', function () {
+        const searchVal = searchInput.val();
+        searchPreventShaking(searchInput.val());
+    });
+
+    searchInput.on('keydown', function (e) {
+        if (e.keyCode === 13) searchBtn.trigger('click');
+    });
+
+
+})();
 // 时钟
 ; (function () {
     const hour_num = $('#hour-num');
@@ -64,5 +86,15 @@ const rightBarFixed = () => {
         Snow(imgArr);
         // 右边栏自动固定定位
         // rightBarFixed();
+        tagClick()();
     });
+    function tagClick() {
+        var prev = $();
+        return () => {
+            $('.tag-item').on('click', function () {
+                prev.removeClass('act');
+                prev = $(this).addClass('act');
+            });
+        }
+    }
 })();

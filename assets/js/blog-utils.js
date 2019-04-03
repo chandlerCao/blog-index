@@ -1,4 +1,4 @@
-export const host = 'http://192.168.1.35:7070';
+export const host = 'http://192.168.1.37:7070';
 import { TimestampFormat, $win } from '../com/js/com';
 // app
 export const app = $('#app');
@@ -183,7 +183,6 @@ export const Snow = function (imgArr) {
     const canvas = $('#canvasBg');
     const ctx = canvas[0].getContext('2d');
     const color = '#6eaaff';
-    let timer = null;
     let snowArr = [];
     let starLen = Math.floor($win.width() * $win.height() / 40000);
     starLen = starLen < 10 ? 10 : starLen;
@@ -228,7 +227,7 @@ export const Snow = function (imgArr) {
             // g.arc(snowArr[i].x, snowArr[i].y, snowArr[i].r, 0, Math.PI * 2);
             drawObj(ctx, snowArr[i].img, snowArr[i].x, snowArr[i].y, snowArr[i].r, color);
         };
-        timer = setTimeout(function () {
+        setTimeout(function () {
             requestAnimationFrame(starFlash);
         }, 20);
     };
@@ -574,4 +573,19 @@ export class Comment {
             });
         })
     }
+}
+// 判断是否为pc端
+export const IsPC = () => {
+    var userAgentInfo = navigator.userAgent;
+    var Agents = ["Android", "iPhone",
+        "SymbianOS", "Windows Phone",
+        "iPad", "iPod"];
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
 }

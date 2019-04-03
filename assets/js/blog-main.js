@@ -20,28 +20,35 @@ const mainBox = $('#main-box');
         if ($win.width() > 800) bg_dir = 'large';
         else if ($win.width() > 600) bg_dir = 'medium';
         else bg_dir = 'small';
-        banner3d($('#intrude-bg'), [`${host}/bg/${bg_dir}/bg1.jpg`, `${host}/bg/${bg_dir}/bg2.jpg`, `${host}/bg/${bg_dir}/bg3.jpg`, `${host}/bg/${bg_dir}/bg4.jpg`]);
+        banner3d($('#intrude-bg'), ['https://ossimg.xinli001.com/20181017/f4e745a66146b1971ece82d82a6fbb05.jpg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190402/3dbe4bd2372e8299dc9742f92b397d5e.jpeg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190402/8bbd0331daf698072057011994589f03.jpeg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190329/1ad93bcfcaf2b2717881bd75e1200f17.jpeg?x-oss-process=image/quality,Q_80']);
 
     }, 200);
     $win.on('resize.initBg', bgShaking);
     $win.trigger('resize.initBg');
 })();
+// 移除旧元素
+const oldElRm = function (oldEl) {
+    oldEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', function () {
+        $(this).off('animationend webkitAnimationEnd').empty().detach();
+    });
+    // 旧元素离开
+    oldEl.removeClass('enter').addClass('leave');
+};
+// 添加新元素
+const newElAdd = function (newEl, fn) {
+    // 添加即将出现的元素
+    mainBox.append(newEl);
+    // 新元素出现
+    newEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', fn).removeClass('leave').addClass('enter');
+};
 // 切换动画效果
 const componentSwitch = function (newEl, oldEl) {
     return new Promise(resolve => {
-        oldEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', function () {
-            $(this).off('animationend webkitAnimationEnd').empty().detach();
-        });
-        // 添加即将出现的元素
-        mainBox.append(newEl);
-        // 旧元素离开
-        oldEl.removeClass('enter').addClass('leave');
-        // 新元素出现
-        newEl.off('animationend webkitAnimationEnd').on('animationend webkitAnimationEnd', resolve).removeClass('leave').addClass('enter');
+        oldElRm(oldEl);
+        newElAdd(newEl, resolve);
     })
 };
 // 通过hash匹配相应的组件
-let load = null;
 const getComponent = function (newHash, oldHash) {
     // 即将出现组件索引
     let [new_index, old_index] = [-1, -1];
@@ -52,14 +59,11 @@ const getComponent = function (newHash, oldHash) {
     });
     // 如果找到对应的索引
     if (new_index === -1) {
+        if (old_index > -1) oldElRm(Router[old_index].element);
         // 没有找到对应的hash值，默认跳转到第一个
         window.location.hash = Router[0].href;
         return;
     }
-    // 关闭上次loading，显示loading图
-    load && load.hide();
-    // 加载新的loading
-    load = new Loading({ par: app }).show();
     // 发送当前组件对应请求
     Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
         // 元素切换
@@ -77,8 +81,6 @@ const getComponent = function (newHash, oldHash) {
         }
         // 执行当前组件回调函数
         Router[new_index].handler.callback.call(Router[new_index], data);
-    }).finally(function () {
-        load.hide();
     });
 };
 // 首次加载

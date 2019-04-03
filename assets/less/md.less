@@ -10,17 +10,17 @@
 /* 文章主要内容 */
 
 #markdown-main {
-    position: relative;
-    width: calc(100% - @catalogW);
-    overflow: auto;
-    text-align: justify;
+    position      : relative;
+    width         : calc(100% - @catalogW);
+    overflow      : auto;
+    text-align    : justify;
     padding-bottom: 0;
 
     /* 标题 */
     .markdown-title {
         margin-bottom: 16px;
-        font-size: 18px;
-        text-align: center;
+        font-size    : 18px;
+        text-align   : center;
 
         h1 {
             font-weight: bold;
@@ -29,60 +29,60 @@
 
     /* 附属信息 */
     .markdown-meta {
-        max-width: 320px;
-        display: flex;
+        max-width      : 320px;
+        display        : flex;
         justify-content: space-around;
-        font-size: 12px;
-        margin: 16px auto;
+        font-size      : 12px;
+        margin         : 16px auto;
     }
 
     /* 前言 */
     .markdown-preface {
-        font-size: 13.5px;
-        line-height: 30px;
-        text-indent: 2em;
+        font-size       : 13.5px;
+        line-height     : 30px;
+        text-indent     : 2em;
         background-color: #f8f8f8;
-        color: #666;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-weight: bolder;
+        color           : #666;
+        padding         : 12px 20px;
+        border-radius   : 10px;
+        font-weight     : bolder;
     }
 
     /* 封面 */
     .markdown-cover {
-        position: relative;
-        background-size: 100%;
-        border-radius: 4px;
-        overflow: hidden;
+        position           : relative;
+        background-size    : 100%;
+        border-radius      : 4px;
+        overflow           : hidden;
         background-position: 50%;
-        background-repeat: no-repeat;
-        margin-top: 20px;
+        background-repeat  : no-repeat;
+        margin-top         : 20px;
     }
 
     /* 封面填充 */
     .markdown-cover:before {
-        content: "";
+        content : "";
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top     : 0;
+        left    : 0;
+        right   : 0;
+        bottom  : 0;
     }
 
     .markdown-cover:after {
-        content: '';
-        display: block;
+        content    : '';
+        display    : block;
         padding-top: 50%;
-        width: 100%;
+        width      : 100%;
     }
 
     /* 覆盖markdown */
     .markdown-content {
-        font-size: 14px;
+        font-size: 16px;
 
         ul {
             list-style: disc;
-            margin: 16px;
+            margin    : 16px;
         }
 
         ol {
@@ -90,25 +90,43 @@
         }
 
         p {
-            margin: 16px 0;
+            margin     : 16px 0;
             line-height: 3;
         }
 
         li {
-            margin-top: 5px;
+            margin-top : 5px;
             line-height: 3;
         }
 
         /* 引用 */
         blockquote {
-            padding: 1px 23px;
-            margin: 22px 0;
-            border-left: 4px solid #cbcbcb;
+            padding         : 1px 23px;
+            margin          : 22px 0;
+            border-left     : 4px solid #cbcbcb;
             background-color: #f8f8f8;
-            color: #666;
+            color           : #666;
 
             p {
                 margin: 8px 0;
+            }
+        }
+
+        /* 表格 */
+        table {
+            tr {
+                background-color: #fff;
+                border-top      : 1px solid @grey;
+
+                &:nth-child(2n) {
+                    background-color: @bg;
+                }
+            }
+
+            th,
+            td {
+                padding: 6px 13px;
+                border : 1px solid @grey;
             }
         }
 
@@ -116,7 +134,7 @@
         h2,
         h3 {
             font-weight: bold;
-            margin: 20px 0;
+            margin     : 20px 0;
         }
 
         h1 {
@@ -141,10 +159,10 @@
 
         mark {
             background-color: @blue;
-            color: #fff;
-            padding: 3px 5px;
-            border-radius: 2px;
-            margin: 0 2px;
+            color           : #fff;
+            padding         : 3px 5px;
+            border-radius   : 2px;
+            margin          : 0 2px;
         }
 
         .hljs {
@@ -155,7 +173,7 @@
             color: @blue;
 
             &:hover {
-                color: lighten(@blue, 10%);
+                color          : lighten(@blue, 10%);
                 text-decoration: underline;
             }
         }
@@ -165,102 +183,104 @@
 /* 目录 */
 
 .markdown-action {
-    position: absolute;
-    width: @catalogW;
-    min-height: 100%;
-    right: 0;
-    top: 0;
-    box-sizing: border-box;
+    position    : absolute;
+    width       : @catalogW;
+    min-height  : 100%;
+    right       : 0;
+    top         : 0;
+    box-sizing  : border-box;
     padding-left: 18px;
 }
 
 .markdown-action-wrap {
     position: fixed;
-    width: @catalogW - 20;
+    width   : @catalogW - 20;
 }
 
 .markdown-comment {
     padding-top: 1px;
-    margin-top: 10px;
+    margin-top : 10px;
 }
 
 .markdown-catalog {
     width: 100%;
 
     .markdown-catalog-title {
-        font-size: 16px;
-        font-weight: bold;
-        color: @black;
-        text-align: center;
-        margin-bottom: 16px;
+        font-size     : 16px;
+        font-weight   : bold;
+        color         : @black;
+        text-align    : center;
+        margin-bottom : 16px;
         letter-spacing: 2px;
 
         .markdown-catalog-item {
-            padding: 3px 8px;
+            padding      : 3px 8px;
             border-bottom: 2px solid @blue;
-            color: @blue;
+            color        : @blue;
         }
     }
 
     .catalog-item {
-        color: @black;
+        color        : @black;
         margin-bottom: 5px;
     }
 
     .catalog-item.act {
         background-color: @bg;
-        color: @blue;
-        font-weight: bold;
+        color           : @blue;
+        font-weight     : bold;
     }
 
     .catalog-link {
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
+        width        : 100%;
+        white-space  : nowrap;
+        overflow     : hidden;
         text-overflow: ellipsis;
-        padding: 3px 0;
+        padding      : 3px 0;
 
         &:before {
-            content: '';
-            position: relative;
-            display: inline-block;
+            content         : '';
+            position        : relative;
+            display         : inline-block;
             background-color: currentColor;
-            border-radius: 50%;
+            border-radius   : 50%;
         }
     }
 
     .catalog-h1 {
-        font-size: 13px;
+        font-size   : 13px;
         padding-left: 5px;
 
         .catalog-link:before {
-            width: 6px;
-            height: 6px;
+            width       : 6px;
+            height      : 6px;
             margin-right: 4px;
-            top: -2px;
+            top         : -2px;
         }
     }
 
     .catalog-h2 {
-        font-size: 12px;
+        font-size   : 12px;
         padding-left: 25px;
 
         .catalog-link:before {
-            width: 5px;
-            height: 5px;
+            width       : 5px;
+            height      : 5px;
             margin-right: 5px;
-            top: -1px;
+            top         : -1px;
         }
     }
 }
 
 .markdown-handler {
-    width: 100%;
+    .art-heart-btn {
+        margin-left: 21px;
+    }
 }
 
 @media screen and (max-width: 1100px) {
     #markdown-box {
-        height: auto;
+        height : auto;
         padding: 0 !important;
     }
 
