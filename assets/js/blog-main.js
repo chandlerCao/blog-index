@@ -64,21 +64,21 @@ const getComponent = function (newHash, oldHash) {
         window.location.hash = Router[0].href;
         return;
     }
+    // 元素切换
+    if (Router[new_index] !== Router[old_index]) {
+        componentSwitch(
+            Router[new_index].element,
+            Router[old_index] ? Router[old_index].element : $()
+        ).then(() => {
+            // 新元素滚动到上一次位置
+            const scrollTop_data = storage.get('scrollTop') || {};
+            // 如果本地存储了当前的滚动位置，没有就跳转到顶部
+            let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
+            app.animate({ 'scrollTop': scrollTop }, 300);
+        });
+    }
     // 发送当前组件对应请求
     Router[new_index].handler.ajax.call(Router[new_index], getParmasByHash()).then(data => {
-        // 元素切换
-        if (Router[new_index] !== Router[old_index]) {
-            componentSwitch(
-                Router[new_index].element,
-                Router[old_index] ? Router[old_index].element : $()
-            ).then(() => {
-                // 新元素滚动到上一次位置
-                const scrollTop_data = storage.get('scrollTop') || {};
-                // 如果本地存储了当前的滚动位置，没有就跳转到顶部
-                let scrollTop = scrollTop_data[newHash] ? scrollTop_data[newHash] : 0;
-                app.animate({ 'scrollTop': scrollTop }, 300);
-            });
-        }
         // 执行当前组件回调函数
         Router[new_index].handler.callback.call(Router[new_index], data);
     });
