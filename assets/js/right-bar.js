@@ -1,4 +1,4 @@
-import { toZero, ajax, app, Snow, PreventShaking } from './blog-utils';
+import { host, toZero, ajax, app, Snow, PreventShaking } from './blog-utils';
 import Router from './blog-router';
 // 右边栏固定定位
 const rightBarFixed = () => {
@@ -76,9 +76,9 @@ const rightBarFixed = () => {
     ajax({ url: '/index/article/getArticleTag' }).then((tagList = []) => {
         let tag_str = '';
         tagList.forEach(tag_item => {
-            imgArr.push(tag_item.img);
+            imgArr.push(`${host}/${tag_item.img}`);
             tag_str += `<a href="#article?tag=${tag_item.tag_name}&page=1" class="com-icon tag-item">
-                <i class="com-icon__pic eye-icon" style="background-image: url(${tag_item.img})"></i>
+                <i class="com-icon__pic" style="background-image: url(${host}/${tag_item.img})"></i>
                 <span class="com-icon__text">${tag_item.tag_name}</span>
             </a>`;
         });
