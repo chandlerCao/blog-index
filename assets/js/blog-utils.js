@@ -68,11 +68,29 @@ export const banner3d = function (box, imgArr) {
                 getImageSizeByUrl(src).then(imgSize => {
                     // 获取图片原始宽高
                     let img_width = imgSize.w, img_height = imgSize.h;
+                    const scale = img_width / img_height;
                     let new_width, new_height;
-                    if ($win.width() > 800) new_height = box_height;
-                    else new_width = box_width;
-                    if (img_height < box_height) new_width = img_width * (new_height / img_height);
-                    else new_width = img_width * (new_height / img_height);
+
+                    if (img_width > box_width) {
+                        if (img_height > box_height) {
+                            new_width = box_width;
+                            new_height = box_height;
+                        }
+                        else {
+                            new_height = box_height;
+                            new_width = scale * new_height;
+                        }
+                    }
+                    else {
+                        if (img_height > box_height) {
+                            new_width = box_width;
+                            new_height = new_width / scale;
+                        }
+                        else {
+                            new_height = box_height;
+                            new_width = new_height / scale;
+                        }
+                    }
                     resolve({ w: new_width, h: new_height })
                 });
             }));

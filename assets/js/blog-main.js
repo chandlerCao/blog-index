@@ -16,15 +16,10 @@ const mainBox = $('#main-box');
 ; (function () {
     // 背景防抖
     const bgShaking = PreventShaking(function () {
-        let bg_dir;
-        if ($win.width() > 800) bg_dir = 'large';
-        else if ($win.width() > 600) bg_dir = 'medium';
-        else bg_dir = 'small';
-        banner3d($('#intrude-bg'), ['https://ossimg.xinli001.com/20181017/f4e745a66146b1971ece82d82a6fbb05.jpg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190402/3dbe4bd2372e8299dc9742f92b397d5e.jpeg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190402/8bbd0331daf698072057011994589f03.jpeg?x-oss-process=image/quality,Q_80', 'https://ossimg.xinli001.com/20190329/1ad93bcfcaf2b2717881bd75e1200f17.jpeg?x-oss-process=image/quality,Q_80']);
-
-    }, 200);
+        banner3d($('#intrude-bg'), [`${host}/bg/bg1.jpg`, `${host}/bg/bg2.jpg`, `${host}/bg/bg3.jpg`, `${host}/bg/bg4.jpg`]);
+    }, 500);
     $win.on('resize.initBg', bgShaking);
-    $win.trigger('resize.initBg');
+    bgShaking();
 })();
 // 移除旧元素
 const oldElRm = function (oldEl) {
