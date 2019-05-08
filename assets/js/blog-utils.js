@@ -73,8 +73,8 @@ export const banner3d = function (box, imgArr) {
 
                     if (img_width > box_width) {
                         if (img_height > box_height) {
-                            new_width = box_width;
-                            new_height = box_height;
+                            new_width = img_width;
+                            new_height = img_height;
                         }
                         else {
                             new_height = box_height;
