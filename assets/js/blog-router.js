@@ -170,7 +170,7 @@ export default [
         reqUrl: '/index/article/getArticleList'
     },
     {
-        reg: /^article\?tag=(\w+)&page=(\d+)$/,
+        reg: /^article\?tag=(.+)&page=(\d+)$/,
         name: 'articleTagList',
         element: $('<section id="article-tag-box" class="blog-element"></section>'),
         fns: {
