@@ -445,7 +445,7 @@ export default [
                     <!-- 文章封面 -->
                     <div class="markdown-cover" style="background-image: url(${host}/{{=it.cover}})"></div>
                     <!-- 文章内容 -->
-                    <div class="markdown-content">{{=it.markdownHtml}}</div>
+                    <div class="markdown-content">{{=it.content}}</div>
                     <!-- 文章评论 -->
                     <div class="markdown-comment"></div>
                 </div>
@@ -484,7 +484,7 @@ export default [
                 // 格式化日期
                 data.date = TimestampFormat(data.date);
                 // 生成文章目录
-                const catalogRes = this.fns.createCatalog(data.markdownHtml);
+                const catalogRes = this.fns.createCatalog(data.content);
                 data.catalog = catalogRes.catalogStr;
                 // 生成文字模板 dot
                 var markdown_cnt = doT.template(this.tmps.articleMainTmp())(data);
