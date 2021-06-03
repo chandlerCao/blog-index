@@ -68,7 +68,7 @@ export default [
         reg: /^article\?type=live&page=(\d+)$/,
         name: 'live',
         href: '#article?type=live&page=1',
-        text: '生活',
+        text: '日记',
         target: '',
         icon: 'fa fa-coffee',
         element: $('<section id="live-box" class="blog-element"></section>'),
@@ -162,7 +162,7 @@ export default [
     },
     {
         reg: /^aboutMe$/,
-        href: 'https://www.caodj.cn',
+        href: 'http://116.62.113.105/',
         text: '简历',
         target: 'target="_blank"',
         icon: 'fa fa-book',
