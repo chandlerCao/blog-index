@@ -25,7 +25,7 @@ const config = {
         blog: path.join(__dirname, 'app.js')
     },
     output: {
-        path: path.join(__dirname, '../koa-blog/index/view'),
+        path: path.join(__dirname, 'blog-index'),
         filename: `js/[name].js`
     },
     module: {
@@ -98,15 +98,15 @@ const config = {
         new copyWebpackPlugin([
             {
                 from: path.join(__dirname, 'assets/img/WeChat-qr-code.jpg'),
-                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+                to: path.join(__dirname, 'blog-index/img/[name].[ext]')
             },
             {
                 from: path.join(__dirname, 'assets/img/QQ-qr-code.jpg'),
-                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+                to: path.join(__dirname, 'blog-index/img/[name].[ext]')
             },
             {
                 from: path.join(__dirname, 'assets/img/snow.png'),
-                to: path.join(__dirname, '../koa-blog/index/view/img/[name].[ext]')
+                to: path.join(__dirname, 'blog-index/img/[name].[ext]')
             }
         ])
     ],

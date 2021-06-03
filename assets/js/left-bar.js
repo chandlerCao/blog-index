@@ -15,13 +15,13 @@ import { Tooltip } from "../com/js/com";
     new Tooltip({
         el: $('#wechat__icon'),
         theme: 'light',
-        content: '<img width="100" src="./img/WeChat-qr-code.jpg">'
+        content: '<img width="100" src="../img/WeChat-qr-code.jpg">'
     });
     // qq二维码
     new Tooltip({
         el: $('#qq__icon'),
         theme: 'light',
-        content: '<img width="100" src="./img/QQ-qr-code.jpg">'
+        content: '<img width="100" src="../img/QQ-qr-code.jpg">'
     });
     // github
     new Tooltip({
